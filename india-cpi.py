@@ -106,6 +106,8 @@ if selected_main_cat:
 	# Further filter dataframe based on selected metrics
 	filtered_df = df[df['MainCat'].isin(selected_main_cat)]
 
+	st.write(filtered_df)
+
 selected_sub_cat = st.sidebar.multiselect("Select Sub Categories to Display", filtered_df['SubCat'].unique(), default=list(filtered_df['SubCat'].unique()))
 
 
@@ -114,9 +116,6 @@ if selected_sub_cat:
 	# Further filter dataframe based on selected metrics
 	filtered_df = filtered_df[filtered_df['SubCat'].isin(selected_sub_cat)]
 
-
-
-st.write(filtered_df)
 
 # 	# Calculate min and max values for the dotted lines
 # 	min_value = filtered_df['Value'].min()
