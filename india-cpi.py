@@ -53,6 +53,8 @@ df = df.sort_values(by='Date')
 # Convert Date column to string without time
 df['Date_str'] = df['Date'].dt.strftime('%d-%m-%Y')
 
+df["Value"] = df["Value"].replace("-",np.nan)
+
 # Format the Value column to two decimal places and keep it as a float
 df['Value'] = df['Value'].astype(float).round(2)
 
