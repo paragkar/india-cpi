@@ -170,7 +170,7 @@ fig.update_layout(
 				'label': date_str,
 				'method': 'animate'
 			}
-			for date_str in sorted(df['Date_str'].unique(), key=lambda x: datetime.strptime(x, '31st Mar %Y'))
+			for date_str in sorted(df['Date_str'].unique(), key=lambda x: datetime.strptime(x, '%d-%m-%Y'))
 		],
 		'x': 0.1,
 		'xanchor': 'left',
