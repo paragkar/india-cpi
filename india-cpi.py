@@ -92,7 +92,7 @@ df = df.sort_values('MainCat')
 
 selected_main_cat = st.sidebar.multiselect("Select Main Categories to Display", df['MainCat'].unique(), default=list(df['MainCat'].unique()))
 
-st.write(df)
+st.write(selected_main_cat)
 
 # # Check if any metrics are selected
 # if selected_metrics:
