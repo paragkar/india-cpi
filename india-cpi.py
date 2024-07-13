@@ -6,7 +6,7 @@ import streamlit as st
 import io
 import msoffcrypto
 
-metric_type = ["Index", "Infla", "WA"]
+metric_type = ["Index", "Inflation", "WA"]
 
 pd.set_option('display.max_columns', None)
 
