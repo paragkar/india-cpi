@@ -7,9 +7,6 @@ import io
 import msoffcrypto
 import numpy as np
 
-metric_types = ["Index", "Inflation", "WA"]
-
-sector_types = ["Rural", "Urban", "Combined"]
 
 pd.set_option('display.max_columns', None)
 
@@ -62,6 +59,9 @@ df['Value'] = df['Value'].astype(float).round(2)
 # # Create a column to hold the value information along with the year
 df['Text'] = df.apply(lambda row: f"<b>{row['Value']:.2f} ({row['Date_str'][-4:]})</b>", axis=1)
 
+metric_types = ["Index", "Inflation", "WA"]
+
+sector_types = ["Rural", "Urban", "Combined"]
 
 selected_sector_type = st.sidebar.selectbox("Select Sector Types to Display", sector_types)
 
@@ -70,11 +70,11 @@ if selected_sector_type:
 	# Further filter dataframe based on selected metrics
 	df = df[df['Metric'].str.contains(selected_sector_type)]
 
-selected_metric_type = st.sidebar.selectbox("Select Metric Type", metric_types)
-
 df = df.replace("", np.nan).dropna()
 
 st.write(df)
+
+selected_metric_type = st.sidebar.selectbox("Select Metric Type", metric_types)
 
 # Check if any metric types are selected
 if selected_metric_type:
@@ -82,39 +82,21 @@ if selected_metric_type:
 	df = df[df['Metric'].str.contains(selected_metric_type)]
 
 
-# # Update title based on selection
-# if selected_type == "Center":
-# 	title_text = "SELECT FISCAL INDICATORS OF THE CENTER GOVT (% of gdp)"
-# 	metric_order = center_order
-# else:
-# 	title_text = "SELECT FISCAL INDICATORS OF THE STATE GOVTs (% of gdp)"
-# 	metric_order = state_order
-
-# st.markdown(f"<h1 style='font-size:25px; margin-top: -60px;'>{title_text.title()}</h1>", unsafe_allow_html=True)
-
-# filtered_main_cat_df = df[df['MainCat'] == selected_main_cat]
-
-
-# # Set the main cat order for the y-axis
-# df['MainCat'] = pd.Categorical(df['MainCat'], categories=main_cat_order, ordered=True)
-# df = df.sort_values('MainCat')
-
 selected_main_cat = st.sidebar.multiselect("Select Main Categories to Display", df['MainCat'].unique(), default=list(df['MainCat'].unique()))
 
 # Check if any main categories are selected
 if selected_main_cat:
 	# Further filter dataframe based on selected metrics
-	filtered_df = df[df['MainCat'].isin(selected_main_cat)]
+	df = df[df['MainCat'].isin(selected_main_cat)]
 
-	st.write(filtered_df)
-
-selected_sub_cat = st.sidebar.multiselect("Select Sub Categories to Display", filtered_df['SubCat'].unique(), default=list(filtered_df['SubCat'].unique()))
-
+selected_sub_cat = st.sidebar.multiselect("Select Sub Categories to Display", df['SubCat'].unique(), default=list(df['SubCat'].unique()))
 
 # Check if any sub categories are selected
 if selected_sub_cat:
 	# Further filter dataframe based on selected metrics
-	filtered_df = filtered_df[filtered_df['SubCat'].isin(selected_sub_cat)]
+	df = df[df['SubCat'].isin(selected_sub_cat)]
+
+st.write(df)
 
 
 # 	# Calculate min and max values for the dotted lines
