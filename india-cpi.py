@@ -76,9 +76,7 @@ df = df.replace("", np.nan).dropna()
 
 selected_sector_type = st.sidebar.selectbox("Select Metric Type", sector_types)
 
-if selected_metric_type == "All":
-	pass
-else:
+if selected_metric_type != "All":
 	df = df[df['Description'].str.contains(selected_sector_type)]
 
 
