@@ -63,7 +63,7 @@ df['Text'] = df.apply(lambda row: f"<b>{row['Value']:.2f} ({row['Date_str'][-4:]
 
 metric_types = ["Index", "Inflation"]
 
-sector_types = ["Rural", "Urban", "Combined"]
+sector_types = ["All", "Rural", "Urban", "Combined"]
 
 selected_metric_type = st.sidebar.selectbox("Select Metric Type", metric_types)
 
@@ -73,6 +73,13 @@ if selected_metric_type:
 	df = df[df['ValueType'].str.contains(selected_metric_type)]
 
 df = df.replace("", np.nan).dropna()
+
+selected_sector_type = st.sidebar.selectbox("Select Metric Type", sector_types)
+
+if selected_metric_type == "All":
+	pass
+else:
+	df = df[df['Description'].str.contains(selected_sector_type)]
 
 
 selected_main_cat = st.sidebar.multiselect("Select Description to Display", df['Description'].unique())
