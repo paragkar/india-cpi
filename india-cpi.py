@@ -6,6 +6,8 @@ import streamlit as st
 import io
 import msoffcrypto
 
+metric_type = ["Index", "Infla", "WA"]
+
 pd.set_option('display.max_columns', None)
 
 st.set_page_config(
@@ -104,6 +106,16 @@ selected_sub_cat = st.sidebar.multiselect("Select Sub Categories to Display", fi
 if selected_sub_cat:
 	# Further filter dataframe based on selected metrics
 	filtered_df = filtered_df[filtered_df['SubCat'].isin(selected_sub_cat)]
+
+
+selected_metric_type = st.sidebar.selectbox("Select Metric Type", metric_type)
+
+
+# Check if any metric types are selected
+if selected_metric_type:
+	# Further filter dataframe based on selected metrics
+	filtered_df = filtered_df[filtered_df['Metric'].str.contains(selected_metric_type)]
+
 
 st.write(filtered_df)
 
