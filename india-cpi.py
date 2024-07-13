@@ -214,7 +214,7 @@ for frame in fig.frames:
 	frame['layout'].update(annotations=update_annotations(date_str))
 
 # Ensure the frames are sorted correctly
-fig.frames = sorted(fig.frames, key=lambda frame: datetime.strptime(frame.name, '31st Mar %Y'))
+fig.frames = sorted(fig.frames, key=lambda frame: datetime.strptime(frame.name, '%d-%m-%Y'))
 
 # Custom callback to update the date annotation dynamically
 fig.update_layout(
