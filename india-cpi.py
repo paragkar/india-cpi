@@ -87,12 +87,12 @@ main_cat_order = ['General Index', 'Food and beverages',
 
 
 # # Set the main cat order for the y-axis
-main_cat_df['MainCat'] = pd.Categorical(main_cat_df['MainCat'], categories=main_cat_order, ordered=True)
-main_cat_df = main_cat_df.sort_values('MainCat')
+df['MainCat'] = pd.Categorical(df['MainCat'], categories=main_cat_order, ordered=True)
+df = df.sort_values('MainCat')
 
-st.write(main_cat_df)
+selected_main_cat = st.sidebar.multiselect("Select Main Categories to Display", df['MainCat'].unique(), default=list(df['MainCat'].unique()))
 
-selected_main_cat = st.sidebar.multiselect("Select Main Categories to Display", main_cat_df['MainCat'].unique(), default=list(main_cat_df['MainCat'].unique()))
+st.write(df)
 
 # # Check if any metrics are selected
 # if selected_metrics:
