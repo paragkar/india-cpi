@@ -92,12 +92,13 @@ df = df.sort_values('MainCat')
 
 selected_main_cat = st.sidebar.multiselect("Select Main Categories to Display", df['MainCat'].unique(), default=list(df['MainCat'].unique()))
 
-selected_sub_cat = st.sidebar.multiselect("Select Sub Categories to Display", df['SubCat'].unique(), default=list(df['SubCat'].unique()))
-
 # Check if any main categories are selected
 if selected_main_cat:
 	# Further filter dataframe based on selected metrics
 	filtered_df = df[df['MainCat'].isin(selected_main_cat)]
+
+selected_sub_cat = st.sidebar.multiselect("Select Sub Categories to Display", filtered_df['SubCat'].unique(), default=list(filtered_df['SubCat'].unique()))
+
 
 # Check if any sub categories are selected
 if selected_sub_cat:
