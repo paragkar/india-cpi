@@ -57,20 +57,17 @@ df['Value'] = df['Value'].astype(float).round(2)
 # # Create a column to hold the value information along with the year
 df['Text'] = df.apply(lambda row: f"<b>{row['Value']:.2f} ({row['Date_str'][-4:]})</b>", axis=1)
 
-st.write(df)
 
 # Sidebar for main category selection
-selected_type = st.sidebar.selectbox("Select MainCat", df['MainCat'].unique())
+selected_main_cat = st.sidebar.selectbox("Select MainCat", df['MainCat'].unique())
 
 # Sidebar for sub category selection
-selected_type = st.sidebar.selectbox("Select SubCat", df['SubCat'].unique())
+selected_sub_cat = st.sidebar.selectbox("Select SubCat", df['SubCat'].unique())
 
-# # Define the order for each type
-# center_order = ["Gross Fiscal Deficit", "Net Fiscal Deficit", "Gross Primary Deficit", "Net Primary Deficit",
-# 				"Revenue Deficit", "Primary Revenue Deficit", "Draw Down Cash Balance", "Net RBI Credit to Center", 
-# 				"Gross Tax Direct", "Gross Tax Indirect", "Gross Tax Total", "Tax Revenue Net", "Revenue Receipt",
-# 				"Non Tax Revenue", "Capital Receipt", "Revenue Expenditure", "Interest Payments", "Subsidies", 
-# 				"Defence (Rev+Cap)", "Capital Expenditure", "Capital Outlay", "Total Expenditure"]
+# Define the order for main category
+center_order = ['General Index', 'Food and beverages', 
+'Pan, tobacco and intoxicants','Clothing and footwear', 'Housing', 'Fuel and light', 'Miscellaneous',]
+ 
 
 # state_order = ["Revenue Deficit","Gross Fiscal Deficit", "Primary Deficit",
 # 			   "Primary Revenue Deficit", "Conventional Deficit", "Aggregrate Disburse", "Revenue Receipt",
@@ -86,7 +83,9 @@ selected_type = st.sidebar.selectbox("Select SubCat", df['SubCat'].unique())
 
 # st.markdown(f"<h1 style='font-size:25px; margin-top: -60px;'>{title_text.title()}</h1>", unsafe_allow_html=True)
 
-# filtered_df = df[df['Type'] == selected_type]
+filtered_main_cat_df = df[df['MainCat'] == selected_main_cat]
+
+st.write(filtered_main_cat_df)
 
 # # Set the metric order for the y-axis
 # filtered_df['Metric'] = pd.Categorical(filtered_df['Metric'], categories=metric_order, ordered=True)
