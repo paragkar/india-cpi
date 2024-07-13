@@ -82,8 +82,6 @@ if selected_main_cat:
 	# Further filter dataframe based on selected metrics
 	df = df[df['Description'].isin(selected_main_cat)]
 
-st.write(df)
-
 
 # Calculate min and max values for the dotted lines
 min_value = df['Value'].min()
