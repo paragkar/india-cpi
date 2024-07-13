@@ -59,10 +59,10 @@ df['Text'] = df.apply(lambda row: f"<b>{row['Value']:.2f} ({row['Date_str'][-4:]
 
 
 # Sidebar for main category selection
-selected_main_cat = st.sidebar.selectbox("Select MainCat", df['MainCat'].unique())
+# selected_main_cat = st.sidebar.selectbox("Select MainCat", df['MainCat'].unique())
 
 # Sidebar for sub category selection
-selected_sub_cat = st.sidebar.selectbox("Select SubCat", df['SubCat'].unique())
+# selected_sub_cat = st.sidebar.selectbox("Select SubCat", df['SubCat'].unique())
 
 # Define the order for main category
 main_cat_order = ['General Index', 'Food and beverages', 
@@ -92,7 +92,7 @@ filtered_main_cat_df = filtered_main_cat_df.sort_values('MainCat')
 
 st.write(filtered_main_cat_df)
 
-# selected_metrics = st.sidebar.multiselect("Select Metrics to Display", filtered_df['Metric'].unique(), default=list(filtered_df['Metric'].unique()))
+selected_main_cat = st.sidebar.multiselect("Select Main Categories to Display", filtered_main_cat_df['MainCat'].unique(), default=list(filtered_main_cat_df['MainCat'].unique()))
 
 # # Check if any metrics are selected
 # if selected_metrics:
