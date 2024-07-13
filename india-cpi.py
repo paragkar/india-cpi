@@ -70,7 +70,7 @@ selected_metric_type = st.sidebar.selectbox("Select Metric Type", metric_types)
 # Check if any metric types are selected
 if selected_metric_type:
 	# Further filter dataframe based on selected metrics
-	df = df[df['Description'].str.contains(selected_metric_type)]
+	df = df[df['ValueType'].str.contains(selected_metric_type)]
 
 df = df.replace("", np.nan).dropna()
 
