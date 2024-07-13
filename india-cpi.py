@@ -9,6 +9,8 @@ import numpy as np
 
 metric_type = ["Index", "Inflation", "WA"]
 
+sector_type = ["Rural", "Urban", "Combined"]
+
 pd.set_option('display.max_columns', None)
 
 st.set_page_config(
@@ -59,6 +61,14 @@ df['Value'] = df['Value'].astype(float).round(2)
 
 # # Create a column to hold the value information along with the year
 df['Text'] = df.apply(lambda row: f"<b>{row['Value']:.2f} ({row['Date_str'][-4:]})</b>", axis=1)
+
+
+selected_sector_type = st.sidebar.multiselect("Select Main Categories to Display", sector_type, default=sector_type)
+
+# Check if any metric types are selected
+if selected_sector_type:
+	# Further filter dataframe based on selected metrics
+	df = df[df['Metric'].str.contains(selected_sector_type)]
 
 selected_metric_type = st.sidebar.selectbox("Select Metric Type", metric_type)
 
