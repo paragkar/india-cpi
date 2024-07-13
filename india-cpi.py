@@ -5,6 +5,7 @@ import plotly.graph_objects as go
 import streamlit as st
 import io
 import msoffcrypto
+import numpy as np
 
 metric_type = ["Index", "Inflation", "WA"]
 
