@@ -111,141 +111,141 @@ fig = px.scatter(df, x="Value", y="Metric", animation_frame="Date_str", animatio
 				 color="Metric", range_x=[range_min, range_max],
 				 title="", size_max=24, text="Text")
 
-	# Customize text position to the right of the dots
-	fig.update_traces(textposition='middle right', textfont=dict(size=16))
+# Customize text position to the right of the dots
+fig.update_traces(textposition='middle right', textfont=dict(size=16))
 
-	# Add black outlines to the dots
-	fig.update_traces(marker=dict(size=20, line=dict(width=2, color='black')))
+# Add black outlines to the dots
+fig.update_traces(marker=dict(size=20, line=dict(width=2, color='black')))
 
-	# Customize y-axis labels font size and make them bold
-	fig.update_yaxes(tickfont=dict(size=20, color='black', family='Arial', weight='bold'))
+# Customize y-axis labels font size and make them bold
+fig.update_yaxes(tickfont=dict(size=20, color='black', family='Arial', weight='bold'))
 
 
-	# Remove y-axis labels and variable labels
-	fig.update_yaxes(showticklabels=True)
-	fig.update_traces(marker=dict(size=24))
+# Remove y-axis labels and variable labels
+fig.update_yaxes(showticklabels=True)
+fig.update_traces(marker=dict(size=24))
 
-	# Draw a black line on the y-axis
-	fig.add_shape(type='line', x0=0, x1=0, y0=0, y1=1, line=dict(color='black', width=1), xref='x', yref='paper')
+# Draw a black line on the y-axis
+fig.add_shape(type='line', x0=0, x1=0, y0=0, y1=1, line=dict(color='black', width=1), xref='x', yref='paper')
 
-	# Remove legend on the right side
-	fig.update_layout(showlegend=False)
+# Remove legend on the right side
+fig.update_layout(showlegend=False)
 
-	# Add black border to the chart
-	# fig.update_xaxes(fixedrange=True, showline=True, linewidth=1.2, linecolor='black', mirror=True)
-	# fig.update_yaxes(fixedrange=True, showline=True, linewidth=1.2, linecolor='black', mirror=True)
+# Add black border to the chart
+# fig.update_xaxes(fixedrange=True, showline=True, linewidth=1.2, linecolor='black', mirror=True)
+# fig.update_yaxes(fixedrange=True, showline=True, linewidth=1.2, linecolor='black', mirror=True)
 
-	# Add dotted lines for min and max values
-	fig.add_shape(
-		type="line",
-		x0=min_value, y0=0, x1=min_value, y1=1,
-		xref='x', yref='paper',
-		line=dict(color="blue", width=2, dash="dot")
-	)
-	fig.add_shape(
-		type="line",
-		x0=max_value, y0=0, x1=max_value, y1=1,
-		xref='x', yref='paper',
-		line=dict(color="red", width=2, dash="dot")
-	)
+# Add dotted lines for min and max values
+fig.add_shape(
+	type="line",
+	x0=min_value, y0=0, x1=min_value, y1=1,
+	xref='x', yref='paper',
+	line=dict(color="blue", width=2, dash="dot")
+)
+fig.add_shape(
+	type="line",
+	x0=max_value, y0=0, x1=max_value, y1=1,
+	xref='x', yref='paper',
+	line=dict(color="red", width=2, dash="dot")
+)
 
-	# Adjust the layout
-	fig.update_layout(
-		xaxis_title="Value as Percentage of GDP",
-		yaxis_title="",
-		width =1200,
-		height=900,  # Adjust the height to make the plot more visible
-		margin=dict(l=0, r=10, t=120, b=40, pad=0),  # Add margins to make the plot more readable and closer to the left
-		sliders=[{
-			'steps': [
-				{
-					'args': [
-						[date_str],
-						{
-							'frame': {'duration': 300, 'redraw': True},
-							'mode': 'immediate',
-							'transition': {'duration': 300}
-						}
-					],
-					'label': date_str,
-					'method': 'animate'
-				}
-				for date_str in sorted(df['Date_str'].unique(), key=lambda x: datetime.strptime(x, '31st Mar %Y'))
-			],
-			'x': 0.1,
-			'xanchor': 'left',
-			'y': 0,
-			'yanchor': 'top'
-		}]
-	)
-
-	# Add initial annotation for the date
-	initial_date_annotation = {
-		'x': 0,
-		'y': 1.15,  # Move the date annotation closer to the top of the chart
-		'xref': 'paper',
-		'yref': 'paper',
-		'text': f'<span style="color:red;font-size:30px"><b>Date: {df["Date_str"].iloc[0]}</b></span>',
-		'showarrow': False,
-		'font': {
-			'size': 20
-		}
-	}
-	fig.update_layout(annotations=[initial_date_annotation])
-
-	# Custom callback to update the date annotation dynamically
-	def update_annotations(date_str):
-		return [go.layout.Annotation(
-			x=0,
-			y=1.15,
-			xref='paper',
-			yref='paper',
-			text=f'<span style="color:red;font-size:30px"><b>Date: {date_str}</b></span>',
-			showarrow=False,
-			font=dict(size=30)
-		)]
-
-	# Customize y-axis labels font size
-	fig.update_yaxes(tickfont=dict(size=20))
-
-	# Update annotation with each frame
-	for frame in fig.frames:
-		date_str = frame.name
-		frame['layout'].update(annotations=update_annotations(date_str))
-
-	# Ensure the frames are sorted correctly
-	fig.frames = sorted(fig.frames, key=lambda frame: datetime.strptime(frame.name, '31st Mar %Y'))
-
-	# Custom callback to update the date annotation dynamically
-	fig.update_layout(
-		updatemenus=[{
-			'type': 'buttons',
-			'showactive': False,
-			'buttons': [
-				{
-					'label': 'Play',
-					'method': 'animate',
-					'args': [None, {
-						'frame': {'duration': 500, 'redraw': True},
-						'fromcurrent': True,
-						'transition': {'duration': 300, 'easing': 'linear'}
-					}]
-				},
-				{
-					'label': 'Pause',
-					'method': 'animate',
-					'args': [[None], {
-						'frame': {'duration': 0, 'redraw': False},
+# Adjust the layout
+fig.update_layout(
+	xaxis_title="Value as Percentage of GDP",
+	yaxis_title="",
+	width =1200,
+	height=900,  # Adjust the height to make the plot more visible
+	margin=dict(l=0, r=10, t=120, b=40, pad=0),  # Add margins to make the plot more readable and closer to the left
+	sliders=[{
+		'steps': [
+			{
+				'args': [
+					[date_str],
+					{
+						'frame': {'duration': 300, 'redraw': True},
 						'mode': 'immediate',
-						'transition': {'duration': 0}
-					}]
-				}
-			]
-		}]
-	)
+						'transition': {'duration': 300}
+					}
+				],
+				'label': date_str,
+				'method': 'animate'
+			}
+			for date_str in sorted(df['Date_str'].unique(), key=lambda x: datetime.strptime(x, '31st Mar %Y'))
+		],
+		'x': 0.1,
+		'xanchor': 'left',
+		'y': 0,
+		'yanchor': 'top'
+	}]
+)
 
-	# Use Streamlit's container to fit the chart properly
-	with st.container():
-		st.plotly_chart(fig, use_container_width=True)
-else:
-	st.write("Please select at least one metric to display the chart.")
+# Add initial annotation for the date
+initial_date_annotation = {
+	'x': 0,
+	'y': 1.15,  # Move the date annotation closer to the top of the chart
+	'xref': 'paper',
+	'yref': 'paper',
+	'text': f'<span style="color:red;font-size:30px"><b>Date: {df["Date_str"].iloc[0]}</b></span>',
+	'showarrow': False,
+	'font': {
+		'size': 20
+	}
+}
+fig.update_layout(annotations=[initial_date_annotation])
+
+# Custom callback to update the date annotation dynamically
+def update_annotations(date_str):
+	return [go.layout.Annotation(
+		x=0,
+		y=1.15,
+		xref='paper',
+		yref='paper',
+		text=f'<span style="color:red;font-size:30px"><b>Date: {date_str}</b></span>',
+		showarrow=False,
+		font=dict(size=30)
+	)]
+
+# Customize y-axis labels font size
+fig.update_yaxes(tickfont=dict(size=20))
+
+# Update annotation with each frame
+for frame in fig.frames:
+	date_str = frame.name
+	frame['layout'].update(annotations=update_annotations(date_str))
+
+# Ensure the frames are sorted correctly
+fig.frames = sorted(fig.frames, key=lambda frame: datetime.strptime(frame.name, '31st Mar %Y'))
+
+# Custom callback to update the date annotation dynamically
+fig.update_layout(
+	updatemenus=[{
+		'type': 'buttons',
+		'showactive': False,
+		'buttons': [
+			{
+				'label': 'Play',
+				'method': 'animate',
+				'args': [None, {
+					'frame': {'duration': 500, 'redraw': True},
+					'fromcurrent': True,
+					'transition': {'duration': 300, 'easing': 'linear'}
+				}]
+			},
+			{
+				'label': 'Pause',
+				'method': 'animate',
+				'args': [[None], {
+					'frame': {'duration': 0, 'redraw': False},
+					'mode': 'immediate',
+					'transition': {'duration': 0}
+				}]
+			}
+		]
+	}]
+)
+
+# Use Streamlit's container to fit the chart properly
+with st.container():
+	st.plotly_chart(fig, use_container_width=True)
+# else:
+# 	st.write("Please select at least one metric to display the chart.")
