@@ -66,7 +66,7 @@ if selected_metric_type:
 	# Further filter dataframe based on selected metrics
 	df = df[df['Metric'].str.contains(selected_metric_type)]
 
-
+df = df.replace("", np.nan).dropna()
 
 # Sidebar for main category selection
 # selected_main_cat = st.sidebar.selectbox("Select MainCat", df['MainCat'].unique())
