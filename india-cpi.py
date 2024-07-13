@@ -106,7 +106,6 @@ df['Date_str'] = pd.Categorical(df['Date_str'], ordered=True, categories=sorted(
 range_min = min_value - abs(min_value) * 0.30
 range_max = max_value + abs(max_value) * 0.15
 
-st.write(df)
 
 # Plotly animation setup
 fig = px.scatter(df, x="Value", y="MainCat", animation_frame="Date_str", animation_group="MainCat",
