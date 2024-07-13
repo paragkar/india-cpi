@@ -81,6 +81,8 @@ if selected_sector_type:
 	# Further filter dataframe based on selected metrics
 	df = df[df['Description'].str.contains(selected_sector_type)]
 
+st.write(df)
+
 
 # selected_main_cat = st.sidebar.multiselect("Select Main Categories to Display", df['MainCat'].unique(), default=list(df['MainCat'].unique()))
 
