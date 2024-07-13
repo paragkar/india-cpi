@@ -63,23 +63,23 @@ metric_types = ["Index", "Inflation", "WA"]
 
 sector_types = ["Rural", "Urban", "Combined"]
 
-selected_sector_type = st.sidebar.selectbox("Select Sector Types to Display", sector_types)
-
-# Check if any metric types are selected
-if selected_sector_type:
-	# Further filter dataframe based on selected metrics
-	df = df[df['Metric'].str.contains(selected_sector_type)]
-
-df = df.replace("", np.nan).dropna()
-
-st.write(df)
-
 selected_metric_type = st.sidebar.selectbox("Select Metric Type", metric_types)
 
 # Check if any metric types are selected
 if selected_metric_type:
 	# Further filter dataframe based on selected metrics
 	df = df[df['Metric'].str.contains(selected_metric_type)]
+
+df = df.replace("", np.nan).dropna()
+
+selected_sector_type = st.sidebar.selectbox("Select Sector Types to Display", sector_types)
+
+# # Check if any metric types are selected
+# if selected_sector_type:
+# 	# Further filter dataframe based on selected metrics
+# 	df = df[df['Metric'].str.contains(selected_sector_type)]
+
+# st.write(df)
 
 
 selected_main_cat = st.sidebar.multiselect("Select Main Categories to Display", df['MainCat'].unique(), default=list(df['MainCat'].unique()))
