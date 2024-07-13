@@ -80,7 +80,7 @@ if selected_sector_type != "All":
 selected_description = st.sidebar.multiselect("Select Description to Display", df['Description'].unique())
 
 # Filter dataframe based on selected main description
-if selected_main_cat:
+if selected_description:
     df = df[df['Description'].isin(selected_description)]
 
 
