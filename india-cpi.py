@@ -74,29 +74,15 @@ if selected_metric_type:
 
 df = df.replace("", np.nan).dropna()
 
-# selected_sector_type = st.sidebar.multiselect("Select Sector Types to Display", sector_types)
 
-# Check if any metric types are selected
-# if selected_sector_type:
-# 	# Further filter dataframe based on selected metrics
-# 	df = df[df['Description'].str.contains(selected_sector_type)]
+selected_main_cat = st.sidebar.multiselect("Select Description to Display", df['Description'].unique(), default=list(df['Description'].unique()))
+
+# Check if any main categories are selected
+if selected_main_cat:
+	# Further filter dataframe based on selected metrics
+	df = df[df['Description'].isin(selected_main_cat)]
 
 st.write(df)
-
-
-# selected_main_cat = st.sidebar.multiselect("Select Main Categories to Display", df['MainCat'].unique(), default=list(df['MainCat'].unique()))
-
-# # Check if any main categories are selected
-# if selected_main_cat:
-# 	# Further filter dataframe based on selected metrics
-# 	df = df[df['MainCat'].isin(selected_main_cat)]
-
-# selected_sub_cat = st.sidebar.multiselect("Select Sub Categories to Display", df['SubCat'].unique(), default=list(df['SubCat'].unique()))
-
-# # Check if any sub categories are selected
-# if selected_sub_cat:
-# 	# Further filter dataframe based on selected metrics
-# 	df = df[df['SubCat'].isin(selected_sub_cat)]
 
 
 # # Calculate min and max values for the dotted lines
