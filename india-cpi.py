@@ -109,8 +109,8 @@ range_max = max_value + abs(max_value) * 0.15
 st.write(df)
 
 # Plotly animation setup
-fig = px.scatter(df, x="Value", y="Metric", animation_frame="Date_str", animation_group="Metric",
-				 color="Metric", range_x=[range_min, range_max],
+fig = px.scatter(df, x="Value", y="MainCat", animation_frame="Date_str", animation_group="MainCat",
+				 color="MainCat", range_x=[range_min, range_max],
 				 title="", size_max=24, text="Text")
 
 # Customize text position to the right of the dots
