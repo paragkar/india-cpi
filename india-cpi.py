@@ -65,7 +65,7 @@ selected_main_cat = st.sidebar.selectbox("Select MainCat", df['MainCat'].unique(
 selected_sub_cat = st.sidebar.selectbox("Select SubCat", df['SubCat'].unique())
 
 # Define the order for main category
-center_order = ['General Index', 'Food and beverages', 
+main_cat_order = ['General Index', 'Food and beverages', 
 'Pan, tobacco and intoxicants','Clothing and footwear', 'Housing', 'Fuel and light', 'Miscellaneous',]
  
 
@@ -85,11 +85,12 @@ center_order = ['General Index', 'Food and beverages',
 
 filtered_main_cat_df = df[df['MainCat'] == selected_main_cat]
 
-st.write(filtered_main_cat_df)
 
-# # Set the metric order for the y-axis
-# filtered_df['Metric'] = pd.Categorical(filtered_df['Metric'], categories=metric_order, ordered=True)
-# filtered_df = filtered_df.sort_values('Metric')
+# # Set the main cat order for the y-axis
+filtered_main_cat_df['Metric'] = pd.Categorical(filtered_main_cat_df['MainCat'], categories=main_cat_order, ordered=True)
+filtered_main_cat_df = filtered_main_cat_df.sort_values('MainCat')
+
+st.write(filtered_main_cat_df)
 
 # selected_metrics = st.sidebar.multiselect("Select Metrics to Display", filtered_df['Metric'].unique(), default=list(filtered_df['Metric'].unique()))
 
