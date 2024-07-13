@@ -75,7 +75,7 @@ if selected_metric_type:
 df = df.replace("", np.nan).dropna()
 
 
-selected_main_cat = st.sidebar.multiselect("Select Description to Display", df['Description'].unique(), default=list(df['Description'].unique()))
+selected_main_cat = st.sidebar.multiselect("Select Description to Display", df['Description'].unique())
 
 # Check if any main categories are selected
 if selected_main_cat:
