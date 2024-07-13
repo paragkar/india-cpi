@@ -72,6 +72,8 @@ if selected_sector_type:
 
 selected_metric_type = st.sidebar.selectbox("Select Metric Type", metric_types)
 
+df = df.replace("", np.nan).dropna()
+
 st.write(df)
 
 # Check if any metric types are selected
@@ -79,7 +81,6 @@ if selected_metric_type:
 	# Further filter dataframe based on selected metrics
 	df = df[df['Metric'].str.contains(selected_metric_type)]
 
-df = df.replace("", np.nan).dropna()
 
 # # Update title based on selection
 # if selected_type == "Center":
