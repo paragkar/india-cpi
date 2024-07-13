@@ -72,27 +72,14 @@ if selected_sector_type:
 
 selected_metric_type = st.sidebar.selectbox("Select Metric Type", metric_types)
 
+st.write(df)
+
 # Check if any metric types are selected
 if selected_metric_type:
 	# Further filter dataframe based on selected metrics
 	df = df[df['Metric'].str.contains(selected_metric_type)]
 
 df = df.replace("", np.nan).dropna()
-
-# Sidebar for main category selection
-# selected_main_cat = st.sidebar.selectbox("Select MainCat", df['MainCat'].unique())
-
-# Sidebar for sub category selection
-# selected_sub_cat = st.sidebar.selectbox("Select SubCat", df['SubCat'].unique())
-
-# Define the order for main category
-main_cat_order = ['General Index', 'Food and beverages', 
-'Pan, tobacco and intoxicants','Clothing and footwear', 'Housing', 'Fuel and light', 'Miscellaneous']
- 
-
-# state_order = ["Revenue Deficit","Gross Fiscal Deficit", "Primary Deficit",
-# 			   "Primary Revenue Deficit", "Conventional Deficit", "Aggregrate Disburse", "Revenue Receipt",
-# 			   "Tax Receipts", "Non Tax Receipts", "Aggregrate Receipts"]
 
 # # Update title based on selection
 # if selected_type == "Center":
