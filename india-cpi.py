@@ -72,14 +72,12 @@ if selected_metric_type:
 
 df = df.replace("", np.nan).dropna()
 
-# selected_sector_type = st.sidebar.selectbox("Select Sector Types to Display", sector_types)
+selected_sector_type = st.sidebar.selectbox("Select Sector Types to Display", sector_types)
 
-# # Check if any metric types are selected
-# if selected_sector_type:
-# 	# Further filter dataframe based on selected metrics
-# 	df = df[df['Metric'].str.contains(selected_sector_type)]
-
-# st.write(df)
+# Check if any metric types are selected
+if selected_sector_type:
+	# Further filter dataframe based on selected metrics
+	df = df[df['Metric'].str.contains(selected_sector_type)]
 
 
 selected_main_cat = st.sidebar.multiselect("Select Main Categories to Display", df['MainCat'].unique(), default=list(df['MainCat'].unique()))
@@ -96,24 +94,22 @@ if selected_sub_cat:
 	# Further filter dataframe based on selected metrics
 	df = df[df['SubCat'].isin(selected_sub_cat)]
 
-st.write(df)
 
+# Calculate min and max values for the dotted lines
+min_value = df['Value'].min()
+max_value = df['Value'].max()
 
-# 	# Calculate min and max values for the dotted lines
-# 	min_value = filtered_df['Value'].min()
-# 	max_value = filtered_df['Value'].max()
+# Ensure Date_str is ordered correctly
+df['Date_str'] = pd.Categorical(df['Date_str'], ordered=True, categories=sorted(df['Date_str'].unique(), key=lambda x: datetime.strptime(x, '31st Mar %Y')))
 
-# 	# Ensure Date_str is ordered correctly
-# 	filtered_df['Date_str'] = pd.Categorical(filtered_df['Date_str'], ordered=True, categories=sorted(filtered_df['Date_str'].unique(), key=lambda x: datetime.strptime(x, '31st Mar %Y')))
+# Calculate the range for the x-axis
+range_min = min_value - abs(min_value) * 0.30
+range_max = max_value + abs(max_value) * 0.15
 
-# 	# Calculate the range for the x-axis
-# 	range_min = min_value - abs(min_value) * 0.30
-# 	range_max = max_value + abs(max_value) * 0.15
-
-# 	# Plotly animation setup
-# 	fig = px.scatter(filtered_df, x="Value", y="Metric", animation_frame="Date_str", animation_group="Metric",
-# 					 color="Metric", range_x=[range_min, range_max],
-# 					 title="", size_max=24, text="Text")
+# Plotly animation setup
+fig = px.scatter(filtered_df, x="Value", y="Metric", animation_frame="Date_str", animation_group="Metric",
+				 color="Metric", range_x=[range_min, range_max],
+				 title="", size_max=24, text="Text")
 
 # 	# Customize text position to the right of the dots
 # 	fig.update_traces(textposition='middle right', textfont=dict(size=16))
