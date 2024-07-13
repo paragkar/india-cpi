@@ -63,7 +63,7 @@ df['Value'] = df['Value'].astype(float).round(2)
 df['Text'] = df.apply(lambda row: f"<b>{row['Value']:.2f} ({row['Date_str'][-4:]})</b>", axis=1)
 
 
-selected_sector_type = st.sidebar.multiselect("Select Main Categories to Display", sector_type, default=sector_type)
+selected_sector_type = st.sidebar.multiselect("Select Sector Types to Display", sector_type)
 
 # Check if any metric types are selected
 if selected_sector_type:
