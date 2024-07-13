@@ -59,6 +59,14 @@ df['Value'] = df['Value'].astype(float).round(2)
 # # Create a column to hold the value information along with the year
 df['Text'] = df.apply(lambda row: f"<b>{row['Value']:.2f} ({row['Date_str'][-4:]})</b>", axis=1)
 
+selected_metric_type = st.sidebar.selectbox("Select Metric Type", metric_type)
+
+# Check if any metric types are selected
+if selected_metric_type:
+	# Further filter dataframe based on selected metrics
+	df = df[df['Metric'].str.contains(selected_metric_type)]
+
+
 
 # Sidebar for main category selection
 # selected_main_cat = st.sidebar.selectbox("Select MainCat", df['MainCat'].unique())
@@ -68,7 +76,7 @@ df['Text'] = df.apply(lambda row: f"<b>{row['Value']:.2f} ({row['Date_str'][-4:]
 
 # Define the order for main category
 main_cat_order = ['General Index', 'Food and beverages', 
-'Pan, tobacco and intoxicants','Clothing and footwear', 'Housing', 'Fuel and light', 'Miscellaneous',]
+'Pan, tobacco and intoxicants','Clothing and footwear', 'Housing', 'Fuel and light', 'Miscellaneous']
  
 
 # state_order = ["Revenue Deficit","Gross Fiscal Deficit", "Primary Deficit",
@@ -89,8 +97,8 @@ main_cat_order = ['General Index', 'Food and beverages',
 
 
 # # Set the main cat order for the y-axis
-df['MainCat'] = pd.Categorical(df['MainCat'], categories=main_cat_order, ordered=True)
-df = df.sort_values('MainCat')
+# df['MainCat'] = pd.Categorical(df['MainCat'], categories=main_cat_order, ordered=True)
+# df = df.sort_values('MainCat')
 
 selected_main_cat = st.sidebar.multiselect("Select Main Categories to Display", df['MainCat'].unique(), default=list(df['MainCat'].unique()))
 
@@ -107,14 +115,6 @@ if selected_sub_cat:
 	# Further filter dataframe based on selected metrics
 	filtered_df = filtered_df[filtered_df['SubCat'].isin(selected_sub_cat)]
 
-
-selected_metric_type = st.sidebar.selectbox("Select Metric Type", metric_type)
-
-
-# Check if any metric types are selected
-if selected_metric_type:
-	# Further filter dataframe based on selected metrics
-	filtered_df = filtered_df[filtered_df['Metric'].str.contains(selected_metric_type)]
 
 
 st.write(filtered_df)
