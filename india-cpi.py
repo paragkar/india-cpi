@@ -79,7 +79,7 @@ st.write(selected_sector_type)
 if selected_sector_type != "All":
     df = df[df[selected_sector_type].notna()]
 else:
-	df = df[df['Description'].contains(selected_sector_type)]
+	df = df[df['Description'].apply(lambda x : selected_sector_type in x)]
 
 
 selected_description = st.sidebar.multiselect("Select Description to Display", df['Description'].unique())
