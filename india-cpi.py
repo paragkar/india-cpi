@@ -72,7 +72,7 @@ if selected_metric_type:
 
 df = df.replace("", np.nan).dropna()
 
-selected_sector_type = st.sidebar.selectbox("Select Sector Types to Display", sector_types)
+# selected_sector_type = st.sidebar.selectbox("Select Sector Types to Display", sector_types)
 
 # # Check if any metric types are selected
 # if selected_sector_type:
