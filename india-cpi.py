@@ -62,32 +62,26 @@ df['Value'] = df['Value'].astype(float).round(2)
 df['Text'] = df.apply(lambda row: f"<b>{row['Value']:.2f} ({row['Date_str'][-4:]})</b>", axis=1)
 
 metric_types = ["Index", "Inflation"]
-
 sector_types = ["All", "Rural", "Urban", "Combined"]
 
 selected_metric_type = st.sidebar.selectbox("Select Metric Type", metric_types)
 
-# Check if any metric types are selected
-if selected_metric_type:
-	# Further filter dataframe based on selected metrics
-	df = df[df['ValueType'].str.contains(selected_metric_type)]
+# Filter dataframe based on selected metric type
+df = df[df['ValueType'] == selected_metric_type]
 
 df = df.replace("", np.nan).dropna()
 
-# selected_sector_type = st.sidebar.selectbox("Select Metric Type", sector_types)
+selected_sector_type = st.sidebar.selectbox("Select Sector Type", sector_types)
 
-# if selected_metric_type != "All":
-# 	df = df[df['Description'].str.contains(selected_sector_type)]
-# else:
-# 	df= df.copy()
+# Filter dataframe based on selected sector type
+if selected_sector_type != "All":
+    df = df[df[selected_sector_type].notna()]
 
+selected_description = st.sidebar.multiselect("Select Description to Display", df['Description'].unique())
 
-selected_main_cat = st.sidebar.multiselect("Select Description to Display", df['Description'].unique())
-
-# Check if any main categories are selected
+# Filter dataframe based on selected main description
 if selected_main_cat:
-	# Further filter dataframe based on selected metrics
-	df = df[df['Description'].isin(selected_main_cat)]
+    df = df[df['Description'].isin(selected_description)]
 
 
 # Calculate min and max values for the dotted lines
