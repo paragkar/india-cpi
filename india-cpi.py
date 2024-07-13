@@ -79,7 +79,7 @@ if selected_sector_type != "All":
     df = df[df['Description'].apply(lambda x: selected_sector_type in x)]
 
 
-selected_description = st.sidebar.multiselect("Select Description to Display", df['Description'].unique(),default=list(filtered_df['Description'].unique()))
+selected_description = st.sidebar.multiselect("Select Description to Display", df['Description'].unique(),default=list(df['Description'].unique()))
 
 # Filter dataframe based on selected main description
 if selected_description:
