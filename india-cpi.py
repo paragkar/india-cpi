@@ -59,8 +59,11 @@ df['Text'] = df.apply(lambda row: f"<b>{row['Value']:.2f} ({row['Date_str'][-4:]
 
 st.write(df)
 
-# Sidebar for type and metric selection
+# Sidebar for main category selection
 selected_type = st.sidebar.selectbox("Select MainCat", df['MainCat'].unique())
+
+# Sidebar for sub category selection
+selected_type = st.sidebar.selectbox("Select SubCat", df['SubCat'].unique())
 
 # # Define the order for each type
 # center_order = ["Gross Fiscal Deficit", "Net Fiscal Deficit", "Gross Primary Deficit", "Net Primary Deficit",
