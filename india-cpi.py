@@ -100,7 +100,7 @@ min_value = df['Value'].min()
 max_value = df['Value'].max()
 
 # Ensure Date_str is ordered correctly
-df['Date_str'] = pd.Categorical(df['Date_str'], ordered=True, categories=sorted(df['Date_str'].unique(), key=lambda x: datetime.strptime(x, '31st Mar %Y')))
+df['Date_str'] = pd.Categorical(df['Date_str'], ordered=True, categories=sorted(df['Date_str'].unique(), key=lambda x: datetime.strptime(x, '%d-%m-%Y')))
 
 # Calculate the range for the x-axis
 range_min = min_value - abs(min_value) * 0.30
