@@ -73,13 +73,10 @@ df = df.replace("", np.nan).dropna()
 
 selected_sector_type = st.sidebar.selectbox("Select Sector Type", sector_types)
 
-st.write(selected_sector_type)
 
 # Filter dataframe based on selected sector type
-if selected_sector_type == "All":
-    df = df[df[selected_sector_type].notna()]
-else:
-	df = df[df['Description'].apply(lambda x : selected_sector_type in x)]
+if selected_sector_type != "All":
+    df = df[df['Description'].apply(lambda x: selected_sector_type in x)]
 
 
 selected_description = st.sidebar.multiselect("Select Description to Display", df['Description'].unique())
