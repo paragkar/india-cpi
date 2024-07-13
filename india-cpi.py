@@ -87,7 +87,7 @@ main_cat_order = ['General Index', 'Food and beverages',
 
 
 # # Set the main cat order for the y-axis
-main_cat_df['Metric'] = pd.Categorical(main_cat_df['MainCat'], categories=main_cat_order, ordered=True)
+main_cat_df['MainCat'] = pd.Categorical(main_cat_df['MainCat'], categories=main_cat_order, ordered=True)
 main_cat_df = main_cat_df.sort_values('MainCat')
 
 st.write(main_cat_df)
