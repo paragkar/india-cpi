@@ -198,7 +198,7 @@ def update_annotations(date_str):
 	)]
 
 # Customize y-axis labels font size
-fig.update_yaxes(tickfont=dict(size=20))
+fig.update_yaxes(tickfont=dict(size=15))
 
 # Update annotation with each frame
 for frame in fig.frames:
