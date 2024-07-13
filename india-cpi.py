@@ -51,7 +51,7 @@ df['Date'] = pd.to_datetime(df['Date'])
 df = df.sort_values(by='Date')
 
 # Convert Date column to string without time
-df['Date_str'] = df['Date'].dt.strftime('31st Mar %Y')
+df['Date_str'] = df['Date'].dt.strftime('%d-%m-%Y')
 
 # Format the Value column to two decimal places and keep it as a float
 df['Value'] = df['Value'].astype(float).round(2)
