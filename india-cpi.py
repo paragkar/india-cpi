@@ -94,6 +94,10 @@ selected_main_cat = st.sidebar.multiselect("Select Main Categories to Display", 
 
 st.write(selected_main_cat)
 
+selected_sub_cat = st.sidebar.multiselect("Select Sub Categories to Display", df['SubCat'].unique(), default=list(df['SubCat'].unique()))
+
+st.write(selected_sub_cat)
+
 # # Check if any metrics are selected
 # if selected_metrics:
 # 	# Further filter dataframe based on selected metrics
