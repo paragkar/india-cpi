@@ -7,9 +7,9 @@ import io
 import msoffcrypto
 import numpy as np
 
-metric_type = ["Index", "Inflation", "WA"]
+metric_types = ["Index", "Inflation", "WA"]
 
-sector_type = ["Rural", "Urban", "Combined"]
+sector_types = ["Rural", "Urban", "Combined"]
 
 pd.set_option('display.max_columns', None)
 
@@ -63,14 +63,14 @@ df['Value'] = df['Value'].astype(float).round(2)
 df['Text'] = df.apply(lambda row: f"<b>{row['Value']:.2f} ({row['Date_str'][-4:]})</b>", axis=1)
 
 
-selected_sector_type = st.sidebar.selectbox("Select Sector Types to Display")
+selected_sector_type = st.sidebar.selectbox("Select Sector Types to Display", sector_types)
 
 # Check if any metric types are selected
 if selected_sector_type:
 	# Further filter dataframe based on selected metrics
 	df = df[df['Metric'].str.contains(selected_sector_type)]
 
-selected_metric_type = st.sidebar.selectbox("Select Metric Type", metric_type)
+selected_metric_type = st.sidebar.selectbox("Select Metric Type", metric_types)
 
 # Check if any metric types are selected
 if selected_metric_type:
