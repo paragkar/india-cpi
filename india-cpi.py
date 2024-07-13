@@ -79,7 +79,7 @@ selected_sector_type = st.sidebar.selectbox("Select Metric Type", sector_types)
 if selected_metric_type != "All":
 	df = df[df['Description'].str.contains(selected_sector_type)]
 else:
-	pass
+	df= df.copy()
 
 
 selected_main_cat = st.sidebar.multiselect("Select Description to Display", df['Description'].unique())
