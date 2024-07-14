@@ -180,9 +180,6 @@ df['Value'] = df['Value'].astype(float).round(2)
 # Create a column to hold the value information along with the year
 df['Text'] = df.apply(lambda row: f"<b>{row['Value']:.2f} ({row['Date_str'][-4:]})</b>", axis=1)
 
-# Calculate the weighted average
-df['Weighted Average'] = df['Value'] * df['Weight']
-
 metric_types = ["Index", "Inflation"]
 sector_types = ["All", "Rural", "Urban", "Combined"]
 
@@ -240,7 +237,7 @@ else:
         fig.update_traces(textposition='middle right', textfont=dict(size=16))
 
         # Add black outlines to the dots
-        fig.update_traces(marker=dict(line=dict(width=2, color='black')))
+        fig.update_traces(marker=dict(line=dict(width=1, color='black')))
 
         # Customize y-axis labels font size and make them bold
         fig.update_yaxes(tickfont=dict(size=15, color='black', family='Arial', weight='bold'))
@@ -273,7 +270,7 @@ else:
             xaxis_title="Value of "+selected_metric_type,
             yaxis_title="",
             width=1200,
-            height=950,  # Adjust the height to make the plot more visible
+            height=1000,  # Adjust the height to make the plot more visible
             margin=dict(l=0, r=10, t=120, b=40, pad=0),  # Add margins to make the plot more readable and closer to the left
             sliders=[{
                 'steps': [
@@ -365,13 +362,4 @@ else:
 
         # Use Streamlit's container to fit the chart properly
         with st.container():
-            col1, col2 = st.columns([3, 1])
-            with col1:
-                st.plotly_chart(fig, use_container_width=True)
-
-            with col2:
-                st.write("Weighted Average Over Time")
-                for date in sorted(df_filtered['Date'].unique()):
-                    date_filtered_df = df_filtered[df_filtered['Date'] == date]
-                    weighted_avg = date_filtered_df['Weighted Average'].sum()
-                    st.write(f"{date.strftime('%d-%m-%Y')}: {weighted_avg:.2f}")
+            st.plotly_chart(fig, use_container_width=True)
