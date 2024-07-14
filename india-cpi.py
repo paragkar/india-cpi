@@ -2,7 +2,6 @@ import pandas as pd
 from datetime import datetime
 import plotly.express as px
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 import streamlit as st
 import io
 import msoffcrypto
@@ -178,7 +177,7 @@ df["Value"] = df["Value"].replace("-", np.nan, regex=True)
 # Format the Value column to two decimal places and keep it as a float
 df['Value'] = df['Value'].astype(float).round(2)
 
-# Create a column to hold the value information along with the year and weight
+# Create a column to hold the value information along with the year
 df['Text'] = df.apply(lambda row: f"<b>{row['Value']:.2f} ({row['Date_str'][-4:]})</b>", axis=1)
 
 metric_types = ["Index", "Inflation"]
@@ -211,9 +210,6 @@ if description_order:
     df_filtered['Description'] = pd.Categorical(df_filtered['Description'], categories=description_order, ordered=True)
     df_filtered = df_filtered.sort_values('Description')  # Sort the dataframe by Description to ensure the order is maintained
 
-# Calculate Weighted Average
-df_filtered['Weighted Average'] = df_filtered['Value'] * df_filtered['Weight'] / 100
-
 # Check if there is any data left after filtering
 if selected_sector_type == "All" and not selected_description:
     st.write("Please select at least one description to display the data.")
@@ -241,7 +237,7 @@ else:
         fig.update_traces(textposition='middle right', textfont=dict(size=16))
 
         # Add black outlines to the dots
-        fig.update_traces(marker=dict(line=dict(width=2, color='black')))
+        fig.update_traces(marker=dict(line=dict(width=1, color='black')))
 
         # Customize y-axis labels font size and make them bold
         fig.update_yaxes(tickfont=dict(size=15, color='black', family='Arial', weight='bold'))
@@ -271,11 +267,32 @@ else:
 
         # Adjust the layout
         fig.update_layout(
-            xaxis_title="Value of " + selected_metric_type,
+            xaxis_title="Value of "+selected_metric_type,
             yaxis_title="",
-            width=900,
-            height=950,  # Adjust the height to make the plot more visible
+            width=1200,
+            height=1000,  # Adjust the height to make the plot more visible
             margin=dict(l=0, r=10, t=120, b=40, pad=0),  # Add margins to make the plot more readable and closer to the left
+            sliders=[{
+                'steps': [
+                    {
+                        'args': [
+                            [date_str],
+                            {
+                                'frame': {'duration': 300, 'redraw': True},
+                                'mode': 'immediate',
+                                'transition': {'duration': 300}
+                            }
+                        ],
+                        'label': date_str,
+                        'method': 'animate'
+                    }
+                    for date_str in sorted(df_filtered['Date_str'].unique(), key=lambda x: datetime.strptime(x, '%d-%m-%Y'))
+                ],
+                'x': 0.1,
+                'xanchor': 'left',
+                'y': 0,
+                'yanchor': 'top'
+            }]
         )
 
         # Add initial annotation for the date
@@ -283,7 +300,7 @@ else:
             'x': 0,
             'y': 1.15,  # Move the date annotation closer to the top of the chart
             'xref': 'paper',
-            'yref': 'paper',
+            'yref':'paper',
             'text': f'<span style="color:red;font-size:30px"><b>Date: {df_filtered["Date_str"].iloc[0]}</b></span>',
             'showarrow': False,
             'font': {
@@ -315,70 +332,8 @@ else:
         # Ensure the frames are sorted correctly
         fig.frames = sorted(fig.frames, key=lambda frame: datetime.strptime(frame.name, '%d-%m-%Y'))
 
-        # Plot horizontal bar chart for weighted averages
-        weighted_avg_fig = px.bar(
-            df_filtered,
-            x="Weighted Average",
-            y="Description",
-            animation_frame="Date_str",
-            orientation="h",
-            text="Weighted Average",
-            range_x=[0, df_filtered["Weighted Average"].max() * 1.1],
-            title="Weighted Average Over Time"
-        )
-
-        # Combine the scatter plot and bar chart into a subplot
-        combined_fig = make_subplots(rows=1, cols=2, shared_yaxes=True, column_widths=[0.6, 0.4])
-
-        for frame in fig.frames:
-            combined_fig.add_trace(frame.data[0], row=1, col=1)
-        
-        for frame in weighted_avg_fig.frames:
-            combined_fig.add_trace(frame.data[0], row=1, col=2)
-        
-        # Update frames for combined animation
-        combined_fig.frames = []
-        for scatter_frame, bar_frame in zip(fig.frames, weighted_avg_fig.frames):
-            combined_fig.frames.append(go.Frame(
-                data=scatter_frame.data + bar_frame.data,
-                name=scatter_frame.name
-            ))
-
-        combined_fig.update_layout(
-            title="Index and Weighted Average Over Time",
-            showlegend=False,
-            xaxis_title="Value of " + selected_metric_type,
-            yaxis_title="",
-            xaxis2_title="Weighted Average",
-            yaxis=dict(showticklabels=False),  # Remove y-axis labels from the second plot
-            yaxis2=dict(showticklabels=False),
-            height=950,  # Adjust height
-            width=1400,  # Adjust width to fit both plots
-            margin=dict(l=0, r=10, t=120, b=40, pad=0),
-            sliders=[{
-                'steps': [
-                    {
-                        'args': [
-                            [date_str],
-                            {
-                                'frame': {'duration': 300, 'redraw': True},
-                                'mode': 'immediate',
-                                'transition': {'duration': 300}
-                            }
-                        ],
-                        'label': date_str,
-                        'method': 'animate'
-                    }
-                    for date_str in sorted(df_filtered['Date_str'].unique(), key=lambda x: datetime.strptime(x, '%d-%m-%Y'))
-                ],
-                'x': 0.1,
-                'xanchor': 'left',
-                'y': 0,
-                'yanchor': 'top'
-            }]
-        )
-
-        combined_fig.update_layout(
+        # Custom callback to update the date annotation dynamically
+        fig.update_layout(
             updatemenus=[{
                 'type': 'buttons',
                 'showactive': False,
@@ -407,4 +362,4 @@ else:
 
         # Use Streamlit's container to fit the chart properly
         with st.container():
-            st.plotly_chart(combined_fig, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True)
