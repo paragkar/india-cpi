@@ -2,6 +2,7 @@ import pandas as pd
 from datetime import datetime
 import plotly.express as px
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 import streamlit as st
 import io
 import msoffcrypto
@@ -180,6 +181,10 @@ df['Value'] = df['Value'].astype(float).round(2)
 # Create a column to hold the value information along with the year
 df['Text'] = df.apply(lambda row: f"<b>{row['Value']:.2f} ({row['Date_str'][-4:]})</b>", axis=1)
 
+# Calculate weighted average
+df['Weighted Average'] = df['Value'] * df['Weight'] / 100  # Assuming 'Value' is the index and 'Weight' is in percentage
+df['Weighted Average'] = df['Weighted Average'].round(2)
+
 metric_types = ["Index", "Inflation"]
 sector_types = ["All", "Rural", "Urban", "Combined"]
 
@@ -209,10 +214,6 @@ description_order = get_description_order(selected_sector_type, df_filtered)
 if description_order:
     df_filtered['Description'] = pd.Categorical(df_filtered['Description'], categories=description_order, ordered=True)
     df_filtered = df_filtered.sort_values('Description')  # Sort the dataframe by Description to ensure the order is maintained
-
-# Ensure the frames are sorted correctly
-df_filtered['Weighted Average'] = df_filtered['Weighted Average'] / 100  # Scale down by 100
-df_filtered['Weighted Average'] = df_filtered['Weighted Average'].round(2)  # Round to 2 decimal places
 
 # Check if there is any data left after filtering
 if selected_sector_type == "All" and not selected_description:
