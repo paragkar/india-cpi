@@ -2,6 +2,7 @@ import pandas as pd
 from datetime import datetime
 import plotly.express as px
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 import streamlit as st
 import io
 import msoffcrypto
@@ -180,6 +181,9 @@ df['Value'] = df['Value'].astype(float).round(2)
 # Create a column to hold the value information along with the year
 df['Text'] = df.apply(lambda row: f"<b>{row['Value']:.2f} ({row['Date_str'][-4:]})</b>", axis=1)
 
+# Add a column for the weighted average
+df['Weighted Average'] = df['Value'] * df['Weight'] / 100
+
 metric_types = ["Index", "Inflation"]
 sector_types = ["All", "Rural", "Urban", "Combined"]
 
@@ -237,7 +241,7 @@ else:
         fig.update_traces(textposition='middle right', textfont=dict(size=16))
 
         # Add black outlines to the dots
-        fig.update_traces(marker=dict(line=dict(width=1, color='black')))
+        fig.update_traces(marker=dict(line=dict(width=2, color='black')))
 
         # Customize y-axis labels font size and make them bold
         fig.update_yaxes(tickfont=dict(size=15, color='black', family='Arial', weight='bold'))
@@ -270,7 +274,7 @@ else:
             xaxis_title="Value of "+selected_metric_type,
             yaxis_title="",
             width=1200,
-            height=1000,  # Adjust the height to make the plot more visible
+            height=950,  # Adjust the height to make the plot more visible
             margin=dict(l=0, r=10, t=120, b=40, pad=0),  # Add margins to make the plot more readable and closer to the left
             sliders=[{
                 'steps': [
@@ -363,3 +367,56 @@ else:
         # Use Streamlit's container to fit the chart properly
         with st.container():
             st.plotly_chart(fig, use_container_width=True)
+
+        # Plot horizontal bar chart for weighted averages
+        weighted_avg_fig = px.bar(
+            df_filtered,
+            x="Weighted Average",
+            y="Description",
+            animation_frame="Date_str",
+            orientation='h',
+            range_x=[0, df_filtered['Weighted Average'].max()],
+            title="Weighted Average Over Time",
+            text='Weighted Average'
+        )
+
+        # Customize bar chart
+        weighted_avg_fig.update_traces(texttemplate='%{text:.2f}', textposition='inside', textfont_size=12)
+        weighted_avg_fig.update_layout(
+            showlegend=False,
+            yaxis={'title': '', 'categoryorder':'total ascending'},
+            xaxis_title="Weighted Average"
+        )
+
+        # Ensure the frames are sorted correctly
+        weighted_avg_fig.frames = sorted(weighted_avg_fig.frames, key=lambda frame: datetime.strptime(frame.name, '%d-%m-%Y'))
+
+        # Combine both figures
+        combined_fig = make_subplots(
+            rows=1, cols=2,
+            column_widths=[0.6, 0.4],
+            specs=[[{"type": "scatter"}, {"type": "bar"}]],
+            horizontal_spacing=0.05
+        )
+
+        for scatter_trace in fig.data:
+            combined_fig.add_trace(scatter_trace, row=1, col=1)
+        for bar_trace in weighted_avg_fig.data:
+            combined_fig.add_trace(bar_trace, row=1, col=2)
+
+        combined_fig.update_layout(
+            sliders=fig.layout.sliders,
+            updatemenus=fig.layout.updatemenus,
+            height=950,
+            margin=dict(l=0, r=0, t=120, b=40, pad=0)
+        )
+
+        for scatter_frame, bar_frame in zip(fig.frames, weighted_avg_fig.frames):
+            combined_fig.frames.append(go.Frame(
+                data=scatter_frame.data + bar_frame.data,
+                name=scatter_frame.name
+            ))
+
+        # Use Streamlit's container to fit the combined chart properly
+        with st.container():
+            st.plotly_chart(combined_fig, use_container_width=True)
