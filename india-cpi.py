@@ -154,9 +154,9 @@ def get_description_order(sector_type, df):
         matches = df[df['Description'].str.contains(re.escape(item.split(' - ')[0]))]
         if not matches.empty:
             weight = matches['Weight'].values[0]
-            new_order_list.append(f"{re.escape(item)} ({weight:.2f})")
+            new_order_list.append(f"{item} ({weight:.2f})")
         else:
-            new_order_list.append(f"{re.escape(item)} (NaN)")
+            new_order_list.append(f"{item} (NaN)")
     
     return new_order_list
 
@@ -300,7 +300,7 @@ else:
 			'x': 0,
 			'y': 1.15,  # Move the date annotation closer to the top of the chart
 			'xref': 'paper',
-			'yref': 'paper',
+			'yref='paper',
 			'text': f'<span style="color:red;font-size:30px"><b>Date: {df_filtered["Date_str"].iloc[0]}</b></span>',
 			'showarrow': False,
 			'font': {
