@@ -237,7 +237,7 @@ else:
         fig.update_traces(textposition='middle right', textfont=dict(size=16))
 
         # Add black outlines to the dots
-        fig.update_traces(marker=dict(line=dict(width=2, color='black')))
+        fig.update_traces(marker=dict(line=dict(width=1, color='black')))
 
         # Customize y-axis labels font size and make them bold
         fig.update_yaxes(tickfont=dict(size=15, color='black', family='Arial', weight='bold'))
