@@ -151,8 +151,7 @@ def get_description_order(sector_type, df):
     order_list = order_dict.get(sector_type, [])
     new_order_list = []
     for item in order_list:
-        item_escaped = re.escape(item.split(' - ')[0])  # Escape special characters
-        matches = df[df['Description'].str.contains(item_escaped)]
+        matches = df[df['Description'].str.contains(re.escape(item.split(' - ')[0]))]
         if not matches.empty:
             weight = matches['Weight'].values[0]
             new_order_list.append(f"{item} ({weight:.2f})")
@@ -364,43 +363,3 @@ else:
         # Use Streamlit's container to fit the chart properly
         with st.container():
             st.plotly_chart(fig, use_container_width=True)
-
-        # Add a vertical dotted line that follows the hover
-        hover_template = '<b>%{text}</b><extra></extra>'
-        fig.update_traces(hovertemplate=hover_template)
-        fig.update_layout(hovermode='closest')
-
-        fig.add_trace(go.Scatter(
-            x=[None], y=[None],
-            mode='lines',
-            line=dict(color='green', width=2, dash='dot'),
-            showlegend=False,
-            hoverinfo='none',
-            name='Vertical Line'
-        ))
-
-        # JavaScript to add vertical line on hover
-        js_code = '''
-        var myPlot = document.getElementById('graph');
-        myPlot.on('plotly_hover', function(data){
-            var xCoordinate = data.points[0].x;
-            Plotly.relayout(myPlot, 'shapes[0].x0', xCoordinate);
-            Plotly.relayout(myPlot, 'shapes[0].x1', xCoordinate);
-        })
-        myPlot.on('plotly_unhover', function(data){
-            Plotly.relayout(myPlot, 'shapes[0].x0', null);
-            Plotly.relayout(myPlot, 'shapes[0].x1', null);
-        })
-        '''
-        fig.update_layout(annotations=[
-            go.layout.Annotation(
-                x=0.5,
-                y=-0.15,
-                showarrow=False,
-                text='Hover over a dot to see the reference line',
-                xref='paper',
-                yref='paper',
-                font=dict(size=12)
-            )
-        ])
-        fig.show(config={'editable': True})
