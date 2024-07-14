@@ -288,8 +288,8 @@ else:
 		initial_date_annotation = {
 			'x': 0,
 			'y': 1.15,  # Move the date annotation closer to the top of the chart
-			'xref='paper',
-			'yref='paper',
+			'xref': 'paper',
+			'yref': 'paper',
 			'text': f'<span style="color:red;font-size:30px"><b>Date: {df_filtered["Date_str"].iloc[0]}</b></span>',
 			'showarrow': False,
 			'font': {
