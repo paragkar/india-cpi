@@ -151,7 +151,8 @@ def get_description_order(sector_type, df):
     order_list = order_dict.get(sector_type, [])
     new_order_list = []
     for item in order_list:
-        matches = df[df['Description'].str.contains(re.escape(item.split(' - ')[0]))]
+        item_escaped = re.escape(item.split(' - ')[0])  # Escape special characters
+        matches = df[df['Description'].str.contains(item_escaped)]
         if not matches.empty:
             weight = matches['Weight'].values[0]
             new_order_list.append(f"{item} ({weight:.2f})")
@@ -265,42 +266,17 @@ else:
             line=dict(color="red", width=2, dash="dot")
         )
 
-        # Adjust the layout
-        fig.update_layout(
-            xaxis_title="Value of "+selected_metric_type,
-            yaxis_title="",
-            width=1200,
-            height=950,  # Adjust the height to make the plot more visible
-            margin=dict(l=0, r=10, t=120, b=40, pad=0),  # Add margins to make the plot more readable and closer to the left
-            sliders=[{
-                'steps': [
-                    {
-                        'args': [
-                            [date_str],
-                            {
-                                'frame': {'duration': 300, 'redraw': True},
-                                'mode': 'immediate',
-                                'transition': {'duration': 300}
-                            }
-                        ],
-                        'label': date_str,
-                        'method': 'animate'
-                    }
-                    for date_str in sorted(df_filtered['Date_str'].unique(), key=lambda x: datetime.strptime(x, '%d-%m-%Y'))
-                ],
-                'x': 0.1,
-                'xanchor': 'left',
-                'y': 0,
-                'yanchor': 'top'
-            }]
-        )
+        # Add a vertical dotted line that follows the hover
+        hover_template = '<b>%{text}</b><extra></extra>'
+        fig.update_traces(hovertemplate=hover_template)
+        fig.update_layout(hovermode='closest')
 
         # Add initial annotation for the date
         initial_date_annotation = {
             'x': 0,
             'y': 1.15,  # Move the date annotation closer to the top of the chart
             'xref': 'paper',
-            'yref':'paper',
+            'yref': 'paper',
             'text': f'<span style="color:red;font-size:30px"><b>Date: {df_filtered["Date_str"].iloc[0]}</b></span>',
             'showarrow': False,
             'font': {
