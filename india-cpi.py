@@ -151,8 +151,7 @@ def get_description_order(sector_type, df):
     order_list = order_dict.get(sector_type, [])
     new_order_list = []
     for item in order_list:
-        item_escaped = re.escape(item.split(' - ')[0])  # Escape special characters
-        matches = df[df['Description'].str.contains(item_escaped)]
+        matches = df[df['Description'].str.contains(re.escape(item.split(' - ')[0]))]
         if not matches.empty:
             weight = matches['Weight'].values[0]
             new_order_list.append(f"{item} ({weight:.2f})")
@@ -364,14 +363,3 @@ else:
         # Use Streamlit's container to fit the chart properly
         with st.container():
             st.plotly_chart(fig, use_container_width=True)
-
-        # Add a dotted line for General Index
-        general_index_df = df_filtered[df_filtered['Description'].str.contains(re.escape("A) General Index"))]
-        if not general_index_df.empty:
-            general_index_position = general_index_df['Value'].values[0]
-            fig.add_shape(
-                type="line",
-                x0=general_index_position, y0=0, x1=general_index_position, y1=1,
-                xref='x', yref='paper',
-                line=dict(color="green", width=2, dash="dot")
-            )
