@@ -270,7 +270,7 @@ else:
 			xaxis_title="Value of "+selected_metric_type,
 			yaxis_title="",
 			width=1200,
-			height=900,  # Adjust the height to make the plot more visible
+			height=950,  # Adjust the height to make the plot more visible
 			margin=dict(l=0, r=10, t=120, b=40, pad=0),  # Add margins to make the plot more readable and closer to the left
 			sliders=[{
 				'steps': [
