@@ -148,7 +148,7 @@ def get_description_order(sector_type, df):
     df['Description'] = df.apply(lambda row: f"{row['Description']} ({row['Weight']:.2f})", axis=1)
     
     order_list = order_dict.get(sector_type, [])
-    order_list = [f"{item} ({df[df['Description'].str.contains(item)]['Weight'].values[0]:.2f})" for item in order_list]
+    order_list = [f"{item} ({df[df['Description'].str.contains(item.split(' - ')[0])]['Weight'].values[0]:.2f})" for item in order_list]
     
     return order_list
 
@@ -288,8 +288,8 @@ else:
 		initial_date_annotation = {
 			'x': 0,
 			'y': 1.15,  # Move the date annotation closer to the top of the chart
-			'xref': 'paper',
-			'yref': 'paper',
+			'xref='paper',
+			'yref='paper',
 			'text': f'<span style="color:red;font-size:30px"><b>Date: {df_filtered["Date_str"].iloc[0]}</b></span>',
 			'showarrow': False,
 			'font': {
