@@ -265,6 +265,36 @@ else:
             line=dict(color="red", width=2, dash="dot")
         )
 
+        # Adjust the layout
+        fig.update_layout(
+            xaxis_title="Value of "+selected_metric_type,
+            yaxis_title="",
+            width=1200,
+            height=950,  # Adjust the height to make the plot more visible
+            margin=dict(l=0, r=10, t=120, b=40, pad=0),  # Add margins to make the plot more readable and closer to the left
+            sliders=[{
+                'steps': [
+                    {
+                        'args': [
+                            [date_str],
+                            {
+                                'frame': {'duration': 300, 'redraw': True},
+                                'mode': 'immediate',
+                                'transition': {'duration': 300}
+                            }
+                        ],
+                        'label': date_str,
+                        'method': 'animate'
+                    }
+                    for date_str in sorted(df_filtered['Date_str'].unique(), key=lambda x: datetime.strptime(x, '%d-%m-%Y'))
+                ],
+                'x': 0.1,
+                'xanchor': 'left',
+                'y': 0,
+                'yanchor': 'top'
+            }]
+        )
+
         # Add initial annotation for the date
         initial_date_annotation = {
             'x': 0,
@@ -329,21 +359,6 @@ else:
                 ]
             }]
         )
-
-        # Add dynamic vertical line for "General Index"
-        def add_dynamic_vertical_line(fig, df_filtered, frame):
-            general_index_value = df_filtered[(df_filtered['Date_str'] == frame) & (df_filtered['Description'].str.contains("General Index"))]['Value'].values
-            if general_index_value:
-                fig.add_shape(
-                    type="line",
-                    x0=general_index_value[0], y0=0, x1=general_index_value[0], y1=1,
-                    xref='x', yref='paper',
-                    line=dict(color="green", width=2, dash="dash")
-                )
-
-        # Update frames with dynamic vertical line
-        for frame in fig.frames:
-            add_dynamic_vertical_line(fig, df_filtered, frame.name)
 
         # Use Streamlit's container to fit the chart properly
         with st.container():
