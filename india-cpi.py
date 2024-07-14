@@ -216,7 +216,7 @@ else:
 		# Plotly animation setup
 		fig = px.scatter(df_filtered, x="Value", y="Description", animation_frame="Date_str", animation_group="Description",
 						 color="Description", range_x=[range_min, range_max],
-						 title="", size="Weight", size_max=50, text="Text")
+						 title="", size="Weight", size_max=25, text="Text")
 
 		# Customize text position to the right of the dots
 		fig.update_traces(textposition='middle right', textfont=dict(size=16))
