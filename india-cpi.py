@@ -15,6 +15,16 @@ st.set_page_config(
 	initial_sidebar_state="expanded"
 )
 
+# Custom CSS to reduce font size in multi-select box
+custom_css = """
+<style>
+.css-1s2u09g-control, .css-1d391kg-option {
+    font-size: 50%;
+}
+</style>
+"""
+st.markdown(custom_css, unsafe_allow_html=True)
+
 # Hide Streamlit style and buttons
 hide_st_style = '''
 	<style>
