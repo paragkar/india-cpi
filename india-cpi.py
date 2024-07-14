@@ -141,7 +141,7 @@ else:
 
 		# Adjust the layout
 		fig.update_layout(
-			xaxis_title="Value as Percentage of GDP",
+			xaxis_title="Value of "+metric_types,
 			yaxis_title="",
 			width=1200,
 			height=900,  # Adjust the height to make the plot more visible
