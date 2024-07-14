@@ -71,14 +71,17 @@ df_filtered = df_filtered.replace("", np.nan).dropna()
 
 selected_sector_type = st.sidebar.selectbox("Select Sector Type", sector_types)
 
+# Filter dataframe based on selected sector type
+if selected_sector_type != "All":
+    df_filtered = df_filtered[df_filtered['Description'].apply(lambda x: selected_sector_type in x)]
+
 # Prepare options for the multiselect based on sector type selection
 if selected_sector_type == "All":
-    description_options = df_filtered['Description'].unique().tolist()
+    description_options = []
     selected_description = st.sidebar.multiselect("Select Description to Display", description_options)
 else:
     description_options = df_filtered['Description'].unique().tolist()
     selected_description = st.sidebar.multiselect("Select Description to Display", description_options, default=description_options)
-    df_filtered = df_filtered[df_filtered['Description'].apply(lambda x: selected_sector_type in x)]
 
 # Filter dataframe based on selected main description
 if selected_description:
