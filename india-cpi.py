@@ -6,6 +6,7 @@ import streamlit as st
 import io
 import msoffcrypto
 import numpy as np
+import re
 
 pd.set_option('future.no_silent_downcasting', True)
 pd.set_option('display.max_columns', None)
@@ -144,11 +145,11 @@ def get_description_order(sector_type, df):
         ]
     }
     
-    # Add weights to the descriptions
+    # Escape special characters in the descriptions
     df['Description'] = df.apply(lambda row: f"{row['Description']} ({row['Weight']:.2f})", axis=1)
     
     order_list = order_dict.get(sector_type, [])
-    order_list = [f"{item} ({df[df['Description'].str.contains(item.split(' - ')[0])]['Weight'].values[0]:.2f})" for item in order_list]
+    order_list = [f"{re.escape(item)} ({df[df['Description'].str.contains(re.escape(item.split(' - ')[0]))]['Weight'].values[0]:.2f})" for item in order_list]
     
     return order_list
 
@@ -189,7 +190,7 @@ if selected_sector_type == "All":
 	description_options = df_filtered['Description'].unique().tolist()
 	selected_description = st.sidebar.multiselect("Select Description to Display", description_options)
 else:
-	description_options = df_filtered[df_filtered['Description'].str.contains(selected_sector_type)]['Description'].unique().tolist()
+	description_options = df_filtered[df_filtered['Description'].str.contains(re.escape(selected_sector_type))]['Description'].unique().tolist()
 	selected_description = st.sidebar.multiselect("Select Description to Display", description_options, default=description_options)
 
 # Filter dataframe based on selected main description
