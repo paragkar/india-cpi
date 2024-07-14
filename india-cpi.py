@@ -15,6 +15,16 @@ st.set_page_config(
 	initial_sidebar_state="expanded"
 )
 
+# Custom CSS to reduce font size in multi-select box
+custom_css = """
+<style>
+.css-1okebmr-indicatorSeparator, .css-1wy0on6, .css-1hb7zxy-IndicatorsContainer, .css-1n7v3ny-option {
+    font-size: 50% !important;
+}
+</style>
+"""
+st.markdown(custom_css, unsafe_allow_html=True)
+
 # Hide Streamlit style and buttons
 hide_st_style = '''
 	<style>
@@ -110,14 +120,14 @@ else:
 		fig.update_traces(textposition='middle right', textfont=dict(size=16))
 
 		# Add black outlines to the dots
-		fig.update_traces(marker=dict(size=15, line=dict(width=2, color='black')))
+		fig.update_traces(marker=dict(size=20, line=dict(width=2, color='black')))
 
 		# Customize y-axis labels font size and make them bold
 		fig.update_yaxes(tickfont=dict(size=15, color='black', family='Arial', weight='bold'))
 
 		# Remove y-axis labels and variable labels
 		fig.update_yaxes(showticklabels=True)
-		fig.update_traces(marker=dict(size=18))
+		fig.update_traces(marker=dict(size=24))
 
 		# Draw a black line on the y-axis
 		fig.add_shape(type='line', x0=0, x1=0, y0=0, y1=1, line=dict(color='black', width=1), xref='x', yref='paper')
@@ -174,7 +184,7 @@ else:
 			'x': 0,
 			'y': 1.15,  # Move the date annotation closer to the top of the chart
 			'xref': 'paper',
-			'yref='paper',
+			'yref': 'paper',
 			'text': f'<span style="color:red;font-size:30px"><b>Date: {df_filtered["Date_str"].iloc[0]}</b></span>',
 			'showarrow': False,
 			'font': {
