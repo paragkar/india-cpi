@@ -19,7 +19,7 @@ st.set_page_config(
 custom_css = """
 <style>
 .css-1okebmr-indicatorSeparator, .css-1wy0on6, .css-1hb7zxy-IndicatorsContainer, .css-1n7v3ny-option {
-	font-size: 50% !important;
+    font-size: 50% !important;
 }
 </style>
 """
@@ -51,99 +51,99 @@ def loadfile():
 
 # Function to get description order
 def get_description_order(sector_type):
-	order_dict = {
-		"Rural": [
-			"A) General Index - Rural",
-			"A.1) Food and beverages - Rural",
-			"A.1.1) Cereals and products - Rural",
-			"A.1.2) Meat and fish - Rural",
-			"A.1.3) Egg - Rural",
-			"A.1.4) Milk and products - Rural",
-			"A.1.5) Oils and fats - Rural",
-			"A.1.6) Fruits - Rural",
-			"A.1.7) Vegetables - Rural",
-			"A.1.8) Pulses and products - Rural",
-			"A.1.9) Sugar and confectionery - Rural",
-			"A.1.10) Spices - Rural",
-			"A.1.11) Non-alcoholic beverages - Rural",
-			"A.1.12) Prepared meals, snacks, sweets etc. - Rural",
-			"A.2) Pan, tobacco and intoxicants - Rural",
-			"A.3) Clothing and footwear - Rural",
-			"A.3.1) Clothing - Rural",
-			"A.3.2) Footwear - Rural",
-			"A.4) Housing - Rural",
-			"A.5) Fuel and light - Rural",
-			"A.6) Miscellaneous - Rural",
-			"A.6.1) Household goods and services - Rural",
-			"A.6.2) Health - Rural",
-			"A.6.3) Transport and communication - Rural",
-			"A.6.4) Recreation and amusement - Rural",
-			"A.6.5) Education - Rural",
-			"A.6.6) Personal Care and Effects - Rural",
-			"B) Consumer Food Price Index - Rural"
-		],
-		"Urban": [
-			"A) General Index - Urban",
-			"A.1) Food and beverages - Urban",
-			"A.1.1) Cereals and products - Urban",
-			"A.1.2) Meat and fish - Urban",
-			"A.1.3) Egg - Urban",
-			"A.1.4) Milk and products - Urban",
-			"A.1.5) Oils and fats - Urban",
-			"A.1.6) Fruits - Urban",
-			"A.1.7) Vegetables - Urban",
-			"A.1.8) Pulses and products - Urban",
-			"A.1.9) Sugar and confectionery - Urban",
-			"A.1.10) Spices - Urban",
-			"A.1.11) Non-alcoholic beverages - Urban",
-			"A.1.12) Prepared meals, snacks, sweets etc. - Urban",
-			"A.2) Pan, tobacco and intoxicants - Urban",
-			"A.3) Clothing and footwear - Urban",
-			"A.3.1) Clothing - Urban",
-			"A.3.2) Footwear - Urban",
-			"A.4) Housing - Urban",
-			"A.5) Fuel and light - Urban",
-			"A.6) Miscellaneous - Urban",
-			"A.6.1) Household goods and services - Urban",
-			"A.6.2) Health - Urban",
-			"A.6.3) Transport and communication - Urban",
-			"A.6.4) Recreation and amusement - Urban",
-			"A.6.5) Education - Urban",
-			"A.6.6) Personal Care and Effects - Urban",
-			"B) Consumer Food Price Index - Urban"
-		],
-		"Combined": [
-			"A) General Index - Combined",
-			"A.1) Food and beverages - Combined",
-			"A.1.1) Cereals and products - Combined",
-			"A.1.2) Meat and fish - Combined",
-			"A.1.3) Egg - Combined",
-			"A.1.4) Milk and products - Combined",
-			"A.1.5) Oils and fats - Combined",
-			"A.1.6) Fruits - Combined",
-			"A.1.7) Vegetables - Combined",
-			"A.1.8) Pulses and products - Combined",
-			"A.1.9) Sugar and confectionery - Combined",
-			"A.1.10) Spices - Combined",
-			"A.1.11) Non-alcoholic beverages - Combined",
-			"A.1.12) Prepared meals, snacks, sweets etc. - Combined",
-			"A.2) Pan, tobacco and intoxicants - Combined",
-			"A.3) Clothing and footwear - Combined",
-			"A.3.1) Clothing - Combined",
-			"A.3.2) Footwear - Combined",
-			"A.4) Housing - Combined",
-			"A.5) Fuel and light - Combined",
-			"A.6) Miscellaneous - Combined",
-			"A.6.1) Household goods and services - Combined",
-			"A.6.2) Health - Combined",
-			"A.6.3) Transport and communication - Combined",
-			"A.6.4) Recreation and amusement - Combined",
-			"A.6.5) Education - Combined",
-			"A.6.6) Personal Care and Effects - Combined",
-			"B) Consumer Food Price Index - Combined"
-		]
-	}
-	return order_dict.get(sector_type, [])
+    order_dict = {
+        "Rural": [
+            "A) General Index - Rural",
+            "A.1) Food and beverages - Rural",
+            "A.1.1) Cereals and products - Rural",
+            "A.1.2) Meat and fish - Rural",
+            "A.1.3) Egg - Rural",
+            "A.1.4) Milk and products - Rural",
+            "A.1.5) Oils and fats - Rural",
+            "A.1.6) Fruits - Rural",
+            "A.1.7) Vegetables - Rural",
+            "A.1.8) Pulses and products - Rural",
+            "A.1.9) Sugar and confectionery - Rural",
+            "A.1.10) Spices - Rural",
+            "A.1.11) Non-alcoholic beverages - Rural",
+            "A.1.12) Prepared meals, snacks, sweets etc. - Rural",
+            "A.2) Pan, tobacco and intoxicants - Rural",
+            "A.3) Clothing and footwear - Rural",
+            "A.3.1) Clothing - Rural",
+            "A.3.2) Footwear - Rural",
+            "A.4) Housing - Rural",
+            "A.5) Fuel and light - Rural",
+            "A.6) Miscellaneous - Rural",
+            "A.6.1) Household goods and services - Rural",
+            "A.6.2) Health - Rural",
+            "A.6.3) Transport and communication - Rural",
+            "A.6.4) Recreation and amusement - Rural",
+            "A.6.5) Education - Rural",
+            "A.6.6) Personal Care and Effects - Rural",
+            "B) Consumer Food Price Index - Rural"
+        ],
+        "Urban": [
+            "A) General Index - Urban",
+            "A.1) Food and beverages - Urban",
+            "A.1.1) Cereals and products - Urban",
+            "A.1.2) Meat and fish - Urban",
+            "A.1.3) Egg - Urban",
+            "A.1.4) Milk and products - Urban",
+            "A.1.5) Oils and fats - Urban",
+            "A.1.6) Fruits - Urban",
+            "A.1.7) Vegetables - Urban",
+            "A.1.8) Pulses and products - Urban",
+            "A.1.9) Sugar and confectionery - Urban",
+            "A.1.10) Spices - Urban",
+            "A.1.11) Non-alcoholic beverages - Urban",
+            "A.1.12) Prepared meals, snacks, sweets etc. - Urban",
+            "A.2) Pan, tobacco and intoxicants - Urban",
+            "A.3) Clothing and footwear - Urban",
+            "A.3.1) Clothing - Urban",
+            "A.3.2) Footwear - Urban",
+            "A.4) Housing - Urban",
+            "A.5) Fuel and light - Urban",
+            "A.6) Miscellaneous - Urban",
+            "A.6.1) Household goods and services - Urban",
+            "A.6.2) Health - Urban",
+            "A.6.3) Transport and communication - Urban",
+            "A.6.4) Recreation and amusement - Urban",
+            "A.6.5) Education - Urban",
+            "A.6.6) Personal Care and Effects - Urban",
+            "B) Consumer Food Price Index - Urban"
+        ],
+        "Combined": [
+            "A) General Index - Combined",
+            "A.1) Food and beverages - Combined",
+            "A.1.1) Cereals and products - Combined",
+            "A.1.2) Meat and fish - Combined",
+            "A.1.3) Egg - Combined",
+            "A.1.4) Milk and products - Combined",
+            "A.1.5) Oils and fats - Combined",
+            "A.1.6) Fruits - Combined",
+            "A.1.7) Vegetables - Combined",
+            "A.1.8) Pulses and products - Combined",
+            "A.1.9) Sugar and confectionery - Combined",
+            "A.1.10) Spices - Combined",
+            "A.1.11) Non-alcoholic beverages - Combined",
+            "A.1.12) Prepared meals, snacks, sweets etc. - Combined",
+            "A.2) Pan, tobacco and intoxicants - Combined",
+            "A.3) Clothing and footwear - Combined",
+            "A.3.1) Clothing - Combined",
+            "A.3.2) Footwear - Combined",
+            "A.4) Housing - Combined",
+            "A.5) Fuel and light - Combined",
+            "A.6) Miscellaneous - Combined",
+            "A.6.1) Household goods and services - Combined",
+            "A.6.2) Health - Combined",
+            "A.6.3) Transport and communication - Combined",
+            "A.6.4) Recreation and amusement - Combined",
+            "A.6.5) Education - Combined",
+            "A.6.6) Personal Care and Effects - Combined",
+            "B) Consumer Food Price Index - Combined"
+        ]
+    }
+    return order_dict.get(sector_type, [])
 
 # Main Program Starts Here
 df = loadfile()
@@ -192,7 +192,8 @@ if selected_description:
 # Reorder the Description column based on the selected sector type
 description_order = get_description_order(selected_sector_type)
 if description_order:
-	df_filtered['Description'] = pd.Categorical(df_filtered['Description'], categories=description_order, ordered=True)
+    df_filtered['Description'] = pd.Categorical(df_filtered['Description'], categories=description_order, ordered=True)
+    df_filtered = df_filtered.sort_values('Description')  # Sort the dataframe by Description to ensure the order is maintained
 
 # Check if there is any data left after filtering
 if selected_sector_type == "All" and not selected_description:
