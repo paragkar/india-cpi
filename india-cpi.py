@@ -75,21 +75,19 @@ selected_sector_type = st.sidebar.selectbox("Select Sector Type", sector_types)
 if selected_sector_type == "All":
     description_options = []
     selected_description = st.sidebar.multiselect("Select Description to Display", description_options)
+    if selected_description:
+        df_filtered = df_filtered[df_filtered['Description'].isin(selected_description)]
 else:
     description_options = df_filtered['Description'].unique().tolist()
     selected_description = st.sidebar.multiselect("Select Description to Display", description_options, default=description_options)
-
-# Filter dataframe based on selected sector type
-if selected_sector_type != "All":
     df_filtered = df_filtered[df_filtered['Description'].apply(lambda x: selected_sector_type in x)]
-
-# Filter dataframe based on selected main description
-if selected_description:
     df_filtered = df_filtered[df_filtered['Description'].isin(selected_description)]
 
 # Check if there is any data left after filtering
 if df_filtered.empty:
     st.write("No data available for the selected filters.")
+elif selected_sector_type == "All" and not selected_description:
+    st.write("Please select at least one description to display the data.")
 else:
     # Calculate min and max values for the dotted lines
     min_value = df_filtered['Value'].min()
