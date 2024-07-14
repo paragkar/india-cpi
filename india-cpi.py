@@ -2,6 +2,7 @@ import pandas as pd
 from datetime import datetime
 import plotly.express as px
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 import streamlit as st
 import io
 import msoffcrypto
@@ -237,7 +238,7 @@ else:
         fig.update_traces(textposition='middle right', textfont=dict(size=16))
 
         # Add black outlines to the dots
-        fig.update_traces(marker=dict(line=dict(width=1, color='black')))
+        fig.update_traces(marker=dict(line=dict(width=2, color='black')))
 
         # Customize y-axis labels font size and make them bold
         fig.update_yaxes(tickfont=dict(size=15, color='black', family='Arial', weight='bold'))
@@ -270,7 +271,7 @@ else:
             xaxis_title="Value of "+selected_metric_type,
             yaxis_title="",
             width=1200,
-            height=1000,  # Adjust the height to make the plot more visible
+            height=950,  # Adjust the height to make the plot more visible
             margin=dict(l=0, r=10, t=120, b=40, pad=0),  # Add margins to make the plot more readable and closer to the left
             sliders=[{
                 'steps': [
@@ -332,34 +333,51 @@ else:
         # Ensure the frames are sorted correctly
         fig.frames = sorted(fig.frames, key=lambda frame: datetime.strptime(frame.name, '%d-%m-%Y'))
 
-        # Custom callback to update the date annotation dynamically
-        fig.update_layout(
-            updatemenus=[{
-                'type': 'buttons',
-                'showactive': False,
-                'buttons': [
-                    {
-                        'label': 'Play',
-                        'method': 'animate',
-                        'args': [None, {
-                            'frame': {'duration': 500, 'redraw': True},
-                            'fromcurrent': True,
-                            'transition': {'duration': 300, 'easing': 'linear'}
-                        }]
-                    },
-                    {
-                        'label': 'Pause',
-                        'method': 'animate',
-                        'args': [[None], {
-                            'frame': {'duration': 0, 'redraw': False},
-                            'mode': 'immediate',
-                            'transition': {'duration': 0}
-                        }]
-                    }
-                ]
-            }]
+        # Plot horizontal bar chart for weighted averages
+        df_filtered['Weighted Average'] = df_filtered['Weighted Average'] / 100
+        weighted_avg_fig = px.bar(
+            df_filtered,
+            x="Weighted Average",
+            y="Description",
+            orientation='h',
+            text="Weighted Average",
+            range_x=[0, df_filtered['Weighted Average'].max() * 1.1],
+            animation_frame="Date_str",
+            animation_group="Description",
+            title="Weighted Average Over Time"
         )
+
+        weighted_avg_fig.update_traces(texttemplate='%{text:.2f}', textposition='outside')
+        weighted_avg_fig.update_yaxes(showticklabels=False)
+        weighted_avg_fig.update_layout(showlegend=False, yaxis_title='', margin=dict(l=0, r=10, t=120, b=40, pad=0))
+
+        # Combine the figures
+        combined_fig = make_subplots(rows=1, cols=2, shared_yaxes=True, subplot_titles=("", "Weighted Average Over Time"))
+        combined_fig.add_traces(fig.data + weighted_avg_fig.data)
+        combined_fig.layout.xaxis.update(fig.layout.xaxis)
+        combined_fig.layout.xaxis2.update(weighted_avg_fig.layout.xaxis)
+        combined_fig.layout.yaxis.update(fig.layout.yaxis)
+        combined_fig.layout.yaxis2.update(weighted_avg_fig.layout.yaxis)
+
+        combined_fig.update_layout(
+            title={
+                'text': "Index and Weighted Average Over Time",
+                'y':0.95,
+                'x':0.5,
+                'xanchor': 'center',
+                'yanchor': 'top'
+            }
+        )
+
+        # Update frames for combined animation
+        for scatter_frame, bar_frame in zip(fig.frames, weighted_avg_fig.frames):
+            combined_fig.frames.append(go.Frame(
+                data=scatter_frame.data + bar_frame.data,
+                name=scatter_frame.name
+            ))
+
+        combined_fig.layout.updatemenus = fig.layout.updatemenus
 
         # Use Streamlit's container to fit the chart properly
         with st.container():
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(combined_fig, use_container_width=True)
