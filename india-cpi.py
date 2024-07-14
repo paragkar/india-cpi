@@ -2,7 +2,6 @@ import pandas as pd
 from datetime import datetime
 import plotly.express as px
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 import streamlit as st
 import io
 import msoffcrypto
@@ -211,9 +210,6 @@ if description_order:
     df_filtered['Description'] = pd.Categorical(df_filtered['Description'], categories=description_order, ordered=True)
     df_filtered = df_filtered.sort_values('Description')  # Sort the dataframe by Description to ensure the order is maintained
 
-# Calculate the weighted average
-df_filtered['Weighted Average'] = df_filtered['Value'] * (df_filtered['Weight'] / 100)
-
 # Check if there is any data left after filtering
 if selected_sector_type == "All" and not selected_description:
     st.write("Please select at least one description to display the data.")
@@ -241,7 +237,7 @@ else:
         fig.update_traces(textposition='middle right', textfont=dict(size=16))
 
         # Add black outlines to the dots
-        fig.update_traces(marker=dict(line=dict(width=2, color='black')))
+        fig.update_traces(marker=dict(line=dict(width=1, color='black')))
 
         # Customize y-axis labels font size and make them bold
         fig.update_yaxes(tickfont=dict(size=15, color='black', family='Arial', weight='bold'))
@@ -274,7 +270,7 @@ else:
             xaxis_title="Value of "+selected_metric_type,
             yaxis_title="",
             width=1200,
-            height=950,  # Adjust the height to make the plot more visible
+            height=1000,  # Adjust the height to make the plot more visible
             margin=dict(l=0, r=10, t=120, b=40, pad=0),  # Add margins to make the plot more readable and closer to the left
             sliders=[{
                 'steps': [
@@ -336,51 +332,8 @@ else:
         # Ensure the frames are sorted correctly
         fig.frames = sorted(fig.frames, key=lambda frame: datetime.strptime(frame.name, '%d-%m-%Y'))
 
-        # Plot horizontal bar chart for weighted averages
-        weighted_avg_fig = px.bar(
-            df_filtered,
-            x="Weighted Average",
-            y="Description",
-            animation_frame="Date_str",
-            orientation='h',
-            range_x=[0, df_filtered['Weighted Average'].max() + 10]
-        )
-
-        # Customize text position to the right of the bars
-        weighted_avg_fig.update_traces(texttemplate='%{x:.2f}', textposition='inside')
-
-        # Update layout of the bar chart
-        weighted_avg_fig.update_layout(
-            showlegend=False,
-            xaxis_title="Weighted Average",
-            yaxis_title="",
-            yaxis=dict(autorange="reversed", tickfont=dict(size=15, color='black', family='Arial', weight='bold')),
-            height=950,
-            margin=dict(l=0, r=10, t=120, b=40, pad=0)
-        )
-
-        # Combine both figures into a single subplot
-        combined_fig = make_subplots(rows=1, cols=2, shared_yaxes=True, horizontal_spacing=0.02,
-                                     subplot_titles=('Index and Weighted Average Over Time', 'Weighted Average Over Time'))
-
-        for trace in fig.data:
-            combined_fig.add_trace(trace, row=1, col=1)
-
-        for trace in weighted_avg_fig.data:
-            combined_fig.add_trace(trace, row=1, col=2)
-
-        # Update frames for combined animation
-        combined_frames = []
-        for scatter_frame, bar_frame in zip(fig.frames, weighted_avg_fig.frames):
-            combined_frames.append(go.Frame(
-                data=scatter_frame.data + bar_frame.data,
-                name=scatter_frame.name
-            ))
-        
-        combined_fig.frames = combined_frames
-
-        combined_fig.update_layout(
-            sliders=fig.layout.sliders,
+        # Custom callback to update the date annotation dynamically
+        fig.update_layout(
             updatemenus=[{
                 'type': 'buttons',
                 'showactive': False,
@@ -409,4 +362,4 @@ else:
 
         # Use Streamlit's container to fit the chart properly
         with st.container():
-            st.plotly_chart(combined_fig, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True)
