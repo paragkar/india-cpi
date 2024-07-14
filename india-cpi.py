@@ -216,20 +216,19 @@ else:
 		# Plotly animation setup
 		fig = px.scatter(df_filtered, x="Value", y="Description", animation_frame="Date_str", animation_group="Description",
 						 color="Description", range_x=[range_min, range_max],
-						 title="", size_max=20, text="Text")
+						 title="", size="Weight", size_max=50, text="Text")
 
 		# Customize text position to the right of the dots
 		fig.update_traces(textposition='middle right', textfont=dict(size=16))
 
 		# Add black outlines to the dots
-		fig.update_traces(marker=dict(size=15, line=dict(width=2, color='black')))
+		fig.update_traces(marker=dict(line=dict(width=2, color='black')))
 
 		# Customize y-axis labels font size and make them bold
 		fig.update_yaxes(tickfont=dict(size=15, color='black', family='Arial', weight='bold'))
 
 		# Remove y-axis labels and variable labels
 		fig.update_yaxes(showticklabels=True)
-		fig.update_traces(marker=dict(size=18))
 
 		# Draw a black line on the y-axis
 		fig.add_shape(type='line', x0=0, x1=0, y0=0, y1=1, line=dict(color='black', width=1), xref='x', yref='paper')
