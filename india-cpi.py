@@ -363,3 +363,14 @@ else:
         # Use Streamlit's container to fit the chart properly
         with st.container():
             st.plotly_chart(fig, use_container_width=True)
+
+        # Add a dotted line for General Index
+        general_index_df = df_filtered[df_filtered['Description'].str.contains("A) General Index")]
+        if not general_index_df.empty:
+            general_index_position = general_index_df['Value'].values[0]
+            fig.add_shape(
+                type="line",
+                x0=general_index_position, y0=0, x1=general_index_position, y1=1,
+                xref='x', yref='paper',
+                line=dict(color="green", width=2, dash="dot")
+            )
