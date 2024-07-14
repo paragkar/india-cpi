@@ -49,8 +49,8 @@ def loadfile():
 	df = pd.read_excel(excel_content, sheet_name="Sheet1")
 	return df
 
-# Function to get description order
-def get_description_order(sector_type):
+# Function to get description order and append weights
+def get_description_order(sector_type, df):
     order_dict = {
         "Rural": [
             "A) General Index - Rural",
@@ -143,7 +143,14 @@ def get_description_order(sector_type):
             "B) Consumer Food Price Index - Combined"
         ]
     }
-    return order_dict.get(sector_type, [])
+    
+    # Add weights to the descriptions
+    df['Description'] = df.apply(lambda row: f"{row['Description']} ({row['Weight']:.2f})", axis=1)
+    
+    order_list = order_dict.get(sector_type, [])
+    order_list = [f"{item} ({df[df['Description'].str.contains(item)]['Weight'].values[0]:.2f})" for item in order_list]
+    
+    return order_list
 
 # Main Program Starts Here
 df = loadfile()
@@ -161,9 +168,6 @@ df["Value"] = df["Value"].replace("-", np.nan, regex=True)
 
 # Format the Value column to two decimal places and keep it as a float
 df['Value'] = df['Value'].astype(float).round(2)
-
-# Create a column to hold the value information along with the year and weight
-df['Text'] = df.apply(lambda row: f"<b>{row['Value']:.2f} ({row['Date_str'][-4:]}, {row['Weight']:.2f})</b>", axis=1)
 
 metric_types = ["Index", "Inflation"]
 sector_types = ["All", "Rural", "Urban", "Combined"]
@@ -190,7 +194,7 @@ if selected_description:
 	df_filtered = df_filtered[df_filtered['Description'].isin(selected_description)]
 
 # Reorder the Description column based on the selected sector type
-description_order = get_description_order(selected_sector_type)
+description_order = get_description_order(selected_sector_type, df_filtered)
 if description_order:
     df_filtered['Description'] = pd.Categorical(df_filtered['Description'], categories=description_order, ordered=True)
     df_filtered = df_filtered.sort_values('Description')  # Sort the dataframe by Description to ensure the order is maintained
