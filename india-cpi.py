@@ -210,6 +210,10 @@ if description_order:
     df_filtered['Description'] = pd.Categorical(df_filtered['Description'], categories=description_order, ordered=True)
     df_filtered = df_filtered.sort_values('Description')  # Sort the dataframe by Description to ensure the order is maintained
 
+# Ensure the frames are sorted correctly
+df_filtered['Weighted Average'] = df_filtered['Weighted Average'] / 100  # Scale down by 100
+df_filtered['Weighted Average'] = df_filtered['Weighted Average'].round(2)  # Round to 2 decimal places
+
 # Check if there is any data left after filtering
 if selected_sector_type == "All" and not selected_description:
     st.write("Please select at least one description to display the data.")
@@ -237,7 +241,7 @@ else:
         fig.update_traces(textposition='middle right', textfont=dict(size=16))
 
         # Add black outlines to the dots
-        fig.update_traces(marker=dict(line=dict(width=1, color='black')))
+        fig.update_traces(marker=dict(line=dict(width=2, color='black')))
 
         # Customize y-axis labels font size and make them bold
         fig.update_yaxes(tickfont=dict(size=15, color='black', family='Arial', weight='bold'))
@@ -270,7 +274,7 @@ else:
             xaxis_title="Value of "+selected_metric_type,
             yaxis_title="",
             width=1200,
-            height=1000,  # Adjust the height to make the plot more visible
+            height=950,  # Adjust the height to make the plot more visible
             margin=dict(l=0, r=10, t=120, b=40, pad=0),  # Add margins to make the plot more readable and closer to the left
             sliders=[{
                 'steps': [
@@ -332,8 +336,31 @@ else:
         # Ensure the frames are sorted correctly
         fig.frames = sorted(fig.frames, key=lambda frame: datetime.strptime(frame.name, '%d-%m-%Y'))
 
-        # Custom callback to update the date annotation dynamically
-        fig.update_layout(
+        # Combine scatter plot and horizontal bar chart in the same layout
+        combined_fig = make_subplots(rows=1, cols=2, column_widths=[0.7, 0.3], horizontal_spacing=0.02)
+
+        for trace in fig['data']:
+            combined_fig.add_trace(trace, row=1, col=1)
+
+        for frame in fig.frames:
+            combined_fig.add_trace(go.Bar(
+                x=df_filtered[df_filtered['Date_str'] == frame.name]['Weighted Average'],
+                y=df_filtered[df_filtered['Date_str'] == frame.name]['Description'],
+                orientation='h',
+                text=df_filtered[df_filtered['Date_str'] == frame.name]['Weighted Average'].apply(lambda x: f'{x:.2f}'),
+                textposition='outside',
+                showlegend=False
+            ), row=1, col=2)
+
+        combined_fig.update_yaxes(showticklabels=False, row=1, col=2)
+        combined_fig.update_xaxes(title_text="Weighted Average", row=1, col=2)
+
+        combined_fig.update_layout(
+            title_text="Index and Weighted Average Over Time",
+            height=900,
+            width=1400,
+            showlegend=False,
+            sliders=fig.layout.sliders,
             updatemenus=[{
                 'type': 'buttons',
                 'showactive': False,
@@ -360,6 +387,7 @@ else:
             }]
         )
 
-        # Use Streamlit's container to fit the chart properly
+        combined_fig.update_layout(annotations=[initial_date_annotation])
+
         with st.container():
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(combined_fig, use_container_width=True)
