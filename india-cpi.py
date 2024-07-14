@@ -104,7 +104,7 @@ else:
 		# Plotly animation setup
 		fig = px.scatter(df_filtered, x="Value", y="Description", animation_frame="Date_str", animation_group="Description",
 						 color="Description", range_x=[range_min, range_max],
-						 title="", size_max=24, text="Text")
+						 title="", size_max=20, text="Text")
 
 		# Customize text position to the right of the dots
 		fig.update_traces(textposition='middle right', textfont=dict(size=16))
@@ -144,7 +144,7 @@ else:
 			xaxis_title="Value as Percentage of GDP",
 			yaxis_title="",
 			width=1200,
-			height=1000,  # Adjust the height to make the plot more visible
+			height=900,  # Adjust the height to make the plot more visible
 			margin=dict(l=0, r=10, t=120, b=40, pad=0),  # Add margins to make the plot more readable and closer to the left
 			sliders=[{
 				'steps': [
