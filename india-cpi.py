@@ -75,7 +75,13 @@ selected_sector_type = st.sidebar.selectbox("Select Sector Type", sector_types)
 if selected_sector_type != "All":
     df_filtered = df_filtered[df_filtered['Description'].apply(lambda x: selected_sector_type in x)]
 
-selected_description = st.sidebar.multiselect("Select Description to Display", df_filtered['Description'].unique())
+# Prepare options for the multiselect based on sector type selection
+if selected_sector_type == "All":
+    description_options = df_filtered['Description'].unique().tolist()
+    selected_description = st.sidebar.multiselect("Select Description to Display", description_options)
+else:
+    description_options = df_filtered['Description'].unique().tolist()
+    selected_description = st.sidebar.multiselect("Select Description to Display", description_options, default=description_options)
 
 # Filter dataframe based on selected main description
 if selected_description:
