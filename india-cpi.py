@@ -257,4 +257,6 @@ else:
 
     st.plotly_chart(fig, use_container_width=True)
 
-    st.markdown(f"<h1 style='font-size:40px; margin-top: -40px;'>{"This is CPI"}</h1>", unsafe_allow_html=True)
+    title = "This is CPI"
+
+    st.markdown(f"<h1 style='font-size:40px; margin-top: -40px;'>{title}</h1>", unsafe_allow_html=True)
