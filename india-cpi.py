@@ -244,7 +244,7 @@ scatter_fig.update_layout(showlegend=False)
 
 # Plotly bar chart
 bar_fig = px.bar(df_filtered_date, x="Weighted Average", y="Description",
-                 orientation='h', text=df_filtered_date['Weighted Average'].apply(lambda x: f'{x:.2f}'))
+                 orientation='h', text=df_filtered_date['Weighted Average'].apply(lambda x: f'{x:.2f}'), showlegend = False)
 
 # Customize bar chart
 bar_fig.update_traces(textposition='outside', marker_color='blue')
