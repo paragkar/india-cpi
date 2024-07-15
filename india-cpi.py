@@ -227,7 +227,7 @@ else:
     # Manually set the date range in the sidebar
     unique_dates = df_filtered['Date'].dt.date.unique()
     unique_dates = sorted(unique_dates)  # Ensure dates are sorted
-    date_index = st.slider("Select Date", min_value=0, max_value=len(unique_dates) - 1, value=0)
+    date_index = st.slider("", min_value=0, max_value=len(unique_dates) - 1, value=0)
     selected_date = unique_dates[date_index]
     
     df_filtered_date = df_filtered[df_filtered['Date'].dt.date == selected_date]
@@ -243,10 +243,6 @@ else:
     scatter_fig.update_layout(showlegend=False, xaxis_title="Value of " + selected_metric_type)
     bar_fig.update_layout(showlegend=False, xaxis_title="Weighted Average", yaxis=dict(showticklabels=False))
 
-    # # Adjust x-axis range for scatter plot using the overall min and max values
-    # scatter_fig.update_xaxes(range=[overall_min_value, overall_max_value * 1.15])
-
-    # # Adjust x-axis range for bar plot
     max_weighted_avg = df_filtered['Weighted Average'].max()
 
     for trace in scatter_fig.data:
