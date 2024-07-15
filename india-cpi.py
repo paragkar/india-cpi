@@ -244,8 +244,8 @@ else:
     scatter_fig.update_layout(showlegend=False, xaxis_title="Value of " + selected_metric_type)
     bar_fig.update_layout(showlegend=False, xaxis_title="Weighted Average", yaxis=dict(showticklabels=False))
 
-    # Adjust x-axis range for scatter plot using the overall min and max values
-    scatter_fig.update_xaxes(range=[overall_min_value, overall_max_value * 1.15])
+    # # Adjust x-axis range for scatter plot using the overall min and max values
+    # scatter_fig.update_xaxes(range=[overall_min_value, overall_max_value * 1.15])
 
     # Adjust x-axis range for bar plot
     max_weighted_avg = df_filtered['Weighted Average'].max()
