@@ -1,8 +1,8 @@
 import pandas as pd
 from datetime import datetime
 import plotly.express as px
-import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+import plotly.graph_objects as go
 import streamlit as st
 import io
 import msoffcrypto
@@ -217,14 +217,15 @@ if selected_sector_type == "All" and not selected_description:
 elif df_filtered.empty:
     st.write("No data available for the selected filters.")
 else:
+    # Create the 'Weighted Average' column
+    df_filtered['Weighted Average'] = df_filtered['Value'] * df_filtered['Weight'] / 100
+    
     # Manually set the date range in the sidebar
     unique_dates = df_filtered['Date'].dt.date.unique()
     date_index = st.sidebar.number_input("Select Date Index", min_value=0, max_value=len(unique_dates) - 1, value=0, step=1)
     selected_date = unique_dates[date_index]
     
     df_filtered_date = df_filtered[df_filtered['Date'].dt.date == selected_date]
-
-    df_filtered_date['Weighted Average'] = df_filtered_date['Weighted Average'] / 100  # Scale down by 100
 
     fig = make_subplots(rows=1, cols=2, shared_yaxes=True, column_widths=[0.7, 0.3])
 
