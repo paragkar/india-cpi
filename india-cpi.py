@@ -161,30 +161,6 @@ def get_description_order(sector_type, df):
     
     return new_order_list
 
-# Function to get main and subcategories
-def get_main_and_sub_categories(sector_type):
-    main_categories = {
-        "Rural": [
-            "A) General Index - Rural", "A.1) Food and beverages - Rural", 
-            "A.2) Pan, tobacco and intoxicants - Rural", 
-            "A.3) Clothing and footwear - Rural", "A.4) Housing - Rural", 
-            "A.5) Fuel and light - Rural", "A.6) Miscellaneous - Rural"
-        ],
-        "Urban": [
-            "A) General Index - Urban", "A.1) Food and beverages - Urban", 
-            "A.2) Pan, tobacco and intoxicants - Urban", 
-            "A.3) Clothing and footwear - Urban", "A.4) Housing - Urban", 
-            "A.5) Fuel and light - Urban", "A.6) Miscellaneous - Urban"
-        ],
-        "Combined": [
-            "A) General Index - Combined", "A.1) Food and beverages - Combined", 
-            "A.2) Pan, tobacco and intoxicants - Combined", 
-            "A.3) Clothing and footwear - Combined", "A.4) Housing - Combined", 
-            "A.5) Fuel and light - Combined", "A.6) Miscellaneous - Combined"
-        ]
-    }
-    return main_categories.get(sector_type, [])
-
 # Main Program Starts Here
 df = loadfile()
 
@@ -215,21 +191,15 @@ df_filtered = df[df['ValueType'] == selected_metric_type].copy()
 
 df_filtered = df_filtered.replace("", np.nan).dropna()
 
-# Additional filter for Main Cat and Sub Cat
-selected_main_sub_cat = st.sidebar.radio("Select Category Type", ["All", "Main Cat", "Sub Cat"])
+selected_sector_type = st.sidebar.selectbox("Select Sector Type", sector_types)
 
-# Assign main categories based on selected sector type
-main_categories = get_main_and_sub_categories(selected_main_sub_cat)
-sub_categories = [desc for desc in df_filtered['Description'].unique() if desc not in main_categories or "General Index" in desc]
-
-if selected_main_sub_cat == "Main Cat":
-    filtered_description_options = [desc for desc in df_filtered['Description'].unique() if any(main in desc for main in main_categories)]
-elif selected_main_sub_cat == "Sub Cat":
-    filtered_description_options = sub_categories + ["General Index - Rural", "General Index - Urban", "General Index - Combined"]
+# Prepare options for the multiselect based on sector type selection
+if selected_sector_type == "All":
+    description_options = df_filtered['Description'].unique().tolist()
+    selected_description = st.sidebar.multiselect("Select Description to Display", description_options)
 else:
-    filtered_description_options = df_filtered['Description'].unique().tolist()
-
-selected_description = st.sidebar.multiselect("Select Description to Display", filtered_description_options, default=filtered_description_options)
+    description_options = df_filtered[df_filtered['Description'].str.contains(re.escape(selected_sector_type))]['Description'].unique().tolist()
+    selected_description = st.sidebar.multiselect("Select Description to Display", description_options, default=description_options)
 
 # Filter dataframe based on selected main description
 if selected_description:
