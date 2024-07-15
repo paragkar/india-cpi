@@ -268,7 +268,7 @@ else:
     fig.update_xaxes(row=1, col=1, range=[overall_min_value, overall_max_value * 1.15], fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
     fig.update_yaxes(row=1, col=1, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
 
-    fig.update_xaxes(row=1, col=2, range=[0, max_weighted_avg * 1.2],fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
+    fig.update_xaxes(row=1, col=2, range=[0, max_weighted_avg * 1.3],fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
     fig.update_yaxes(row=1, col=2, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
     
     fig.update_layout(height=700, width=1200, margin=dict(l=0, r=10, t=0, b=10, pad=0), showlegend=False)
