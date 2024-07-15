@@ -178,9 +178,6 @@ df["Value"] = df["Value"].replace("-", np.nan, regex=True)
 # Format the Value column to two decimal places and keep it as a float
 df['Value'] = df['Value'].astype(float).round(2)
 
-# Calculate the overall min and max values for the 'Value' column in the entire dataset
-overall_min_value = df['Value'].min()
-overall_max_value = df['Value'].max()
 
 # Create a column to hold the value information along with the year
 df['Text'] = df.apply(lambda row: f"<b>{row['Value']:.2f} ({row['Date_str'][-4:]})</b>", axis=1)
@@ -208,6 +205,10 @@ else:
 # Filter dataframe based on selected main description
 if selected_description:
     df_filtered = df_filtered[df_filtered['Description'].isin(selected_description)]
+
+# Calculate the overall min and max values for the 'Value' column in the entire dataset
+overall_min_value = df_filtered['Value'].min()
+overall_max_value = df_filtered['Value'].max()
 
 # Reorder the Description column based on the selected sector type
 description_order = get_description_order(selected_sector_type, df_filtered)
