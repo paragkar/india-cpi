@@ -269,11 +269,11 @@ else:
     fig.update_xaxes(row=1, col=2, range=[0, max_weighted_avg * 1.3],fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
     fig.update_yaxes(row=1, col=2, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
     
-    fig.update_layout(height=700, width=1200, margin=dict(l=5, r=10, t=0, b=10, pad=0), showlegend=False)
+    fig.update_layout(height=700, width=1200, margin=dict(l=5, r=10, t=10, b=10, pad=0), showlegend=False)
 
     # Display the date with month on top along with the title
     title = f"This is CPI - {selected_date.strftime('%B %Y')}"
 
-    st.markdown(f"<h1 style='font-size:30px; margin-top: -40px;'>{title}</h1>", unsafe_allow_html=True)
+    st.markdown(f"<h1 style='font-size:30px; margin-top: -20px;'>{title}</h1>", unsafe_allow_html=True)
 
     st.plotly_chart(fig, use_container_width=True)
