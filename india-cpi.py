@@ -167,7 +167,7 @@ df = loadfile()
 # Ensuring the Date column is of datetime type
 df['Date'] = pd.to_datetime(df['Date'])
 
-# Sorting dataframe by Date to ensure proper sequence
+# Sorting dataframe by Date to ensure proper animation sequence
 df = df.sort_values(by='Date')
 
 # Convert Date column to string without time
@@ -180,10 +180,6 @@ df['Value'] = df['Value'].astype(float).round(2)
 
 # Create a column to hold the value information along with the year
 df['Text'] = df.apply(lambda row: f"<b>{row['Value']:.2f} ({row['Date_str'][-4:]})</b>", axis=1)
-
-# Calculate weighted average
-df['Weighted Average'] = df['Value'] * df['Weight'] / 100  # Assuming 'Value' is the index and 'Weight' is in percentage
-df['Weighted Average'] = df['Weighted Average'].round(2)
 
 metric_types = ["Index", "Inflation"]
 sector_types = ["All", "Rural", "Urban", "Combined"]
@@ -215,38 +211,38 @@ if description_order:
     df_filtered['Description'] = pd.Categorical(df_filtered['Description'], categories=description_order, ordered=True)
     df_filtered = df_filtered.sort_values('Description')  # Sort the dataframe by Description to ensure the order is maintained
 
-# Add manual date selector
-dates = df_filtered['Date_str'].unique()
-date_index = st.sidebar.number_input('Select Date Index', min_value=0, max_value=len(dates)-1, value=0, step=1)
-selected_date = dates[date_index]
-df_filtered_date = df_filtered[df_filtered['Date_str'] == selected_date]
+# Check if there is any data left after filtering
+if selected_sector_type == "All" and not selected_description:
+    st.write("Please select at least one description to display the data.")
+elif df_filtered.empty:
+    st.write("No data available for the selected filters.")
+else:
+    # Manually set the date range in the sidebar
+    unique_dates = df_filtered['Date'].dt.date.unique()
+    date_index = st.sidebar.number_input("Select Date Index", min_value=0, max_value=len(unique_dates) - 1, value=0, step=1)
+    selected_date = unique_dates[date_index]
+    
+    df_filtered_date = df_filtered[df_filtered['Date'].dt.date == selected_date]
 
-# Scatter plot
-scatter_fig = px.scatter(df_filtered_date, x="Value", y="Description", color="Description", size="Weight",
-                         title="Index and Weighted Average Over Time", text="Text")
-scatter_fig.update_traces(textposition='middle right', textfont=dict(size=16))
-scatter_fig.update_traces(marker=dict(line=dict(width=2, color='black')))
-scatter_fig.update_yaxes(tickfont=dict(size=15, color='black', family='Arial', weight='bold'))
-scatter_fig.update_yaxes(showticklabels=True)
-scatter_fig.update_layout(showlegend=False, width=700, height=800)
+    df_filtered_date['Weighted Average'] = df_filtered_date['Weighted Average'] / 100  # Scale down by 100
 
-# Bar plot for weighted average
-bar_fig = px.bar(df_filtered_date, x="Weighted Average", y="Description", orientation='h', text="Weighted Average",
-                 title="Weighted Average Over Time")
-bar_fig.update_traces(textposition='auto')
-bar_fig.update_yaxes(showticklabels=False)
-bar_fig.update_layout(showlegend=False, width=300, height=800, margin=dict(l=0, r=10, t=40, b=40))
+    fig = make_subplots(rows=1, cols=2, shared_yaxes=True, column_widths=[0.7, 0.3])
 
-# Combine both plots
-fig = make_subplots(rows=1, cols=2, column_widths=[0.7, 0.3], specs=[[{"type": "scatter"}, {"type": "bar"}]])
-fig.add_traces(scatter_fig.data + bar_fig.data)
-fig.layout.update(scatter_fig.layout)
-fig.layout.update(bar_fig.layout)
-fig.update_xaxes(scatter_fig.layout.xaxis, row=1, col=1)
-fig.update_yaxes(scatter_fig.layout.yaxis, row=1, col=1)
-fig.update_xaxes(bar_fig.layout.xaxis, row=1, col=2)
-fig.update_yaxes(bar_fig.layout.yaxis, row=1, col=2)
-fig.update_layout(width=1000, height=800)
+    scatter_fig = px.scatter(df_filtered_date, x="Value", y="Description", color="Description", size="Weight", size_max=20, text="Text")
+    bar_fig = px.bar(df_filtered_date, x="Weighted Average", y="Description", orientation='h', text_auto='.2f')
 
-# Display combined plot
-st.plotly_chart(fig, use_container_width=True)
+    scatter_fig.update_traces(marker=dict(line=dict(width=2, color='black')), textposition='middle right', textfont=dict(size=16))
+    bar_fig.update_traces(textposition='inside', textfont=dict(size=12), marker=dict(line=dict(width=2, color='black')))
+
+    scatter_fig.update_layout(showlegend=False, xaxis_title="Value of " + selected_metric_type)
+    bar_fig.update_layout(showlegend=False, xaxis_title="Weighted Average", yaxis=dict(showticklabels=False))
+
+    for trace in scatter_fig.data:
+        fig.add_trace(trace, row=1, col=1)
+
+    for trace in bar_fig.data:
+        fig.add_trace(trace, row=1, col=2)
+
+    fig.update_layout(height=950, width=1200, margin=dict(l=0, r=10, t=120, b=40, pad=0))
+
+    st.plotly_chart(fig, use_container_width=True)
