@@ -278,8 +278,8 @@ else:
 
     fig = make_subplots(rows=1, cols=2, shared_yaxes=True, column_widths=[0.8, 0.2], horizontal_spacing=0.01)  # Minimal horizontal spacing
 
-    # scatter_fig = px.scatter(df_filtered_date, x="Value", y="Description", color="Description", size="Weight", size_max=20, text="Text")
-    scatter_fig = px.scatter(df_filtered_date, x="Value", y="Description", color="Description", size=10, size_max=20, text="Text")
+    scatter_fig = px.scatter(df_filtered_date, x="Value", y="Description", color="Description", size="Weight", size_max=20, text="Text")
+    
     bar_fig = px.bar(df_filtered_date, x="Weighted Average", y="Description", orientation='h', text_auto='.1f')
 
     scatter_fig.update_traces(marker=dict(line=dict(width=1, color='black')), textposition='middle right', textfont=dict(family='Arial',size=15, color= 'black',weight='bold'))
