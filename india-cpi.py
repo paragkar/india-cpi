@@ -161,6 +161,30 @@ def get_description_order(sector_type, df):
     
     return new_order_list
 
+# Function to get main and subcategories
+def get_main_and_sub_categories(sector_type):
+    main_categories = {
+        "Rural": [
+            "A) General Index - Rural", "A.1) Food and beverages - Rural", 
+            "A.2) Pan, tobacco and intoxicants - Rural", 
+            "A.3) Clothing and footwear - Rural", "A.4) Housing - Rural", 
+            "A.5) Fuel and light - Rural", "A.6) Miscellaneous - Rural"
+        ],
+        "Urban": [
+            "A) General Index - Urban", "A.1) Food and beverages - Urban", 
+            "A.2) Pan, tobacco and intoxicants - Urban", 
+            "A.3) Clothing and footwear - Urban", "A.4) Housing - Urban", 
+            "A.5) Fuel and light - Urban", "A.6) Miscellaneous - Urban"
+        ],
+        "Combined": [
+            "A) General Index - Combined", "A.1) Food and beverages - Combined", 
+            "A.2) Pan, tobacco and intoxicants - Combined", 
+            "A.3) Clothing and footwear - Combined", "A.4) Housing - Combined", 
+            "A.5) Fuel and light - Combined", "A.6) Miscellaneous - Combined"
+        ]
+    }
+    return main_categories.get(sector_type, [])
+
 # Main Program Starts Here
 df = loadfile()
 
@@ -178,7 +202,7 @@ df["Value"] = df["Value"].replace("-", np.nan, regex=True)
 # Format the Value column to two decimal places and keep it as a float
 df['Value'] = df['Value'].astype(float).round(2)
 
-# Create a column to hold the value information without the year
+# Create a column to hold the value information along with the year
 df['Text'] = df.apply(lambda row: f"<b>{row['Value']:.2f}</b>", axis=1)
 
 metric_types = ["Index", "Inflation"]
@@ -193,13 +217,20 @@ df_filtered = df_filtered.replace("", np.nan).dropna()
 
 selected_sector_type = st.sidebar.selectbox("Select Sector Type", sector_types)
 
-# Prepare options for the multiselect based on sector type selection
-if selected_sector_type == "All":
-    description_options = df_filtered['Description'].unique().tolist()
-    selected_description = st.sidebar.multiselect("Select Description to Display", description_options)
+# Additional filter for Main Cat and Sub Cat
+selected_main_sub_cat = st.sidebar.radio("Select Category Type", ["All", "Main Cat", "Sub Cat"])
+
+main_categories = get_main_and_sub_categories(selected_sector_type)
+sub_categories = [desc for desc in df_filtered['Description'].unique() if desc not in main_categories or "General Index" in desc]
+
+if selected_main_sub_cat == "Main Cat":
+    filtered_description_options = [desc for desc in df_filtered['Description'].unique() if any(main in desc for main in main_categories)]
+elif selected_main_sub_cat == "Sub Cat":
+    filtered_description_options = sub_categories + ["General Index - Rural", "General Index - Urban", "General Index - Combined"]
 else:
-    description_options = df_filtered[df_filtered['Description'].str.contains(re.escape(selected_sector_type))]['Description'].unique().tolist()
-    selected_description = st.sidebar.multiselect("Select Description to Display", description_options, default=description_options)
+    filtered_description_options = df_filtered['Description'].unique().tolist()
+
+selected_description = st.sidebar.multiselect("Select Description to Display", filtered_description_options, default=filtered_description_options)
 
 # Filter dataframe based on selected main description
 if selected_description:
@@ -223,32 +254,36 @@ elif df_filtered.empty:
 else:
     # Create the 'Weighted Average' column
     df_filtered['Weighted Average'] = df_filtered['Value'] * df_filtered['Weight'] / 100
-    min_weighted_avg = df_filtered['Weighted Average'].min()
-    max_weighted_avg = df_filtered['Weighted Average'].max()
     
     # Manually set the date range in the sidebar
     unique_dates = df_filtered['Date'].dt.date.unique()
     unique_dates = sorted(unique_dates)  # Ensure dates are sorted
-    date_index = st.slider("Date Index", min_value=0, max_value=len(unique_dates) - 1, value=0)
-    # date_index = st.slider("", min_value=0, max_value=len(unique_dates) - 1, value=0)
+    date_index = st.sidebar.slider("Select Date", min_value=0, max_value=len(unique_dates) - 1, value=0)
     selected_date = unique_dates[date_index]
     
     df_filtered_date = df_filtered[df_filtered['Date'].dt.date == selected_date]
 
     fig = make_subplots(rows=1, cols=2, shared_yaxes=True, column_widths=[0.8, 0.2], horizontal_spacing=0.01)  # Minimal horizontal spacing
 
-    scatter_fig = px.scatter(df_filtered_date, x="Value", y="Description", color="Description", size="Weight", size_max=20, text="Text")
+    scatter_fig = px.scatter(df_filtered_date, x="Value", y="Description", color="Description", size="Weight", size_max=20)
     bar_fig = px.bar(df_filtered_date, x="Weighted Average", y="Description", orientation='h', text_auto='.2f')
 
     scatter_fig.update_traces(marker=dict(line=dict(width=2, color='black')), textposition='middle right', textfont=dict(size=16))
-
-    bar_fig.update_traces(textposition='outside', textfont=dict(size=15, family='Arial', color='black', weight='bold'), marker=dict(color='red', line=dict(width=2, color='black')))
+    bar_fig.update_traces(textposition='outside', textfont=dict(size=15, family='Arial', color='black', weight='bold'))
 
     scatter_fig.update_layout(showlegend=False, xaxis_title="Value of " + selected_metric_type)
-
     bar_fig.update_layout(showlegend=False, xaxis_title="Weighted Average", yaxis=dict(showticklabels=False))
 
-    # max_weighted_avg = df_filtered['Weighted Average'].max()
+    # Adjust x-axis range for scatter plot using the overall min and max values
+    scatter_fig.update_xaxes(range=[overall_min_value, overall_max_value * 1.15])
+
+    # Adjust x-axis range for bar plot
+    max_weighted_avg = df_filtered['Weighted Average'].max()
+    min_weighted_avg = df_filtered['Weighted Average'].min()
+    if selected_metric_type == "Inflation":
+        bar_fig.update_xaxes(range=[min_weighted_avg * 1.15, max_weighted_avg * 1.15])
+    else:
+        bar_fig.update_xaxes(range=[0, max_weighted_avg * 1.3])
 
     for trace in scatter_fig.data:
         fig.add_trace(trace, row=1, col=1)
@@ -263,18 +298,14 @@ else:
     fig.update_yaxes(categoryorder='array', categoryarray=categories_reversed, row=1, col=1)
     fig.update_yaxes(categoryorder='array', categoryarray=categories_reversed, row=1, col=2)
 
-   # Update the layout for the combined figure
-    fig.update_xaxes(row=1, col=1, range=[overall_min_value, overall_max_value * 1.05], fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
-    fig.update_yaxes(row=1, col=1, tickfont=dict(size=15),fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
+    # Update the layout for the combined figure
+    fig.update_xaxes(row=1, col=1, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
+    fig.update_yaxes(row=1, col=1, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
 
-    if selected_metric_type == "Inflation":
-        fig.update_xaxes(row=1, col=2, range=[min_weighted_avg, max_weighted_avg * 1.4],fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
-    else:
-         fig.update_xaxes(row=1, col=2, range=[0, max_weighted_avg * 1.3],fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
-
+    fig.update_xaxes(row=1, col=2, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
     fig.update_yaxes(row=1, col=2, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
     
-    fig.update_layout(height=700, width=1200, margin=dict(l=5, r=10, t=10, b=10, pad=0), showlegend=False)
+    fig.update_layout(height=700, width=1200, margin=dict(l=5, r=10, t=0, b=10, pad=0), showlegend=False)
 
     # Display the date with month on top along with the title
     title = f"Consumer Price {selected_metric_type} Data For Month - {selected_date.strftime('%B %Y')}"
