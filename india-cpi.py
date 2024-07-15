@@ -236,7 +236,7 @@ else:
     bar_fig.update_traces(textposition='inside', textfont=dict(size=12), marker=dict(line=dict(width=2, color='black')))
 
     scatter_fig.update_layout(showlegend=False, xaxis_title="Value of " + selected_metric_type)
-    scatter_fig.update_layout(showlegend=False, xaxis_title="Value of " + selected_metric_type)
+    # scatter_fig.update_layout(showlegend=False, xaxis_title="Value of " + selected_metric_type)
     bar_fig.update_layout(showlegend=False, xaxis_title="Weighted Average", yaxis=dict(showticklabels=False))
 
     for trace in scatter_fig.data:
