@@ -253,11 +253,11 @@ else:
     # Adjust x-axis range for scatter plot
     max_value = df_filtered_date['Value'].max()
     min_value = df_filtered_date['Value'].min()
-    fig.update_xaxes(range=[min_value, max_value * 1.2], row=1, col=1)
+    fig.update_xaxes(range=[min_value, max_value * 1.25], row=1, col=1)
 
     # Adjust x-axis range for bar plot
     max_weighted_avg = df_filtered_date['Weighted Average'].max()
-    fig.update_xaxes(range=[0, max_weighted_avg * 1.2], row=1, col=2)
+    fig.update_xaxes(range=[0, max_weighted_avg * 1.25], row=1, col=2)
 
     # Update the layout for the combined figure
     fig.update_xaxes(row=1, col=1, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
