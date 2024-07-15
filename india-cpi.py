@@ -7,6 +7,7 @@ import io
 import msoffcrypto
 import numpy as np
 import re
+import plotly.express as px
 
 pd.set_option('future.no_silent_downcasting', True)
 pd.set_option('display.max_columns', None)
