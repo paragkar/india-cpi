@@ -228,7 +228,8 @@ else:
     # Manually set the date range in the sidebar
     unique_dates = df_filtered['Date'].dt.date.unique()
     unique_dates = sorted(unique_dates)  # Ensure dates are sorted
-    date_index = st.sidebar.slider("Select Date", min_value=0, max_value=len(unique_dates) - 1, value=0)
+   # Slider for date selection outside the sidebar
+    date_index = st.slider("Select Date", min_value=0, max_value=len(unique_dates) - 1, value=date_index)
     selected_date = unique_dates[date_index]
     
     df_filtered_date = df_filtered[df_filtered['Date'].dt.date == selected_date]
@@ -279,5 +280,3 @@ else:
 
     st.plotly_chart(fig, use_container_width=True)
 
-    # Slider for date selection outside the sidebar
-    date_index = st.slider("Select Date", min_value=0, max_value=len(unique_dates) - 1, value=date_index)
