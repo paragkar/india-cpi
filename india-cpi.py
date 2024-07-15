@@ -249,7 +249,6 @@ else:
 
     # # Adjust x-axis range for bar plot
     max_weighted_avg = df_filtered['Weighted Average'].max()
-    # bar_fig.update_xaxes(range=[0, max_weighted_avg * 1.2])
 
     for trace in scatter_fig.data:
         fig.add_trace(trace, row=1, col=1)
@@ -275,6 +274,6 @@ else:
 
     title = "This is CPI"
 
-    st.markdown(f"<h1 style='font-size:40px; margin-top: -40px;'>{title}</h1>", unsafe_allow_html=True)
+    st.markdown(f"<h1 style='font-size:30px; margin-top: -40px;'>{title}</h1>", unsafe_allow_html=True)
 
     st.plotly_chart(fig, use_container_width=True)
