@@ -257,7 +257,7 @@ else:
 
     # Adjust x-axis range for bar plot
     max_weighted_avg = df_filtered_date['Weighted Average'].max()
-    fig.update_xaxes(range=[0, max_weighted_avg * 1.25], row=1, col=2)
+    fig.update_xaxes(range=[0, max_weighted_avg * 1.3], row=1, col=2)
 
     # Update the layout for the combined figure
     fig.update_xaxes(row=1, col=1, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
