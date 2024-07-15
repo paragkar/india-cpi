@@ -261,7 +261,7 @@ else:
     fig.update_yaxes(categoryorder='array', categoryarray=categories_reversed, row=1, col=2)
 
    # Update the layout for the combined figure
-    fig.update_xaxes(row=1, col=1, range=[overall_min_value, overall_max_value * 1.15], fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
+    fig.update_xaxes(row=1, col=1, range=[overall_min_value, overall_max_value * 1.05], fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
     fig.update_yaxes(row=1, col=1, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
 
     if selected_metric_type == "Inflation":
