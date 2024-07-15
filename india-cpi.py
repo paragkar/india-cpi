@@ -229,9 +229,14 @@ else:
     description_options = df_filtered[df_filtered['Description'].str.contains(re.escape(selected_sector_type))]['Description'].unique().tolist()
     selected_description = st.sidebar.multiselect("Select Description to Display", description_options, default=description_options)
 
-# Filter dataframe based on selected main description
+# Store the initial order of selected descriptions
 if selected_description:
+    initial_order = {desc: i for i, desc in enumerate(selected_description)}
     df_filtered = df_filtered[df_filtered['Description'].isin(selected_description)]
+
+# # Filter dataframe based on selected main description
+# if selected_description:
+#     df_filtered = df_filtered[df_filtered['Description'].isin(selected_description)]
 
 # Calculate the overall min and max values for the 'Value' column in the entire dataset
 overall_min_value = df_filtered['Value'].min()
@@ -262,6 +267,11 @@ else:
     selected_date = unique_dates[date_index]
     
     df_filtered_date = df_filtered[df_filtered['Date'].dt.date == selected_date]
+
+    # Apply the initial order to df_filtered_date
+    if selected_description:
+        df_filtered_date['Description'] = pd.Categorical(df_filtered_date['Description'], categories=initial_order.keys(), ordered=True)
+        df_filtered_date = df_filtered_date.sort_values(by='Description', key=lambda x: x.map(initial_order))
 
     fig = make_subplots(rows=1, cols=2, shared_yaxes=True, column_widths=[0.8, 0.2], horizontal_spacing=0.01)  # Minimal horizontal spacing
 
