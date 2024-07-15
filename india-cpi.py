@@ -234,7 +234,7 @@ else:
     bar_fig = px.bar(df_filtered_date, x="Weighted Average", y="Description", orientation='h', text_auto='.2f')
 
     scatter_fig.update_traces(marker=dict(line=dict(width=2, color='black')), textposition='middle right', textfont=dict(size=16))
-    bar_fig.update_traces(textposition='auto', textfont=dict(size=12), marker=dict(line=dict(width=2, color='black')))
+    bar_fig.update_traces(textposition='outside', textfont=dict(size=12), marker=dict(line=dict(width=2, color='black')))
 
     # # Adjust x-axis range for scatter plot
     # max_value = df_filtered_date['Value'].max()
