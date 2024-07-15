@@ -228,7 +228,7 @@ else:
     
     df_filtered_date = df_filtered[df_filtered['Date'].dt.date == selected_date]
 
-    fig = make_subplots(rows=1, cols=2, shared_yaxes=True, column_widths=[0.8, 0.2])
+    fig = make_subplots(rows=1, cols=2, shared_yaxes=True, column_widths=[0.8, 0.2],  horizontal_spacing=0.01  # Minimal horizontal spacing)
 
     scatter_fig = px.scatter(df_filtered_date, x="Value", y="Description", color="Description", size="Weight", size_max=20, text="Text")
     bar_fig = px.bar(df_filtered_date, x="Weighted Average", y="Description", orientation='h', text_auto='.2f')
