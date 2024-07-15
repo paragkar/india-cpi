@@ -181,6 +181,10 @@ df['Value'] = df['Value'].astype(float).round(2)
 # Create a column to hold the value information along with the year
 df['Text'] = df.apply(lambda row: f"<b>{row['Value']:.2f} ({row['Date_str'][-4:]})</b>", axis=1)
 
+# Calculate Weighted Average column if it does not exist
+if 'Weighted Average' not in df.columns:
+    df['Weighted Average'] = df['Value'] * df['Weight'] / 100
+
 metric_types = ["Index", "Inflation"]
 sector_types = ["All", "Rural", "Urban", "Combined"]
 
@@ -217,8 +221,6 @@ if selected_sector_type == "All" and not selected_description:
 elif df_filtered.empty:
     st.write("No data available for the selected filters.")
 else:
-    df_filtered['Weighted Average'] = df_filtered['Weighted Average'] / 100  # Scale down by 100
-
     scatter_fig = px.scatter(
         df_filtered,
         x="Value",
