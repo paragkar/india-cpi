@@ -237,19 +237,6 @@ if selected_description:
 overall_min_value = df_filtered['Value'].min()
 overall_max_value = df_filtered['Value'].max()
 
-# # Ensure the order of descriptions does not change when 'All' is selected
-# if selected_sector_type != "All":
-#     # Reorder the Description column based on the selected sector type
-#     description_order = get_description_order(selected_sector_type, df_filtered)
-#     if description_order:
-#         df_filtered['Description'] = pd.Categorical(df_filtered['Description'], categories=description_order, ordered=True)
-#         df_filtered = df_filtered.sort_values('Description')  # Sort the dataframe by Description to ensure the order is maintained
-# else:
-#     # Preserve the order of selected descriptions
-#     selected_description_order = selected_description
-#     df_filtered['Description'] = pd.Categorical(df_filtered['Description'], categories=selected_description_order, ordered=True)
-#     df_filtered = df_filtered.sort_values('Description')  # Sort the dataframe by Description to ensure the order is maintained
-
 # Ensure the order of descriptions does not change when 'All' is selected
 if selected_sector_type != "All":
     # Reorder the Description column based on the selected sector type
@@ -258,7 +245,7 @@ if selected_sector_type != "All":
         df_filtered['Description'] = pd.Categorical(df_filtered['Description'], categories=description_order, ordered=True)
         df_filtered = df_filtered.sort_values('Description')  # Sort the dataframe by Description to ensure the order is maintained
 else:
-    # Preserve the order of selected descriptions and ensure weights are included
+    # Preserve the order of selected descriptions
     selected_description_order = selected_description
     df_filtered['Description'] = pd.Categorical(df_filtered['Description'], categories=selected_description_order, ordered=True)
     df_filtered = df_filtered.sort_values('Description')  # Sort the dataframe by Description to ensure the order is maintained
