@@ -217,7 +217,7 @@ selected_category_type = st.sidebar.selectbox("Select Category Type", category_t
 if selected_category_type == "Main Cat":
     df_filtered = df_filtered[df_filtered['Description'].apply(lambda x: any(main in x for main in main_categories) or "General Index" in x or "Housing" in x)]
 elif selected_category_type == "Sub Cat":
-    df_filtered = df_filtered[df_filtered['Description'].apply(lambda x: not any(main in x for main in main_categories) or "General Index" in x or "Housing" in x")]
+    df_filtered = df_filtered[df_filtered['Description'].apply(lambda x: not any(main in x for main in main_categories) or "General Index" in x or "Housing" in x)]
 
 selected_sector_type = st.sidebar.selectbox("Select Sector Type", sector_types)
 
