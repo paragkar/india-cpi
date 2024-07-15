@@ -192,21 +192,15 @@ df_filtered = df[df['ValueType'] == selected_metric_type].copy()
 df_filtered = df_filtered.replace("", np.nan).dropna()
 
 # Define main categories for each sector type
-main_categories_rural = [
+main_categories = [
     "A) General Index - Rural", "A.1) Food and beverages - Rural", 
     "A.2) Pan, tobacco and intoxicants - Rural", 
     "A.3) Clothing and footwear - Rural", "A.4) Housing - Rural", 
-    "A.5) Fuel and light - Rural", "A.6) Miscellaneous - Rural"
-]
-
-main_categories_urban = [
+    "A.5) Fuel and light - Rural", "A.6) Miscellaneous - Rural",
     "A) General Index - Urban", "A.1) Food and beverages - Urban", 
     "A.2) Pan, tobacco and intoxicants - Urban", 
     "A.3) Clothing and footwear - Urban", "A.4) Housing - Urban", 
-    "A.5) Fuel and light - Urban", "A.6) Miscellaneous - Urban"
-]
-
-main_categories_combined = [
+    "A.5) Fuel and light - Urban", "A.6) Miscellaneous - Urban",
     "A) General Index - Combined", "A.1) Food and beverages - Combined", 
     "A.2) Pan, tobacco and intoxicants - Combined", 
     "A.3) Clothing and footwear - Combined", "A.4) Housing - Combined", 
