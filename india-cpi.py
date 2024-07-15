@@ -217,16 +217,6 @@ main_categories_combined = [
 category_types = ["Both", "Main Cat", "Sub Cat"]
 selected_category_type = st.sidebar.selectbox("Select Category Type", category_types)
 
-# Assign main categories based on selected sector type
-if selected_sector_type == "Rural":
-    main_categories = main_categories_rural
-elif selected_sector_type == "Urban":
-    main_categories = main_categories_urban
-elif selected_sector_type == "Combined":
-    main_categories = main_categories_combined
-else:
-    main_categories = main_categories_rural + main_categories_urban + main_categories_combined  # Default to all main categories
-
 if selected_category_type == "Main Cat":
     df_filtered = df_filtered[df_filtered['Description'].apply(lambda x: any(main in x for main in main_categories) or "General Index" in x)]
 elif selected_category_type == "Sub Cat":
