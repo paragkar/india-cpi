@@ -229,9 +229,8 @@ else:
     description_options = df_filtered[df_filtered['Description'].str.contains(re.escape(selected_sector_type))]['Description'].unique().tolist()
     selected_description = st.sidebar.multiselect("Select Description to Display", description_options, default=description_options)
 
-# Store the initial order of selected descriptions
+# Filter dataframe based on selected main description
 if selected_description:
-    initial_order = {desc: i for i, desc in enumerate(selected_description)}
     df_filtered = df_filtered[df_filtered['Description'].isin(selected_description)]
 
 # Calculate the overall min and max values for the 'Value' column in the entire dataset
@@ -263,11 +262,6 @@ else:
     selected_date = unique_dates[date_index]
     
     df_filtered_date = df_filtered[df_filtered['Date'].dt.date == selected_date]
-
-    # Apply the initial order to df_filtered_date
-    if selected_description:
-        df_filtered_date['Description'] = pd.Categorical(df_filtered_date['Description'], categories=initial_order.keys(), ordered=True)
-        df_filtered_date = df_filtered_date.sort_values(by='Description', key=lambda x: x.map(initial_order))
 
     fig = make_subplots(rows=1, cols=2, shared_yaxes=True, column_widths=[0.8, 0.2], horizontal_spacing=0.01)  # Minimal horizontal spacing
 
@@ -309,6 +303,10 @@ else:
     fig.update_yaxes(row=1, col=2, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
     
     fig.update_layout(height=700, width=1200, margin=dict(l=5, r=10, t=10, b=10, pad=0), showlegend=False)
+
+    # Update the layout for the combined figure with x-axis labels
+    fig.update_xaxes(title_text="CPI " + selected_metric_type, row=1, col=1)
+    fig.update_xaxes(title_text="Weight Adjusted Values", row=1, col=2)
 
     # Display the date with month on top along with the title
     title = f"Consumer Price {selected_metric_type} Data For Month - {selected_date.strftime('%B %Y')}"
