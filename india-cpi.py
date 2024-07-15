@@ -295,10 +295,16 @@ else:
     scatter_fig.update_traces(marker=dict(line=dict(width=1, color='black')), textposition='middle right', textfont=dict(family='Arial', size=15, color='black', weight='bold'))
     scatter_fig.update_layout(showlegend=False, xaxis_title="Value of " + selected_metric_type)
 
-    # Create bar plot with specific colors
-    bar_fig = px.bar(df_filtered_date, x="Weighted Average", y="Description", color="Description", orientation='h', text_auto='.1f')
-    bar_fig.update_traces(textposition='outside', textfont=dict(size=15, family='Arial', color='black', weight='bold'), marker=dict(line=dict(width=2, color='black')))
+    # Map colors from scatter plot to bar plot
+    color_map = {desc: trace.marker.color for desc, trace in zip(df_filtered_date['Description'], scatter_fig.data)}
+
+    # Create bar plot
+    bar_fig = px.bar(df_filtered_date, x="Weighted Average", y="Description", orientation='h', text_auto='.1f')
+    bar_fig.update_traces(textposition='outside', textfont=dict(size=15, family='Arial', color='black', weight='bold'))
+    bar_fig.update_traces(marker=dict(line=dict(width=2, color='black')))
+    bar_fig.update_traces(marker_color=[color_map[desc] for desc in df_filtered_date['Description']])
     bar_fig.update_layout(showlegend=False, xaxis_title="Weighted Average", yaxis=dict(showticklabels=False))
+
 
 
     for trace in scatter_fig.data:
