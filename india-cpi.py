@@ -178,7 +178,6 @@ df["Value"] = df["Value"].replace("-", np.nan, regex=True)
 # Format the Value column to two decimal places and keep it as a float
 df['Value'] = df['Value'].astype(float).round(2)
 
-
 # Create a column to hold the value information along with the year
 df['Text'] = df.apply(lambda row: f"<b>{row['Value']:.2f} ({row['Date_str'][-4:]})</b>", axis=1)
 
@@ -228,8 +227,7 @@ else:
     # Manually set the date range in the sidebar
     unique_dates = df_filtered['Date'].dt.date.unique()
     unique_dates = sorted(unique_dates)  # Ensure dates are sorted
-   # Slider for date selection outside the sidebar
-    date_index = st.slider("Select Date", min_value=0, max_value=len(unique_dates) - 1, value=date_index)
+    date_index = st.slider("Select Date", min_value=0, max_value=len(unique_dates) - 1, value=0)
     selected_date = unique_dates[date_index]
     
     df_filtered_date = df_filtered[df_filtered['Date'].dt.date == selected_date]
@@ -279,4 +277,3 @@ else:
     st.markdown(f"<h1 style='font-size:30px; margin-top: -40px;'>{title}</h1>", unsafe_allow_html=True)
 
     st.plotly_chart(fig, use_container_width=True)
-
