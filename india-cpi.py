@@ -214,113 +214,60 @@ if description_order:
     df_filtered['Description'] = pd.Categorical(df_filtered['Description'], categories=description_order, ordered=True)
     df_filtered = df_filtered.sort_values('Description')  # Sort the dataframe by Description to ensure the order is maintained
 
-# Check if there is any data left after filtering
-if selected_sector_type == "All" and not selected_description:
-    st.write("Please select at least one description to display the data.")
-elif df_filtered.empty:
-    st.write("No data available for the selected filters.")
-else:
-    with st.spinner('Rendering the display, please wait...'):
-        # Calculate min and max values for the dotted lines
-        min_value = df_filtered['Value'].min()
-        max_value = df_filtered['Value'].max()
+# Get unique dates for manual selection
+unique_dates = sorted(df_filtered['Date_str'].unique(), key=lambda x: datetime.strptime(x, '%d-%m-%Y'))
+date_index = st.sidebar.number_input("Select Date Index", min_value=0, max_value=len(unique_dates)-1, value=0, step=1)
+selected_date = unique_dates[date_index]
 
-        # Ensure Date_str is ordered correctly
-        df_filtered['Date_str'] = pd.Categorical(df_filtered['Date_str'], ordered=True, categories=sorted(df_filtered['Date_str'].unique(), key=lambda x: datetime.strptime(x, '%d-%m-%Y')))
+# Filter data for the selected date
+df_filtered_date = df_filtered[df_filtered['Date_str'] == selected_date]
 
-        # Calculate the range for the x-axis
-        range_min = min_value - abs(min_value) * 0.30
-        range_max = max_value + abs(max_value) * 0.15
+# Plotly scatter plot
+scatter_fig = px.scatter(df_filtered_date, x="Value", y="Description",
+                         color="Description", title="Index Over Time",
+                         size="Weight", size_max=20, text="Text")
 
-        # Get unique dates for manual selection
-        unique_dates = df_filtered['Date_str'].unique()
-        selected_date = st.sidebar.selectbox("Select Date", unique_dates)
+# Customize text position to the right of the dots
+scatter_fig.update_traces(textposition='middle right', textfont=dict(size=16))
 
-        # Filter data for the selected date
-        df_filtered_date = df_filtered[df_filtered['Date_str'] == selected_date]
+# Add black outlines to the dots
+scatter_fig.update_traces(marker=dict(line=dict(width=2, color='black')))
 
-        # Plotly scatter plot
-        scatter_fig = px.scatter(df_filtered_date, x="Value", y="Description",
-                                 color="Description", range_x=[range_min, range_max],
-                                 title="Index Over Time", size="Weight", size_max=20, text="Text")
+# Customize y-axis labels font size and make them bold
+scatter_fig.update_yaxes(tickfont=dict(size=15, color='black', family='Arial', weight='bold'))
 
-        # Customize text position to the right of the dots
-        scatter_fig.update_traces(textposition='middle right', textfont=dict(size=16))
+# Draw a black line on the y-axis
+scatter_fig.add_shape(type='line', x0=0, x1=0, y0=0, y1=1, line=dict(color='black', width=1), xref='x', yref='paper')
 
-        # Add black outlines to the dots
-        scatter_fig.update_traces(marker=dict(line=dict(width=2, color='black')))
+# Remove legend on the right side
+scatter_fig.update_layout(showlegend=False)
 
-        # Customize y-axis labels font size and make them bold
-        scatter_fig.update_yaxes(tickfont=dict(size=15, color='black', family='Arial', weight='bold'))
+# Plotly bar chart
+bar_fig = px.bar(df_filtered_date, x="Weighted Average", y="Description",
+                 orientation='h', text=df_filtered_date['Weighted Average'].apply(lambda x: f'{x:.2f}'))
 
-        # Remove y-axis labels and variable labels
-        scatter_fig.update_yaxes(showticklabels=True)
+# Customize bar chart
+bar_fig.update_traces(textposition='outside', marker_color='blue')
 
-        # Draw a black line on the y-axis
-        scatter_fig.add_shape(type='line', x0=0, x1=0, y0=0, y1=1, line=dict(color='black', width=1), xref='x', yref='paper')
+# Remove y-axis labels and variable labels
+bar_fig.update_yaxes(showticklabels=False)
 
-        # Remove legend on the right side
-        scatter_fig.update_layout(showlegend=False)
+# Combine scatter plot and bar chart in the same layout
+combined_fig = make_subplots(rows=1, cols=2, specs=[[{"type": "scatter"}, {"type": "bar"}]],
+                             column_widths=[0.7, 0.3], horizontal_spacing=0.02)
 
-        # Add dotted lines for min and max values
-        scatter_fig.add_shape(
-            type="line",
-            x0=min_value, y0=0, x1=min_value, y1=1,
-            xref='x', yref='paper',
-            line=dict(color="blue", width=2, dash="dot")
-        )
-        scatter_fig.add_shape(
-            type="line",
-            x0=max_value, y0=0, x1=max_value, y1=1,
-            xref='x', yref='paper',
-            line=dict(color="red", width=2, dash="dot")
-        )
+for trace in scatter_fig['data']:
+    combined_fig.add_trace(trace, row=1, col=1)
 
-        # Adjust the layout
-        scatter_fig.update_layout(
-            xaxis_title="Value of " + selected_metric_type,
-            yaxis_title="",
-            width=800,
-            height=950,  # Adjust the height to make the plot more visible
-            margin=dict(l=0, r=10, t=120, b=40, pad=0),  # Add margins to make the plot more readable and closer to the left
-        )
+for trace in bar_fig['data']:
+    combined_fig.add_trace(trace, row=1, col=2)
 
-        # Plotly bar chart
-        bar_fig = px.bar(df_filtered_date, x="Weighted Average", y="Description",
-                         orientation='h', text=df_filtered_date['Weighted Average'].apply(lambda x: f'{x:.2f}'),
-                         range_x=[0, df_filtered_date['Weighted Average'].max() * 1.2])
+combined_fig.update_layout(
+    title_text="Index and Weighted Average Over Time",
+    height=900,
+    width=1400,
+    showlegend=False,
+)
 
-        # Customize bar chart
-        bar_fig.update_traces(textposition='outside', marker_color='blue')
-
-        # Remove y-axis labels and variable labels
-        bar_fig.update_yaxes(showticklabels=False)
-
-        # Adjust the layout
-        bar_fig.update_layout(
-            xaxis_title="Weighted Average",
-            yaxis_title="",
-            width=400,
-            height=950,  # Adjust the height to match the scatter plot
-            margin=dict(l=10, r=0, t=120, b=40, pad=0)  # Add margins to make the plot more readable
-        )
-
-        # Combine scatter plot and bar chart in the same layout
-        combined_fig = make_subplots(rows=1, cols=2, specs=[[{"type": "scatter"}, {"type": "bar"}]],
-                                     column_widths=[0.7, 0.3], horizontal_spacing=0.02)
-
-        for trace in scatter_fig['data']:
-            combined_fig.add_trace(trace, row=1, col=1)
-
-        for trace in bar_fig['data']:
-            combined_fig.add_trace(trace, row=1, col=2)
-
-        combined_fig.update_layout(
-            title_text="Index and Weighted Average Over Time",
-            height=900,
-            width=1400,
-            showlegend=False,
-        )
-
-        with st.container():
-            st.plotly_chart(combined_fig, use_container_width=True)
+with st.container():
+    st.plotly_chart(combined_fig, use_container_width=True)
