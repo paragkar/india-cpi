@@ -250,6 +250,9 @@ else:
     for trace in bar_fig.data:
         fig.add_trace(trace, row=1, col=2)
 
+    fig.update_yaxes(categoryorder='total ascending', row=1, col=1)
+    fig.update_yaxes(categoryorder='total ascending', row=1, col=2)
+
     # Adjust x-axis range for scatter plot
     max_value = df_filtered_date['Value'].max()
     min_value = df_filtered_date['Value'].min()
