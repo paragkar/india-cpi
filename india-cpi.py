@@ -264,7 +264,7 @@ else:
     fig.update_xaxes(row=1, col=1, range=[overall_min_value, overall_max_value * 1.15], fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
     fig.update_yaxes(row=1, col=1, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
 
-    if selected_metric_type == "Inflation"
+    if selected_metric_type == "Inflation":
         fig.update_xaxes(row=1, col=2, range=[min_weighted_avg, max_weighted_avg * 1.3],fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
     else:
          fig.update_xaxes(row=1, col=2, range=[0, max_weighted_avg * 1.3],fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
