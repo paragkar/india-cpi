@@ -232,14 +232,13 @@ else:
     
     df_filtered_date = df_filtered[df_filtered['Date'].dt.date == selected_date]
 
-    fig = make_subplots(rows=1, cols=2, shared_yaxes=True, column_widths=[0.8, 0.2],  horizontal_spacing=0.01)  # Minimal horizontal spacing
+    fig = make_subplots(rows=1, cols=2, shared_yaxes=True, column_widths=[0.8, 0.2], horizontal_spacing=0.01)  # Minimal horizontal spacing
 
     scatter_fig = px.scatter(df_filtered_date, x="Value", y="Description", color="Description", size="Weight", size_max=20, text="Text")
     bar_fig = px.bar(df_filtered_date, x="Weighted Average", y="Description", orientation='h', text_auto='.2f')
 
     scatter_fig.update_traces(marker=dict(line=dict(width=2, color='black')), textposition='middle right', textfont=dict(size=16))
     bar_fig.update_traces(textposition='outside', textfont=dict(size=12), marker=dict(line=dict(width=2, color='black')))
-
 
     scatter_fig.update_layout(showlegend=False, xaxis_title="Value of " + selected_metric_type)
     bar_fig.update_layout(showlegend=False, xaxis_title="Weighted Average", yaxis=dict(showticklabels=False))
@@ -257,21 +256,12 @@ else:
     for trace in bar_fig.data:
         fig.add_trace(trace, row=1, col=2)
 
-   # Create a reversed list of categories (descriptions)
+    # Create a reversed list of categories (descriptions)
     categories_reversed = df_filtered_date['Description'].tolist()[::-1]
 
     # Reverse the order of the y-axis for both the scatter plot and the bar plot
     fig.update_yaxes(categoryorder='array', categoryarray=categories_reversed, row=1, col=1)
     fig.update_yaxes(categoryorder='array', categoryarray=categories_reversed, row=1, col=2)
-
-    # # Adjust x-axis range for scatter plot
-    # max_value = df_filtered_date['Value'].max()
-    # min_value = df_filtered_date['Value'].min()
-    # fig.update_xaxes(range=[min_value*0.95, max_value * 1.25], row=1, col=1)
-
-    # # Adjust x-axis range for bar plot
-    # max_weighted_avg = df_filtered_date['Weighted Average'].max()
-    # fig.update_xaxes(range=[0, max_weighted_avg * 1.3], row=1, col=2)
 
     # Update the layout for the combined figure
     fig.update_xaxes(row=1, col=1, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
@@ -281,7 +271,6 @@ else:
     fig.update_xaxes(row=1, col=2, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
     fig.update_yaxes(row=1, col=2, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
     
-    
     fig.update_layout(height=700, width=1200, margin=dict(l=0, r=10, t=0, b=10, pad=0), showlegend=False)
 
     title = "This is CPI"
@@ -289,5 +278,3 @@ else:
     st.markdown(f"<h1 style='font-size:40px; margin-top: -40px;'>{title}</h1>", unsafe_allow_html=True)
 
     st.plotly_chart(fig, use_container_width=True)
-
-
