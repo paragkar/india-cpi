@@ -191,6 +191,47 @@ df_filtered = df[df['ValueType'] == selected_metric_type].copy()
 
 df_filtered = df_filtered.replace("", np.nan).dropna()
 
+# Define main categories for each sector type
+main_categories_rural = [
+    "A) General Index - Rural", "A.1) Food and beverages - Rural", 
+    "A.2) Pan, tobacco and intoxicants - Rural", 
+    "A.3) Clothing and footwear - Rural", "A.4) Housing - Rural", 
+    "A.5) Fuel and light - Rural", "A.6) Miscellaneous - Rural"
+]
+
+main_categories_urban = [
+    "A) General Index - Urban", "A.1) Food and beverages - Urban", 
+    "A.2) Pan, tobacco and intoxicants - Urban", 
+    "A.3) Clothing and footwear - Urban", "A.4) Housing - Urban", 
+    "A.5) Fuel and light - Urban", "A.6) Miscellaneous - Urban"
+]
+
+main_categories_combined = [
+    "A) General Index - Combined", "A.1) Food and beverages - Combined", 
+    "A.2) Pan, tobacco and intoxicants - Combined", 
+    "A.3) Clothing and footwear - Combined", "A.4) Housing - Combined", 
+    "A.5) Fuel and light - Combined", "A.6) Miscellaneous - Combined"
+]
+
+# Additional filter for Main Cat, Sub Cat, or Both
+category_types = ["Both", "Main Cat", "Sub Cat"]
+selected_category_type = st.sidebar.selectbox("Select Category Type", category_types)
+
+# Assign main categories based on selected sector type
+if selected_sector_type == "Rural":
+    main_categories = main_categories_rural
+elif selected_sector_type == "Urban":
+    main_categories = main_categories_urban
+elif selected_sector_type == "Combined":
+    main_categories = main_categories_combined
+else:
+    main_categories = main_categories_rural + main_categories_urban + main_categories_combined  # Default to all main categories
+
+if selected_category_type == "Main Cat":
+    df_filtered = df_filtered[df_filtered['Description'].apply(lambda x: any(main in x for main in main_categories) or "General Index" in x)]
+elif selected_category_type == "Sub Cat":
+    df_filtered = df_filtered[df_filtered['Description'].apply(lambda x: not any(main in x for main in main_categories) or "General Index" in x)]
+
 selected_sector_type = st.sidebar.selectbox("Select Sector Type", sector_types)
 
 # Prepare options for the multiselect based on sector type selection
