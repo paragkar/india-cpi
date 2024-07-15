@@ -1,8 +1,8 @@
 import pandas as pd
 from datetime import datetime
 import plotly.express as px
-from plotly.subplots import make_subplots
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 import streamlit as st
 import io
 import msoffcrypto
@@ -217,33 +217,37 @@ if selected_sector_type == "All" and not selected_description:
 elif df_filtered.empty:
     st.write("No data available for the selected filters.")
 else:
-    # Create the 'Weighted Average' column
-    df_filtered['Weighted Average'] = df_filtered['Value'] * df_filtered['Weight'] / 100
-    
-    # Manually set the date range in the sidebar
-    unique_dates = df_filtered['Date'].dt.date.unique()
-    date_index = st.sidebar.number_input("Select Date Index", min_value=0, max_value=len(unique_dates) - 1, value=0, step=1)
-    selected_date = unique_dates[date_index]
-    
-    df_filtered_date = df_filtered[df_filtered['Date'].dt.date == selected_date]
+    df_filtered['Weighted Average'] = df_filtered['Weighted Average'] / 100  # Scale down by 100
 
-    fig = make_subplots(rows=1, cols=2, shared_yaxes=True, column_widths=[0.7, 0.3])
+    scatter_fig = px.scatter(
+        df_filtered,
+        x="Value",
+        y="Description",
+        text="Text",
+        size="Weight",
+        size_max=20,
+        range_x=[df_filtered["Value"].min() * 0.7, df_filtered["Value"].max() * 1.3],
+    )
+    scatter_fig.update_traces(textposition='middle right', textfont=dict(size=16))
+    scatter_fig.update_yaxes(tickfont=dict(size=15, color='black', family='Arial', weight='bold'))
+    scatter_fig.update_traces(marker=dict(line=dict(width=2, color='black')))
+    scatter_fig.update_layout(
+        xaxis_title="Value of " + selected_metric_type,
+        yaxis_title="Description",
+        showlegend=False,
+    )
 
-    scatter_fig = px.scatter(df_filtered_date, x="Value", y="Description", color="Description", size="Weight", size_max=20, text="Text")
-    bar_fig = px.bar(df_filtered_date, x="Weighted Average", y="Description", orientation='h', text_auto='.2f')
+    bar_fig = px.bar(
+        df_filtered,
+        x="Weighted Average",
+        y="Description",
+        text="Weighted Average",
+        orientation='h'
+    )
+    bar_fig.update_layout(
+        yaxis=dict(showticklabels=False),
+        showlegend=False,
+    )
 
-    scatter_fig.update_traces(marker=dict(line=dict(width=2, color='black')), textposition='middle right', textfont=dict(size=16))
-    bar_fig.update_traces(textposition='inside', textfont=dict(size=12), marker=dict(line=dict(width=2, color='black')))
-
-    scatter_fig.update_layout(showlegend=False, xaxis_title="Value of " + selected_metric_type)
-    bar_fig.update_layout(showlegend=False, xaxis_title="Weighted Average", yaxis=dict(showticklabels=False))
-
-    for trace in scatter_fig.data:
-        fig.add_trace(trace, row=1, col=1)
-
-    for trace in bar_fig.data:
-        fig.add_trace(trace, row=1, col=2)
-
-    fig.update_layout(height=950, width=1200, margin=dict(l=0, r=10, t=120, b=40, pad=0))
-
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(scatter_fig, use_container_width=True)
+    st.plotly_chart(bar_fig, use_container_width=True)
