@@ -199,4 +199,73 @@ if selected_sector_type == "All":
     selected_description = st.sidebar.multiselect("Select Description to Display", description_options)
 else:
     description_options = df_filtered[df_filtered['Description'].str.contains(re.escape(selected_sector_type))]['Description'].unique().tolist()
-    selected_description = st
+    selected_description = st.sidebar.multiselect("Select Description to Display", description_options, default=description_options)
+
+# Filter dataframe based on selected main description
+if selected_description:
+    df_filtered = df_filtered[df_filtered['Description'].isin(selected_description)]
+
+# Reorder the Description column based on the selected sector type
+description_order = get_description_order(selected_sector_type, df_filtered)
+if description_order:
+    df_filtered['Description'] = pd.Categorical(df_filtered['Description'], categories=description_order, ordered=True)
+    df_filtered = df_filtered.sort_values('Description')  # Sort the dataframe by Description to ensure the order is maintained
+
+# Check if there is any data left after filtering
+if selected_sector_type == "All" and not selected_description:
+    st.write("Please select at least one description to display the data.")
+elif df_filtered.empty:
+    st.write("No data available for the selected filters.")
+else:
+    # Create the 'Weighted Average' column
+    df_filtered['Weighted Average'] = df_filtered['Value'] * df_filtered['Weight'] / 100
+    
+    # Manually set the date range in the sidebar
+    unique_dates = df_filtered['Date'].dt.date.unique()
+    unique_dates = sorted(unique_dates)  # Ensure dates are sorted
+    date_index = st.sidebar.slider("Select Date", min_value=0, max_value=len(unique_dates) - 1, value=0)
+    selected_date = unique_dates[date_index]
+    
+    df_filtered_date = df_filtered[df_filtered['Date'].dt.date == selected_date]
+
+    fig = make_subplots(rows=1, cols=2, shared_yaxes=True, column_widths=[0.8, 0.2])
+
+    scatter_fig = px.scatter(df_filtered_date, x="Value", y="Description", color="Description", size="Weight", size_max=20, text="Text")
+    bar_fig = px.bar(df_filtered_date, x="Weighted Average", y="Description", orientation='h', text_auto='.2f')
+
+    scatter_fig.update_traces(marker=dict(line=dict(width=2, color='black')), textposition='middle right', textfont=dict(size=16))
+    bar_fig.update_traces(textposition='auto', textfont=dict(size=12), marker=dict(line=dict(width=2, color='black')))
+
+    # Adjust x-axis range for scatter plot
+    max_value = df_filtered_date['Value'].max()
+    min_value = df_filtered_date['Value'].min()
+    fig.update_layout(xaxis=dict(range=[min_value, max_value * 1.2]))
+
+   
+    scatter_fig.update_layout(showlegend=False, xaxis_title="Value of " + selected_metric_type)
+    bar_fig.update_layout(showlegend=False, xaxis_title="Weighted Average", yaxis=dict(showticklabels=False))
+
+    for trace in scatter_fig.data:
+        fig.add_trace(trace, row=1, col=1)
+
+    for trace in bar_fig.data:
+        fig.add_trace(trace, row=1, col=2)
+
+    # Update the layout for the combined figure
+    fig.update_xaxes(row=1, col=1, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
+    fig.update_yaxes(row=1, col=1, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
+
+    # Update the layout for the combined figure
+    fig.update_xaxes(row=1, col=2, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
+    fig.update_yaxes(row=1, col=2, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
+    
+    
+    fig.update_layout(height=700, width=1200, margin=dict(l=0, r=10, t=0, b=10, pad=0), showlegend=False)
+
+    title = "This is CPI"
+
+    st.markdown(f"<h1 style='font-size:40px; margin-top: -40px;'>{title}</h1>", unsafe_allow_html=True)
+
+    st.plotly_chart(fig, use_container_width=True)
+
+
