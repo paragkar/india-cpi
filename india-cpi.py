@@ -51,6 +51,30 @@ def loadfile():
     df = pd.read_excel(excel_content, sheet_name="Sheet1")
     return df
 
+def get_main_and_sub_categories(sector_type):
+    main_categories = {
+        "Rural": [
+            "A) General Index - Rural", "A.1) Food and beverages - Rural", 
+            "A.2) Pan, tobacco and intoxicants - Rural", 
+            "A.3) Clothing and footwear - Rural", "A.4) Housing - Rural", 
+            "A.5) Fuel and light - Rural", "A.6) Miscellaneous - Rural"
+        ],
+        "Urban": [
+            "A) General Index - Urban", "A.1) Food and beverages - Urban", 
+            "A.2) Pan, tobacco and intoxicants - Urban", 
+            "A.3) Clothing and footwear - Urban", "A.4) Housing - Urban", 
+            "A.5) Fuel and light - Urban", "A.6) Miscellaneous - Urban"
+        ],
+        "Combined": [
+            "A) General Index - Combined", "A.1) Food and beverages - Combined", 
+            "A.2) Pan, tobacco and intoxicants - Combined", 
+            "A.3) Clothing and footwear - Combined", "A.4) Housing - Combined", 
+            "A.5) Fuel and light - Combined", "A.6) Miscellaneous - Combined"
+        ]
+    }
+    return main_categories.get(sector_type, [])
+
+
 # Function to get description order and append weights
 def get_description_order(sector_type, df):
     order_dict = {
@@ -178,35 +202,46 @@ df["Value"] = df["Value"].replace("-", np.nan, regex=True)
 # Format the Value column to two decimal places and keep it as a float
 df['Value'] = df['Value'].astype(float).round(2)
 
-# Create a column to hold the value information along with the year
+# Create a column to hold the value information without the year
 df['Text'] = df.apply(lambda row: f"<b>{row['Value']:.2f}</b>", axis=1)
 
 metric_types = ["Index", "Inflation"]
 sector_types = ["All", "Rural", "Urban", "Combined"]
-category_types = ["All", "Main Cat", "Sub Cat"]
 
 selected_metric_type = st.sidebar.selectbox("Select Metric Type", metric_types)
-selected_sector_type = st.sidebar.selectbox("Select Sector Type", sector_types)
-selected_category_type = st.sidebar.selectbox("Select Category Type", category_types)
 
 # Filter dataframe based on selected metric type
 df_filtered = df[df['ValueType'] == selected_metric_type].copy()
+
 df_filtered = df_filtered.replace("", np.nan).dropna()
 
-# Get main categories based on the selected sector type
-main_categories = get_main_and_sub_categories(selected_sector_type)
-general_index = [cat for cat in main_categories if "General Index" in cat]
+selected_sector_type = st.sidebar.selectbox("Select Sector Type", sector_types)
 
-if selected_category_type == "Main Cat":
-    description_options = main_categories + general_index
-elif selected_category_type == "Sub Cat":
-    all_descriptions = df_filtered['Description'].unique().tolist()
-    sub_categories = [desc for desc in all_descriptions if desc not in main_categories] + general_index
-    description_options = sub_categories
-else:
+# Prepare options for the multiselect based on sector type selection
+if selected_sector_type == "All":
     description_options = df_filtered['Description'].unique().tolist()
+    selected_description = st.sidebar.multiselect("Select Description to Display", description_options)
+else:
+    description_options = df_filtered[df_filtered['Description'].str.contains(re.escape(selected_sector_type))]['Description'].unique().tolist()
+    selected_description = st.sidebar.multiselect("Select Description to Display", description_options, default=description_options)
 
-selected_description = st.sidebar.multiselect("Select Description to Display", description_options, default=description_options)
+# # Filter dataframe based on selected main description
+# if selected_description:
+#     df_filtered = df_filtered[df_filtered['Description'].isin(selected_description)]
+
+selected_main_sub_cat = st.sidebar.radio("Select Category Type", ["All", "Main Cat", "Sub Cat"])
+
+main_categories = get_main_and_sub_categories(selected_sector_type)
+sub_categories = [desc for desc in df_filtered['Description'].unique() if desc not in main_categories or "General Index" in desc]
+
+if selected_main_sub_cat == "Main Cat":
+    filtered_description_options = [desc for desc in description_options if any(main in desc for main in main_categories)]
+elif selected_main_sub_cat == "Sub Cat":
+    filtered_description_options = sub_categories + ["General Index - Rural", "General Index - Urban", "General Index - Combined"]
+else:
+    filtered_description_options = description_options
+
+selected_description = st.sidebar.multiselect("Select Description to Display", filtered_description_options, default=filtered_description_options)
 
 # Filter dataframe based on selected main description
 if selected_description:
@@ -241,56 +276,10 @@ else:
 
     fig = make_subplots(rows=1, cols=2, shared_yaxes=True, column_widths=[0.8, 0.2], horizontal_spacing=0.01)  # Minimal horizontal spacing
 
-    scatter_fig = px.scatter(df_filtered_date, x="Value", y="Description", color="Description", size="Weight", size_max=20, text="Text")
+    scatter_fig = px.scatter(df_filtered_date, x="Value", y="Description", color="Description", size="Weight", size_max=20)
     bar_fig = px.bar(df_filtered_date, x="Weighted Average", y="Description", orientation='h', text_auto='.2f')
 
     scatter_fig.update_traces(marker=dict(line=dict(width=2, color='black')), textposition='middle right', textfont=dict(size=16))
-
-    # Define main categories for each sector type
-    main_categories_rural = [
-        "A) General Index - Rural", "A.1) Food and beverages - Rural", 
-        "A.2) Pan, tobacco and intoxicants - Rural", 
-        "A.3) Clothing and footwear - Rural", "A.4) Housing - Rural", 
-        "A.5) Fuel and light - Rural", "A.6) Miscellaneous - Rural"
-    ]
-
-    main_categories_urban = [
-        "A) General Index - Urban", "A.1) Food and beverages - Urban", 
-        "A.2) Pan, tobacco and intoxicants - Urban", 
-        "A.3) Clothing and footwear - Urban", "A.4) Housing - Urban", 
-        "A.5) Fuel and light - Urban", "A.6) Miscellaneous - Urban"
-    ]
-
-    main_categories_combined = [
-        "A) General Index - Combined", "A.1) Food and beverages - Combined", 
-        "A.2) Pan, tobacco and intoxicants - Combined", 
-        "A.3) Clothing and footwear - Combined", "A.4) Housing - Combined", 
-        "A.5) Fuel and light - Combined", "A.6) Miscellaneous - Combined"
-    ]
-
-    # Define colors for each group
-    main_category_color = 'blue'
-    sub_category_color = 'red'
-
-    # Assign main categories based on selected sector type
-    if selected_sector_type == "Rural":
-        main_categories = main_categories_rural
-    elif selected_sector_type == "Urban":
-        main_categories = main_categories_urban
-    elif selected_sector_type == "Combined":
-        main_categories = main_categories_combined
-    else:
-        main_categories = []
-
-    # Define the rest as subcategories
-    sub_categories = [desc for desc in df_filtered_date['Description'].unique() if desc not in main_categories]
-
-    # Create a color map based on categories
-    df_filtered_date['Color'] = df_filtered_date['Description'].apply(lambda x: main_category_color if x in main_categories else sub_category_color)
-
-    # Update bar chart traces with assigned colors
-    bar_fig.for_each_trace(lambda trace: trace.update(marker_color=df_filtered_date.set_index('Description').loc[trace.y, 'Color']))
-
     bar_fig.update_traces(textposition='outside', textfont=dict(size=15, family='Arial', color='black', weight='bold'))
 
     scatter_fig.update_layout(showlegend=False, xaxis_title="Value of " + selected_metric_type)
@@ -301,11 +290,11 @@ else:
 
     # Adjust x-axis range for bar plot
     max_weighted_avg = df_filtered['Weighted Average'].max()
+    min_weighted_avg = df_filtered['Weighted Average'].min()
     if selected_metric_type == "Inflation":
-        min_weighted_avg = df_filtered['Weighted Average'].min()
         bar_fig.update_xaxes(range=[min_weighted_avg * 1.15, max_weighted_avg * 1.15])
     else:
-        bar_fig.update_xaxes(range=[0, max_weighted_avg * 1.15])
+        bar_fig.update_xaxes(range=[0, max_weighted_avg * 1.3])
 
     for trace in scatter_fig.data:
         fig.add_trace(trace, row=1, col=1)
@@ -327,7 +316,7 @@ else:
     fig.update_xaxes(row=1, col=2, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
     fig.update_yaxes(row=1, col=2, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
     
-    fig.update_layout(height=700, width=1200, margin=dict(l=0, r=10, t=0, b=10, pad=0), showlegend=False)
+    fig.update_layout(height=700, width=1200, margin=dict(l=5, r=10, t=0, b=10, pad=0), showlegend=False)
 
     # Display the date with month on top along with the title
     title = f"Consumer Price {selected_metric_type} Data For Month - {selected_date.strftime('%B %Y')}"
