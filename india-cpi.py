@@ -244,6 +244,6 @@ else:
     for trace in bar_fig.data:
         fig.add_trace(trace, row=1, col=2)
 
-    fig.update_layout(height=700, width=1200, margin=dict(l=0, r=10, t=0, b=40, pad=0),showlegend=False)
+    fig.update_layout(height=700, width=1200, margin=dict(l=0, r=10, t=0, b=20, pad=0),showlegend=False)
 
     st.plotly_chart(fig, use_container_width=True)
