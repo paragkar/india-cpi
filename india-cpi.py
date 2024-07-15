@@ -178,6 +178,10 @@ df["Value"] = df["Value"].replace("-", np.nan, regex=True)
 # Format the Value column to two decimal places and keep it as a float
 df['Value'] = df['Value'].astype(float).round(2)
 
+# Calculate the overall min and max values for the 'Value' column in the entire dataset
+overall_min_value = df['Value'].min()
+overall_max_value = df['Value'].max()
+
 # Create a column to hold the value information along with the year
 df['Text'] = df.apply(lambda row: f"<b>{row['Value']:.2f} ({row['Date_str'][-4:]})</b>", axis=1)
 
@@ -240,6 +244,13 @@ else:
     scatter_fig.update_layout(showlegend=False, xaxis_title="Value of " + selected_metric_type)
     bar_fig.update_layout(showlegend=False, xaxis_title="Weighted Average", yaxis=dict(showticklabels=False))
 
+    # Adjust x-axis range for scatter plot using the overall min and max values
+    scatter_fig.update_xaxes(range=[overall_min_value, overall_max_value * 1.15])
+
+    # Adjust x-axis range for bar plot
+    max_weighted_avg = df_filtered['Weighted Average'].max()
+    bar_fig.update_xaxes(range=[0, max_weighted_avg * 1.2])
+
     for trace in scatter_fig.data:
         fig.add_trace(trace, row=1, col=1)
 
@@ -253,14 +264,14 @@ else:
     fig.update_yaxes(categoryorder='array', categoryarray=categories_reversed, row=1, col=1)
     fig.update_yaxes(categoryorder='array', categoryarray=categories_reversed, row=1, col=2)
 
-    # Adjust x-axis range for scatter plot
-    max_value = df_filtered_date['Value'].max()
-    min_value = df_filtered_date['Value'].min()
-    fig.update_xaxes(range=[min_value*0.95, max_value * 1.25], row=1, col=1)
+    # # Adjust x-axis range for scatter plot
+    # max_value = df_filtered_date['Value'].max()
+    # min_value = df_filtered_date['Value'].min()
+    # fig.update_xaxes(range=[min_value*0.95, max_value * 1.25], row=1, col=1)
 
-    # Adjust x-axis range for bar plot
-    max_weighted_avg = df_filtered_date['Weighted Average'].max()
-    fig.update_xaxes(range=[0, max_weighted_avg * 1.3], row=1, col=2)
+    # # Adjust x-axis range for bar plot
+    # max_weighted_avg = df_filtered_date['Weighted Average'].max()
+    # fig.update_xaxes(range=[0, max_weighted_avg * 1.3], row=1, col=2)
 
     # Update the layout for the combined figure
     fig.update_xaxes(row=1, col=1, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
