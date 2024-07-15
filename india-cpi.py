@@ -204,7 +204,10 @@ main_categories = [
     "A) General Index - Combined", "A.1) Food and beverages - Combined", 
     "A.2) Pan, tobacco and intoxicants - Combined", 
     "A.3) Clothing and footwear - Combined", "A.4) Housing - Combined", 
-    "A.5) Fuel and light - Combined", "A.6) Miscellaneous - Combined"
+    "A.5) Fuel and light - Combined", "A.6) Miscellaneous - Combined",
+    "B) Consumer Food Price Index - Rural",
+    "B) Consumer Food Price Index - Urban",
+    "B) Consumer Food Price Index - Combined",
 ]
 
 # Additional filter for Main Cat, Sub Cat, or Both
