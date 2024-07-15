@@ -256,3 +256,5 @@ else:
     fig.update_layout(height=700, width=1200, margin=dict(l=0, r=10, t=0, b=20, pad=0), showlegend=False)
 
     st.plotly_chart(fig, use_container_width=True)
+
+    st.markdown(f"<h1 style='font-size:40px; margin-top: -40px;'>{"This is CPI"}</h1>", unsafe_allow_html=True)
