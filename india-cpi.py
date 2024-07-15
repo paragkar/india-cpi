@@ -277,7 +277,7 @@ else:
     fig.update_layout(height=700, width=1200, margin=dict(l=5, r=10, t=10, b=10, pad=0), showlegend=False)
 
     # Display the date with month on top along with the title
-    title = f"This is CPI - {selected_date.strftime('%B %Y')}"
+    title = f"Consumer Price {selected_metric_type} Data For Month - {selected_date.strftime('%B %Y')}"
 
     st.markdown(f"<h1 style='font-size:30px; margin-top: -20px;'>{title}</h1>", unsafe_allow_html=True)
 
