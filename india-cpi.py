@@ -248,7 +248,7 @@ else:
     # scatter_fig.update_xaxes(range=[overall_min_value, overall_max_value * 1.15])
 
     # # Adjust x-axis range for bar plot
-    # max_weighted_avg = df_filtered['Weighted Average'].max()
+    max_weighted_avg = df_filtered['Weighted Average'].max()
     # bar_fig.update_xaxes(range=[0, max_weighted_avg * 1.2])
 
     for trace in scatter_fig.data:
