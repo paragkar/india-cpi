@@ -323,6 +323,18 @@ else:
     fig.update_xaxes(title_text="Weight Adjusted Values", row=1, col=2, title_font=dict(size=15, family='Arial', color='black', weight='bold'))
 
 
+    fig.update_yaxes(
+    tickfont=dict(size=15, family='Arial', color='black', weight='bold'),
+    automargin=True,  # Ensure there is no extra space
+    row=1, col=1
+    )
+    fig.update_yaxes(
+        tickfont=dict(size=15, family='Arial', color='black', weight='bold'),
+        automargin=True,  # Ensure there is no extra space
+        row=1, col=2
+    )
+
+
     # Display the date with month on top along with the title
     title = f"Consumer Price {selected_metric_type} Data For Month - {selected_date.strftime('%B %Y')}"
 
