@@ -281,18 +281,12 @@ else:
     # scatter_fig = px.scatter(df_filtered_date, x="Value", y="Description", color="Description", size="Weight", size_max=20, text="Text")
     scatter_fig = px.scatter(df_filtered_date, x="Value", y="Description", color="Description", size_max=20, text="Text")
     scatter_fig.update_traces(marker=dict(size=15))  # Adjust the size value as needed
-
-    bar_fig = px.bar(df_filtered_date, x="Weighted Average", y="Description", orientation='h', text_auto='.1f')
-
     scatter_fig.update_traces(marker=dict(line=dict(width=1, color='black')), textposition='middle right', textfont=dict(family='Arial',size=15, color= 'black',weight='bold'))
-
-    bar_fig.update_traces(textposition='outside', textfont=dict(size=15, family='Arial', color='black', weight='bold'), marker=dict(color='red', line=dict(width=2, color='red')))
-
     scatter_fig.update_layout(showlegend=False, xaxis_title="Value of " + selected_metric_type)
 
+    bar_fig = px.bar(df_filtered_date, x="Weighted Average", y="Description", orientation='h', text_auto='.1f')
+    bar_fig.update_traces(textposition='outside', textfont=dict(size=15, family='Arial', color='black', weight='bold'), marker=dict(color='red', line=dict(width=2, color='red')))
     bar_fig.update_layout(showlegend=False, xaxis_title="Weighted Average", yaxis=dict(showticklabels=False))
-
-    # max_weighted_avg = df_filtered['Weighted Average'].max()
 
     for trace in scatter_fig.data:
         fig.add_trace(trace, row=1, col=1)
