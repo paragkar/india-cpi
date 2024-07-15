@@ -272,8 +272,12 @@ else:
     
     fig.update_layout(height=700, width=1200, margin=dict(l=5, r=10, t=0, b=10, pad=0), showlegend=False)
 
-    title = "This is CPI"
+    # Display the date with month on top along with the title
+    title = f"This is CPI - {selected_date.strftime('%B %Y')}"
 
     st.markdown(f"<h1 style='font-size:30px; margin-top: -40px;'>{title}</h1>", unsafe_allow_html=True)
 
     st.plotly_chart(fig, use_container_width=True)
+
+    # Slider for date selection outside the sidebar
+    date_index = st.slider("Select Date", min_value=0, max_value=len(unique_dates) - 1, value=date_index)
