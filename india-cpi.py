@@ -222,7 +222,8 @@ else:
     
     # Manually set the date range in the sidebar
     unique_dates = df_filtered['Date'].dt.date.unique()
-    date_index = st.sidebar.number_input("Select Date Index", min_value=0, max_value=len(unique_dates) - 1, value=0, step=1)
+    unique_dates = sorted(unique_dates)  # Ensure dates are sorted
+    date_index = st.sidebar.slider("Select Date", min_value=0, max_value=len(unique_dates) - 1, value=0)
     selected_date = unique_dates[date_index]
     
     df_filtered_date = df_filtered[df_filtered['Date'].dt.date == selected_date]
@@ -235,7 +236,7 @@ else:
     scatter_fig.update_traces(marker=dict(line=dict(width=2, color='black')), textposition='middle right', textfont=dict(size=16))
     bar_fig.update_traces(textposition='auto', textfont=dict(size=12), marker=dict(line=dict(width=2, color='black')))
 
-    scatter_fig.update_layout(showlegend=True, xaxis_title="Value of " + selected_metric_type)
+    scatter_fig.update_layout(showlegend=False, xaxis_title="Value of " + selected_metric_type)
     bar_fig.update_layout(showlegend=False, xaxis_title="Weighted Average", yaxis=dict(showticklabels=False))
 
     for trace in scatter_fig.data:
@@ -244,6 +245,6 @@ else:
     for trace in bar_fig.data:
         fig.add_trace(trace, row=1, col=2)
 
-    fig.update_layout(height=700, width=1200, margin=dict(l=0, r=10, t=0, b=20, pad=0),showlegend=False)
+    fig.update_layout(height=700, width=1200, margin=dict(l=0, r=10, t=0, b=20, pad=0), showlegend=False)
 
     st.plotly_chart(fig, use_container_width=True)
