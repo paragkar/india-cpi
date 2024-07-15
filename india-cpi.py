@@ -318,8 +318,8 @@ else:
     fig.update_layout(height=700, width=1200, margin=dict(l=5, r=10, t=10, b=10, pad=0), showlegend=False)
 
      # Update the layout for the combined figure with x-axis labels
-    fig.update_xaxes(title_text="CPI " + selected_metric_type, row=1, col=1, title_font=dict(size=30, family='Arial', color='black', weight='bold'))
-    fig.update_xaxes(title_text="Weight Adjusted Values", row=1, col=2, title_font=dict(size=30, family='Arial', color='black', weight='bold'))
+    fig.update_xaxes(title_text="CPI " + selected_metric_type, row=1, col=1, title_font=dict(size=20, family='Arial', color='black', weight='bold'))
+    fig.update_xaxes(title_text="Weight Adjusted Values", row=1, col=2, title_font=dict(size=20, family='Arial', color='black', weight='bold'))
 
 
     # Display the date with month on top along with the title
