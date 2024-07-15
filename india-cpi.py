@@ -281,7 +281,7 @@ else:
     scatter_fig = px.scatter(df_filtered_date, x="Value", y="Description", color="Description", size="Weight", size_max=20, text="Text")
     bar_fig = px.bar(df_filtered_date, x="Weighted Average", y="Description", orientation='h', text_auto='.2f')
 
-    scatter_fig.update_traces(marker=dict(line=dict(width=2, color='black')), textposition='middle right', textfont=dict(family='Arial',size=15, weight='bold'))
+    scatter_fig.update_traces(marker=dict(line=dict(width=1, color='black')), textposition='middle right', textfont=dict(family='Arial',size=15, weight='bold'))
 
     bar_fig.update_traces(textposition='outside', textfont=dict(size=15, family='Arial', color='black', weight='bold'), marker=dict(color='red', line=dict(width=2, color='red')))
 
