@@ -234,10 +234,6 @@ if selected_description:
     initial_order = {desc: i for i, desc in enumerate(selected_description)}
     df_filtered = df_filtered[df_filtered['Description'].isin(selected_description)]
 
-# # Filter dataframe based on selected main description
-# if selected_description:
-#     df_filtered = df_filtered[df_filtered['Description'].isin(selected_description)]
-
 # Calculate the overall min and max values for the 'Value' column in the entire dataset
 overall_min_value = df_filtered['Value'].min()
 overall_max_value = df_filtered['Value'].max()
@@ -313,10 +309,6 @@ else:
     fig.update_yaxes(row=1, col=2, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
     
     fig.update_layout(height=700, width=1200, margin=dict(l=5, r=10, t=10, b=10, pad=0), showlegend=False)
-
-    # Update the layout for the combined figure with x-axis labels
-    fig.update_xaxes(title_text="CPI " + selected_metric_type, row=1, col=1)
-    fig.update_xaxes(title_text="Weight Adjusted Values", row=1, col=2)
 
     # Display the date with month on top along with the title
     title = f"Consumer Price {selected_metric_type} Data For Month - {selected_date.strftime('%B %Y')}"
