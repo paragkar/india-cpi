@@ -241,56 +241,10 @@ else:
 
     scatter_fig.update_traces(marker=dict(line=dict(width=2, color='black')), textposition='middle right', textfont=dict(size=16))
 
-    # Define main categories for each sector type
-    main_categories_rural = [
-        "A) General Index - Rural", "A.1) Food and beverages - Rural", 
-        "A.2) Pan, tobacco and intoxicants - Rural", 
-        "A.3) Clothing and footwear - Rural", "A.4) Housing - Rural", 
-        "A.5) Fuel and light - Rural", "A.6) Miscellaneous - Rural"
-    ]
-
-    main_categories_urban = [
-        "A) General Index - Urban", "A.1) Food and beverages - Urban", 
-        "A.2) Pan, tobacco and intoxicants - Urban", 
-        "A.3) Clothing and footwear - Urban", "A.4) Housing - Urban", 
-        "A.5) Fuel and light - Urban", "A.6) Miscellaneous - Urban"
-    ]
-
-    main_categories_combined = [
-        "A) General Index - Combined", "A.1) Food and beverages - Combined", 
-        "A.2) Pan, tobacco and intoxicants - Combined", 
-        "A.3) Clothing and footwear - Combined", "A.4) Housing - Combined", 
-        "A.5) Fuel and light - Combined", "A.6) Miscellaneous - Combined"
-    ]
-
-    # Define colors for each group
-    main_category_color = 'blue'
-    sub_category_color = 'red'
-
-    # Assign main categories based on selected sector type
-    if selected_sector_type == "Rural":
-        main_categories = main_categories_rural
-    elif selected_sector_type == "Urban":
-        main_categories = main_categories_urban
-    elif selected_sector_type == "Combined":
-        main_categories = main_categories_combined
-    else:
-        main_categories = []
-
-    # Define the rest as subcategories
-    sub_categories = [desc for desc in df_filtered_date['Description'].unique() if desc not in main_categories]
-
-    # Create a color map based on categories
-    df_filtered_date['Color'] = df_filtered_date['Description'].apply(lambda x: main_category_color if x in main_categories else sub_category_color)
-
-    # Update bar chart traces with assigned colors
-    bar_fig.for_each_trace(lambda trace: trace.update(marker_color=df_filtered_date.set_index('Description').loc[trace.y, 'Color']))
-
-    bar_fig.update_traces(textposition='outside', textfont=dict(size=15, family='Arial', color='black', weight='bold'))
+    bar_fig.update_traces(textposition='outside', textfont=dict(size=15, family='Arial', color='black', weight='bold'), marker=dict(color='red', line=dict(width=2, color='black')))
 
     scatter_fig.update_layout(showlegend=False, xaxis_title="Value of " + selected_metric_type)
     bar_fig.update_layout(showlegend=False, xaxis_title="Weighted Average", yaxis=dict(showticklabels=False))
-
 
     # max_weighted_avg = df_filtered['Weighted Average'].max()
 
