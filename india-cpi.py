@@ -306,7 +306,7 @@ else:
 
     # Update the layout for the combined figure with x-axis labels
     fig.update_xaxes(title_text="CPI " + selected_metric_type, row=1, col=1)
-    fig.update_xaxes(title_text="Weighted Average Values", row=1, col=2)
+    fig.update_xaxes(title_text="Weight Adjusted Values", row=1, col=2)
 
     # Display the date with month on top along with the title
     title = f"Consumer Price {selected_metric_type} Data For Month - {selected_date.strftime('%B %Y')}"
