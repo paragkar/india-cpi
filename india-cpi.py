@@ -178,7 +178,6 @@ df["Value"] = df["Value"].replace("-", np.nan, regex=True)
 # Format the Value column to two decimal places and keep it as a float
 df['Value'] = df['Value'].astype(float).round(2)
 
-
 # Create a column to hold the value information without the year
 df['Text'] = df.apply(lambda row: f"<b>{row['Value']:.2f}</b>", axis=1)
 
@@ -224,11 +223,13 @@ elif df_filtered.empty:
 else:
     # Create the 'Weighted Average' column
     df_filtered['Weighted Average'] = df_filtered['Value'] * df_filtered['Weight'] / 100
+    min_weighted_avg = df_filtered['Weighted Average'].min()
+    max_weighted_avg = df_filtered['Weighted Average'].max()
     
     # Manually set the date range in the sidebar
     unique_dates = df_filtered['Date'].dt.date.unique()
     unique_dates = sorted(unique_dates)  # Ensure dates are sorted
-    date_index = st.sidebar.slider("Select Date", min_value=0, max_value=len(unique_dates) - 1, value=0)
+    date_index = st.slider("", min_value=0, max_value=len(unique_dates) - 1, value=0)
     selected_date = unique_dates[date_index]
     
     df_filtered_date = df_filtered[df_filtered['Date'].dt.date == selected_date]
@@ -244,15 +245,7 @@ else:
     scatter_fig.update_layout(showlegend=False, xaxis_title="Value of " + selected_metric_type)
     bar_fig.update_layout(showlegend=False, xaxis_title="Weighted Average", yaxis=dict(showticklabels=False))
 
-    # Adjust x-axis range for scatter plot using the overall min and max values
-    scatter_fig.update_xaxes(range=[overall_min_value, overall_max_value * 1.15])
-
-    # Adjust x-axis range for bar plot based on selected metric type
-    if selected_metric_type == "Inflation":
-        min_weighted_avg = df_filtered['Weighted Average'].min()
-        bar_fig.update_xaxes(range=[min_weighted_avg, max_weighted_avg * 1.2])
-    else:
-        bar_fig.update_xaxes(range=[0, max_weighted_avg * 1.2])
+    # max_weighted_avg = df_filtered['Weighted Average'].max()
 
     for trace in scatter_fig.data:
         fig.add_trace(trace, row=1, col=1)
@@ -267,17 +260,22 @@ else:
     fig.update_yaxes(categoryorder='array', categoryarray=categories_reversed, row=1, col=1)
     fig.update_yaxes(categoryorder='array', categoryarray=categories_reversed, row=1, col=2)
 
-    # Update the layout for the combined figure
+   # Update the layout for the combined figure
     fig.update_xaxes(row=1, col=1, range=[overall_min_value, overall_max_value * 1.15], fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
     fig.update_yaxes(row=1, col=1, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
 
-    fig.update_xaxes(row=1, col=2, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
+    if selected_metric_type == "Inflation"
+        fig.update_xaxes(row=1, col=2, range=[min_weighted_avg, max_weighted_avg * 1.3],fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
+    else:
+         fig.update_xaxes(row=1, col=2, range=[0, max_weighted_avg * 1.3],fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
+
     fig.update_yaxes(row=1, col=2, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
     
-    fig.update_layout(height=700, width=1200, margin=dict(l=5, r=10, t=0, b=10, pad=0), showlegend=False)
+    fig.update_layout(height=700, width=1200, margin=dict(l=5, r=10, t=10, b=10, pad=0), showlegend=False)
 
-    title = "This is CPI"
+    # Display the date with month on top along with the title
+    title = f"This is CPI - {selected_date.strftime('%B %Y')}"
 
-    st.markdown(f"<h1 style='font-size:30px; margin-top: -40px;'>{title}</h1>", unsafe_allow_html=True)
+    st.markdown(f"<h1 style='font-size:30px; margin-top: -20px;'>{title}</h1>", unsafe_allow_html=True)
 
     st.plotly_chart(fig, use_container_width=True)
