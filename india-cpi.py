@@ -291,7 +291,7 @@ else:
 
     # Create scatter plot
     scatter_fig = px.scatter(df_filtered_date, x="Value", y="Description", color="Description", size_max=20, text="Text")
-    scatter_fig.update_traces(marker=dict(size=15))  # Adjust the size value as needed
+    scatter_fig.update_traces(marker=dict(size=20))  # Adjust the size value as needed
     scatter_fig.update_traces(marker=dict(line=dict(width=1, color='black')), textposition='middle right', textfont=dict(family='Arial', size=15, color='black', weight='bold'))
     scatter_fig.update_layout(showlegend=False, xaxis_title="Value of " + selected_metric_type)
 
