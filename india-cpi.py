@@ -251,7 +251,7 @@ else:
     fig.update_layout(height=700, width=1200, margin=dict(l=0, r=10, t=0, b=20, pad=0), showlegend=False)
 
     # Create a Retangular Block on Bar
-    fig.update_xaxes(row=1, col=1, fixedrange=True, showline=True, linewidth=2.5, linecolor='black', mirror=True, showgrid=True, gridcolor='lightgrey', title=title, title_standoff=8)
+    fig.update_xaxes(row=1, col=1, fixedrange=True, showline=True, linewidth=2.5, linecolor='black', mirror=True, showgrid=True, gridcolor='lightgrey', title="", title_standoff=8)
     fig.update_yaxes(row=1, col=2, fixedrange=True, showline=True, linewidth=2.5, linecolor='black', mirror=True, showgrid=True, gridcolor='lightgrey')
 
     st.plotly_chart(fig, use_container_width=True)
