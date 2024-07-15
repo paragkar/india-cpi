@@ -250,11 +250,6 @@ else:
     df_filtered['Description'] = pd.Categorical(df_filtered['Description'], categories=selected_description_order, ordered=True)
     df_filtered = df_filtered.sort_values('Description')  # Sort the dataframe by Description to ensure the order is maintained
 
-# Reorder the Description column based on the selected sector type
-# description_order = get_description_order(selected_sector_type, df_filtered)
-# if description_order:
-#     df_filtered['Description'] = pd.Categorical(df_filtered['Description'], categories=description_order, ordered=True)
-#     df_filtered = df_filtered.sort_values('Description')  # Sort the dataframe by Description to ensure the order is maintained
 
 # Check if there is any data left after filtering
 if selected_sector_type == "All" and not selected_description:
@@ -276,7 +271,7 @@ else:
     
     df_filtered_date = df_filtered[df_filtered['Date'].dt.date == selected_date]
 
-    fig = make_subplots(rows=1, cols=2, shared_yaxes=True, column_widths=[0.8, 0.2], horizontal_spacing=0.01)  # Minimal horizontal spacing
+    fig = make_subplots(rows=1, cols=2, shared_yaxes=True, column_widths=[0.75, 0.25], horizontal_spacing=0.01)  # Minimal horizontal spacing
 
     # Create scatter plot
     scatter_fig = px.scatter(df_filtered_date, x="Value", y="Description", color="Description", size_max=20, text="Text")
