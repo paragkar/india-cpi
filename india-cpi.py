@@ -236,12 +236,11 @@ else:
     scatter_fig.update_traces(marker=dict(line=dict(width=2, color='black')), textposition='middle right', textfont=dict(size=16))
     bar_fig.update_traces(textposition='auto', textfont=dict(size=12), marker=dict(line=dict(width=2, color='black')))
 
-    # Adjust x-axis range for scatter plot
-    max_value = df_filtered_date['Value'].max()
-    min_value = df_filtered_date['Value'].min()
-    fig.update_layout(xaxis=dict(range=[min_value, max_value * 1.2]))
+    # # Adjust x-axis range for scatter plot
+    # max_value = df_filtered_date['Value'].max()
+    # min_value = df_filtered_date['Value'].min()
+    # fig.update_layout(xaxis=dict(range=[min_value, max_value * 1.2]))
 
-   
     scatter_fig.update_layout(showlegend=False, xaxis_title="Value of " + selected_metric_type)
     bar_fig.update_layout(showlegend=False, xaxis_title="Weighted Average", yaxis=dict(showticklabels=False))
 
@@ -250,6 +249,15 @@ else:
 
     for trace in bar_fig.data:
         fig.add_trace(trace, row=1, col=2)
+
+    # Adjust x-axis range for scatter plot
+    max_value = df_filtered_date['Value'].max()
+    min_value = df_filtered_date['Value'].min()
+    fig.update_xaxes(range=[min_value, max_value * 1.2], row=1, col=1)
+
+    # Adjust x-axis range for bar plot
+    max_weighted_avg = df_filtered_date['Weighted Average'].max()
+    fig.update_xaxes(range=[0, max_weighted_avg * 1.2], row=1, col=2)
 
     # Update the layout for the combined figure
     fig.update_xaxes(row=1, col=1, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
