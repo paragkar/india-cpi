@@ -270,7 +270,7 @@ else:
     # Manually set the date range in the sidebar
     unique_dates = df_filtered['Date'].dt.date.unique()
     unique_dates = sorted(unique_dates)  # Ensure dates are sorted
-    date_index = st.slider("Date Index", min_value=0, max_value=len(unique_dates) - 1, value=0)
+    date_index = st.slider("Slider for Selecting Date Index", min_value=0, max_value=len(unique_dates) - 1, value=0)
     # date_index = st.slider("", min_value=0, max_value=len(unique_dates) - 1, value=0)
     selected_date = unique_dates[date_index]
     
