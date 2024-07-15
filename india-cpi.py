@@ -42,7 +42,7 @@ st.markdown(hide_st_style, unsafe_allow_html=True)
 def loadfile():
     password = st.secrets["db_password"]
     excel_content = io.BytesIO()
-    with open("cpi_streamlit.xlsx", 'rb') as f:
+    with open("cpi_streamlit.xlsx", 'rb') as f):
         excel = msoffcrypto.OfficeFile(f)
         excel.load_key(password)
         excel.decrypt(excel_content)
@@ -238,8 +238,9 @@ else:
 
     # Adjust x-axis range for scatter plot
     max_value = df_filtered_date['Value'].max()
-    scatter_fig.update_layout(showlegend=False, xaxis_title="Value of " + selected_metric_type, xaxis=dict(range=[0, max_value * 1.5]))
-    
+    fig.update_layout(xaxis=dict(range=[0, max_value * 1.15]))
+
+    scatter_fig.update_layout(showlegend=False, xaxis_title="Value of " + selected_metric_type)
     bar_fig.update_layout(showlegend=False, xaxis_title="Weighted Average", yaxis=dict(showticklabels=False))
 
     for trace in scatter_fig.data:
@@ -248,10 +249,10 @@ else:
     for trace in bar_fig.data:
         fig.add_trace(trace, row=1, col=2)
 
-    fig.update_layout(height=700, width=1200, margin=dict(l=10, r=10, t=0, b=20, pad=0), showlegend=False)
-
-    # Create a Retangular Block on Bar
-    fig.update_xaxes(row=1, col=1, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey', title="", title_standoff=8)
-    fig.update_yaxes(row=1, col=2, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=False, gridcolor='lightgrey')
+    # Update the layout for the combined figure
+    fig.update_xaxes(row=1, col=1, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
+    fig.update_yaxes(row=1, col=2, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
+    
+    fig.update_layout(height=700, width=1200, margin=dict(l=0, r=10, t=0, b=20, pad=0), showlegend=False)
 
     st.plotly_chart(fig, use_container_width=True)
