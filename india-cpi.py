@@ -305,6 +305,10 @@ else:
     bar_fig.update_traces(marker_color=[color_map[desc] for desc in df_filtered_date['Description']])
     bar_fig.update_layout(showlegend=False, xaxis_title="Weighted Average", yaxis=dict(showticklabels=False))
 
+    # Update the y-axis tick labels to be bold
+    fig.update_yaxes(tickfont=dict(size=15, family='Arial', color='black', weight='bold'), row=1, col=1)
+    # fig.update_yaxes(tickfont=dict(size=15, family='Arial', color='black', weight='bold'), row=1, col=2)
+
 
 
     for trace in scatter_fig.data:
