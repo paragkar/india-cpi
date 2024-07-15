@@ -272,11 +272,8 @@ else:
 
     bar_fig.update_traces(textposition='outside', textfont=dict(size=15, family='Arial', color='black', weight='bold'), marker=dict(color='red', line=dict(width=2, color='black')))
 
-    scatter_fig.update_layout(showlegend=False, xaxis_title="Value of " + selected_metric_type)
-
-    bar_fig.update_layout(showlegend=False, xaxis_title="Weighted Average", yaxis=dict(showticklabels=False))
-
-    # max_weighted_avg = df_filtered['Weighted Average'].max()
+    scatter_fig.update_layout(showlegend=False, xaxis_title="CPI " + selected_metric_type)
+    bar_fig.update_layout(showlegend=False, xaxis_title="Weighted Average Values", yaxis=dict(showticklabels=False))
 
     for trace in scatter_fig.data:
         fig.add_trace(trace, row=1, col=1)
