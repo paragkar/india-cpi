@@ -1,6 +1,6 @@
 import pandas as pd
 from datetime import datetime
-import plotly.express as px
+import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import streamlit as st
 import io
@@ -244,7 +244,7 @@ scatter_fig.update_layout(showlegend=False)
 
 # Plotly bar chart
 bar_fig = px.bar(df_filtered_date, x="Weighted Average", y="Description",
-                 orientation='h', text=df_filtered_date['Weighted Average'].apply(lambda x: f'{x:.2f}'), showlegend = False)
+                 orientation='h', text=df_filtered_date['Weighted Average'].apply(lambda x: f'{x:.2f}'))
 
 # Customize bar chart
 bar_fig.update_traces(textposition='outside', marker_color='blue')
@@ -269,5 +269,12 @@ combined_fig.update_layout(
     showlegend=False,
 )
 
+# Ensure the y-axis of both plots are aligned
+combined_fig.update_yaxes(matches='y')
+
+# Update bar chart x-axis title
+combined_fig.update_xaxes(title_text="Weighted Average", row=1, col=2)
+
+# Display the combined figure
 with st.container():
     st.plotly_chart(combined_fig, use_container_width=True)
