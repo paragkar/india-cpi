@@ -1,5 +1,6 @@
 import pandas as pd
 from datetime import datetime
+import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import streamlit as st
@@ -7,7 +8,6 @@ import io
 import msoffcrypto
 import numpy as np
 import re
-import plotly.express as px
 
 pd.set_option('future.no_silent_downcasting', True)
 pd.set_option('display.max_columns', None)
@@ -215,67 +215,38 @@ if description_order:
     df_filtered['Description'] = pd.Categorical(df_filtered['Description'], categories=description_order, ordered=True)
     df_filtered = df_filtered.sort_values('Description')  # Sort the dataframe by Description to ensure the order is maintained
 
-# Get unique dates for manual selection
-unique_dates = sorted(df_filtered['Date_str'].unique(), key=lambda x: datetime.strptime(x, '%d-%m-%Y'))
-date_index = st.sidebar.number_input("Select Date Index", min_value=0, max_value=len(unique_dates)-1, value=0, step=1)
-selected_date = unique_dates[date_index]
-
-# Filter data for the selected date
+# Add manual date selector
+dates = df_filtered['Date_str'].unique()
+date_index = st.sidebar.number_input('Select Date Index', min_value=0, max_value=len(dates)-1, value=0, step=1)
+selected_date = dates[date_index]
 df_filtered_date = df_filtered[df_filtered['Date_str'] == selected_date]
 
-# Plotly scatter plot
-scatter_fig = px.scatter(df_filtered_date, x="Value", y="Description",
-                         color="Description", title="Index Over Time",
-                         size="Weight", size_max=20, text="Text")
-
-# Customize text position to the right of the dots
+# Scatter plot
+scatter_fig = px.scatter(df_filtered_date, x="Value", y="Description", color="Description", size="Weight",
+                         title="Index and Weighted Average Over Time", text="Text")
 scatter_fig.update_traces(textposition='middle right', textfont=dict(size=16))
-
-# Add black outlines to the dots
 scatter_fig.update_traces(marker=dict(line=dict(width=2, color='black')))
-
-# Customize y-axis labels font size and make them bold
 scatter_fig.update_yaxes(tickfont=dict(size=15, color='black', family='Arial', weight='bold'))
+scatter_fig.update_yaxes(showticklabels=True)
+scatter_fig.update_layout(showlegend=False, width=700, height=800)
 
-# Draw a black line on the y-axis
-scatter_fig.add_shape(type='line', x0=0, x1=0, y0=0, y1=1, line=dict(color='black', width=1), xref='x', yref='paper')
-
-# Remove legend on the right side
-scatter_fig.update_layout(showlegend=False)
-
-# Plotly bar chart
-bar_fig = px.bar(df_filtered_date, x="Weighted Average", y="Description",
-                 orientation='h', text=df_filtered_date['Weighted Average'].apply(lambda x: f'{x:.2f}'))
-
-# Customize bar chart
-bar_fig.update_traces(textposition='outside', marker_color='blue')
-
-# Remove y-axis labels and variable labels
+# Bar plot for weighted average
+bar_fig = px.bar(df_filtered_date, x="Weighted Average", y="Description", orientation='h', text="Weighted Average",
+                 title="Weighted Average Over Time")
+bar_fig.update_traces(textposition='auto')
 bar_fig.update_yaxes(showticklabels=False)
+bar_fig.update_layout(showlegend=False, width=300, height=800, margin=dict(l=0, r=10, t=40, b=40))
 
-# Combine scatter plot and bar chart in the same layout
-combined_fig = make_subplots(rows=1, cols=2, specs=[[{"type": "scatter"}, {"type": "bar"}]],
-                             column_widths=[0.7, 0.3], horizontal_spacing=0.02)
+# Combine both plots
+fig = make_subplots(rows=1, cols=2, column_widths=[0.7, 0.3], specs=[[{"type": "scatter"}, {"type": "bar"}]])
+fig.add_traces(scatter_fig.data + bar_fig.data)
+fig.layout.update(scatter_fig.layout)
+fig.layout.update(bar_fig.layout)
+fig.update_xaxes(scatter_fig.layout.xaxis, row=1, col=1)
+fig.update_yaxes(scatter_fig.layout.yaxis, row=1, col=1)
+fig.update_xaxes(bar_fig.layout.xaxis, row=1, col=2)
+fig.update_yaxes(bar_fig.layout.yaxis, row=1, col=2)
+fig.update_layout(width=1000, height=800)
 
-for trace in scatter_fig['data']:
-    combined_fig.add_trace(trace, row=1, col=1)
-
-for trace in bar_fig['data']:
-    combined_fig.add_trace(trace, row=1, col=2)
-
-combined_fig.update_layout(
-    title_text="Index and Weighted Average Over Time",
-    height=900,
-    width=1400,
-    showlegend=False,
-)
-
-# Ensure the y-axis of both plots are aligned
-combined_fig.update_yaxes(matches='y')
-
-# Update bar chart x-axis title
-combined_fig.update_xaxes(title_text="Weighted Average", row=1, col=2)
-
-# Display the combined figure
-with st.container():
-    st.plotly_chart(combined_fig, use_container_width=True)
+# Display combined plot
+st.plotly_chart(fig, use_container_width=True)
