@@ -42,7 +42,7 @@ st.markdown(hide_st_style, unsafe_allow_html=True)
 def loadfile():
     password = st.secrets["db_password"]
     excel_content = io.BytesIO()
-    with open("cpi_streamlit.xlsx", 'rb') as f):
+    with open("cpi_streamlit.xlsx", 'rb') as f:
         excel = msoffcrypto.OfficeFile(f)
         excel.load_key(password)
         excel.decrypt(excel_content)
