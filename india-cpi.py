@@ -238,7 +238,7 @@ else:
 
     # Adjust x-axis range for scatter plot
     max_value = df_filtered_date['Value'].max()
-    fig.update_layout(xaxis=dict(range=[0, max_value * 1.15]))
+    fig.update_layout(xaxis=dict(range=[0, max_value * 1.2]))
 
     scatter_fig.update_layout(showlegend=False, xaxis_title="Value of " + selected_metric_type)
     bar_fig.update_layout(showlegend=False, xaxis_title="Weighted Average", yaxis=dict(showticklabels=False))
