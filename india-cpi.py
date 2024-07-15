@@ -282,7 +282,9 @@ else:
     scatter_fig = px.scatter(df_filtered_date, x="Value", y="Description", color="Description", size_max=20, text="Text")
     scatter_fig.update_traces(marker=dict(size=15))  # Adjust the size value as needed
 
-    bar_fig = px.bar(df_filtered_date, x="Weighted Average", y="Description", color="Description", orientation='h', text_auto='.1f')
+    # Create bar plot
+    bar_fig = px.bar(df_filtered_date, x="Weighted Average", y="Description", color="Description", orientation='h', text_auto='.21')
+    bar_fig.update_traces(marker=dict(line=dict(width=2, color='black')), textposition='outside', textfont=dict(size=15, family='Arial', color='black', weight='bold'))
 
     scatter_fig.update_traces(marker=dict(line=dict(width=1, color='black')), textposition='middle right', textfont=dict(family='Arial',size=15, color= 'black',weight='bold'))
 
