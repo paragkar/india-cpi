@@ -249,7 +249,7 @@ else:
     selected_description_order = selected_description
     df_filtered['Description'] = pd.Categorical(df_filtered['Description'], categories=selected_description_order, ordered=True)
     df_filtered = df_filtered.sort_values('Description')  # Sort the dataframe by Description to ensure the order is maintained
-    
+
 # Reorder the Description column based on the selected sector type
 # description_order = get_description_order(selected_sector_type, df_filtered)
 # if description_order:
@@ -309,7 +309,7 @@ else:
     fig.update_yaxes(row=1, col=1, tickfont=dict(size=15),fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
 
     if selected_metric_type == "Inflation":
-        fig.update_xaxes(row=1, col=2, range=[min_weighted_avg, max_weighted_avg * 1.4],fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
+        fig.update_xaxes(row=1, col=2, range=[min_weighted_avg*1.2, max_weighted_avg * 1.4],fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
     else:
          fig.update_xaxes(row=1, col=2, range=[0, max_weighted_avg * 1.3],fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
 
