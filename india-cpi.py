@@ -26,8 +26,8 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-st.multiselect("pick a long string", 
-    [i*25 for i in "ABCDEWXYZ"])
+# st.multiselect("pick a long string", 
+#     [i*25 for i in "ABCDEWXYZ"])
 
 # Hide Streamlit style and buttons
 hide_st_style = '''
