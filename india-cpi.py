@@ -245,13 +245,22 @@ if 'selected_description' not in st.session_state:
 # Prepare options for the multiselect based on sector type selection
 if selected_sector_type == "All":
     description_options = df_filtered['Description'].unique().tolist()
-    selected_description = st.sidebar.multiselect("Select Description to Display", description_options, default=st.session_state.selected_description)
 else:
     description_options = df_filtered[df_filtered['Description'].str.contains(re.escape(selected_sector_type))]['Description'].unique().tolist()
-    selected_description = st.sidebar.multiselect("Select Description to Display", description_options, default=st.session_state.selected_description)
+
+# Check if the current selected descriptions are valid for the new category type
+valid_selected_description = [desc for desc in st.session_state.selected_description if desc in description_options]
+
+# If the selected descriptions are not valid for the new category type, reset the multiselect
+if len(valid_selected_description) != len(st.session_state.selected_description):
+    st.session_state.selected_description = []
+
+# Update the multiselect box with valid options
+selected_description = st.sidebar.multiselect("Select Description to Display", description_options, default=st.session_state.selected_description)
 
 # Update session state with the new selections
 st.session_state.selected_description = selected_description
+
 
 # # Prepare options for the multiselect based on sector type selection
 # if selected_sector_type == "All":
