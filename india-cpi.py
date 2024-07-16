@@ -343,4 +343,7 @@ else:
     styled_month = f"<span style='color:green; font-weight:bold;'>{selected_date.strftime('%B %Y')}</span>"
     title = f"Consumer Price {styled_category_type} {styled_sector_type} {selected_metric_type} Data For Month - {styled_month}"
 
+    # Display the date with month on top along with the title
+    st.markdown(f"<h1 style='font-size:30px; margin-top: -20px;'>{title}</h1>", unsafe_allow_html=True)
+
     st.plotly_chart(fig, use_container_width=True)
