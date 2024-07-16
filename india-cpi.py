@@ -336,7 +336,7 @@ else:
         bar_fig.update_traces(marker_color=[color_map[desc] for desc in df_filtered_date['Description']])
         bar_fig.update_layout(showlegend=False, xaxis_title="Weighted Average", yaxis=dict(showticklabels=False))
 
-    except KeyError as e: (new lines)
+    except KeyError as e: #(new lines)
         st.warning(f"Warning: {e}. Some descriptions may not have corresponding colors.")
 
 
