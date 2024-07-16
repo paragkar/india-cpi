@@ -195,7 +195,7 @@ def format_text(row, metric_type):
     if metric_type == "Inflation":
         value += "%"
     return f"{value} <span style='font-size:70%'> (w {row['Weight']:.2f})</span>"
-    
+
 # Create a column to hold the value information along with weights
 df['Text'] = df.apply(lambda row: format_text(row, selected_metric_type), axis=1)
 
@@ -337,7 +337,9 @@ else:
 
 
     # Display the date with month on top along with the title
-    title = f"Consumer Price {selected_metric_type} Data For Month - {selected_date.strftime('%B %Y')}"
+    # title = f"Consumer Price {selected_metric_type} Data For Month - {selected_date.strftime('%B %Y')}"
+    title = f"Consumer Price {selected_category_type} {selected_sector_type} {selected_metric_type} Data For The Month - {selected_date.strftime('%B %Y')}"
+
 
     st.markdown(f"<h1 style='font-size:30px; margin-top: -20px;'>{title}</h1>", unsafe_allow_html=True)
 
