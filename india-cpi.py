@@ -181,7 +181,15 @@ df['Value'] = df['Value'].astype(float).round(2)
 # Create a column to hold the value information without the year
 # df['Text'] = df.apply(lambda row: f"<b>{row['Value']:.1f}</b>", axis=1)
 # Create a column to hold the value information along with weights
-df['Text'] = df.apply(lambda row: f"<b>{row['Value']:.1f}</b> <span style='font-size:70%'> (w {row['Weight']:.2f})</span>", axis=1)
+# df['Text'] = df.apply(lambda row: f"<b>{row['Value']:.1f}</b> <span style='font-size:70%'> (w {row['Weight']:.2f})</span>", axis=1)
+
+def format_text(row, metric_type):
+    value = f"<b>{row['Value']:.1f}</b>"
+    if metric_type == "Inflation":
+        value += "%"
+    return f"{value} <span style='font-size:70%'> (w {row['Weight']:.2f})</span>"
+
+df['Text'] = df.apply(lambda row: format_text(row, selected_metric_type), axis=1)
 
 
 
