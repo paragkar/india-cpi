@@ -337,10 +337,11 @@ else:
 
 
     # Display the date with month on top along with the title
-    # title = f"Consumer Price {selected_metric_type} Data For Month - {selected_date.strftime('%B %Y')}"
-    title = f"Consumer Price {selected_category_type} {selected_sector_type} {selected_metric_type} Data For The Month - {selected_date.strftime('%B %Y')}"
-
-
+    # title = f"Consumer Price {selected_category_type} {selected_sector_type} {selected_metric_type} Data For The Month - {selected_date.strftime('%B %Y')}"
+    # Create the styled title
+    styled_category_type = f"<span style='color:red; font-weight:bold;'>{selected_category_type}</span>"
+    styled_sector_type = f"<span style='color:blue; font-weight:bold;'>{selected_sector_type}</span>"
+    title = f"Consumer Price {styled_category_type} {styled_sector_type} {selected_metric_type} Data For Month - {selected_date.strftime('%B %Y')}"
     st.markdown(f"<h1 style='font-size:30px; margin-top: -20px;'>{title}</h1>", unsafe_allow_html=True)
 
     st.plotly_chart(fig, use_container_width=True)
