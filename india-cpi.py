@@ -239,40 +239,39 @@ elif selected_category_type == "Sub Cat":
 selected_sector_type = st.sidebar.selectbox("Select Sector Type", sector_types)
 
 # Initialize session state for selected descriptions (new lines)
-if 'selected_description' not in st.session_state:
-    st.session_state.selected_description = []
+# if 'selected_description' not in st.session_state:
+#     st.session_state.selected_description = []
 
-#New Lines added to take care of selection in between so that menue does not reset (begin)
-# Prepare options for the multiselect based on sector type selection
-if selected_sector_type == "All":
-    description_options = df_filtered['Description'].unique().tolist()
-else:
-    description_options = df_filtered[df_filtered['Description'].str.contains(re.escape(selected_sector_type))]['Description'].unique().tolist()
-
-# Check if the current selected descriptions are valid for the new sector type
-valid_selected_description = [desc for desc in st.session_state.selected_description if desc in description_options]
-
-# If the selected descriptions are not valid for the new sector type, reset the multiselect
-if len(valid_selected_description) != len(st.session_state.selected_description):
-    st.session_state.selected_description = []
-
-# Update the multiselect box with valid options
-selected_description = st.sidebar.multiselect("Select Description to Display", description_options, default=st.session_state.selected_description)
-
-# Update session state with the new selections
-st.session_state.selected_description = selected_description
-
-#New Lines added to take care of selection in between so that menue does not reset (end)
-
-#Incase there is a bug in the above code then replace this block below with the above
+# #New Lines added to take care of selection in between so that menue does not reset (begin)
 # # Prepare options for the multiselect based on sector type selection
 # if selected_sector_type == "All":
 #     description_options = df_filtered['Description'].unique().tolist()
-#     selected_description = st.sidebar.multiselect("Select Description to Display", description_options)
 # else:
 #     description_options = df_filtered[df_filtered['Description'].str.contains(re.escape(selected_sector_type))]['Description'].unique().tolist()
-#     selected_description = st.sidebar.multiselect("Select Description to Display", description_options, default=description_options)
 
+# # Check if the current selected descriptions are valid for the new sector type
+# valid_selected_description = [desc for desc in st.session_state.selected_description if desc in description_options]
+
+# # If the selected descriptions are not valid for the new sector type, reset the multiselect
+# if len(valid_selected_description) != len(st.session_state.selected_description):
+#     st.session_state.selected_description = []
+
+# # Update the multiselect box with valid options
+# selected_description = st.sidebar.multiselect("Select Description to Display", description_options, default=st.session_state.selected_description)
+
+# # Update session state with the new selections
+# st.session_state.selected_description = selected_description
+
+#New Lines added to take care of selection in between so that menue does not reset (end)
+
+Incase there is a bug in the above code then replace this block below with the above
+# Prepare options for the multiselect based on sector type selection
+if selected_sector_type == "All":
+    description_options = df_filtered['Description'].unique().tolist()
+    selected_description = st.sidebar.multiselect("Select Description to Display", description_options)
+else:
+    description_options = df_filtered[df_filtered['Description'].str.contains(re.escape(selected_sector_type))]['Description'].unique().tolist()
+    selected_description = st.sidebar.multiselect("Select Description to Display", description_options, default=description_options)
 
 
 # Filter dataframe based on selected main description
@@ -325,7 +324,7 @@ else:
     scatter_fig.update_traces(marker=dict(line=dict(width=1, color='black')), textposition='middle right', textfont=dict(family='Arial', size=15, color='black', weight='bold'))
     scatter_fig.update_layout(showlegend=False, xaxis_title="Value of " + selected_metric_type)
 
-    df_filtered_date = df_filtered_date.dropna() #Debug 16th July 2024
+    # df_filtered_date = df_filtered_date.dropna() #Debug 16th July 2024
 
     # Map colors from scatter plot to bar plot
     color_map = {desc: trace.marker.color for desc, trace in zip(df_filtered_date['Description'], scatter_fig.data)}
