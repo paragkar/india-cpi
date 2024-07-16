@@ -23,6 +23,9 @@ custom_css = """
 .css-1okebmr-indicatorSeparator, .css-1wy0on6, .css-1hb7zxy-IndicatorsContainer, .css-1n7v3ny-option {
     font-size: 50% !important;
 }
+.stMultiSelect div[role="listbox"] > div {
+    font-size: 50% !important;
+}
 </style>
 """
 st.markdown(custom_css, unsafe_allow_html=True)
