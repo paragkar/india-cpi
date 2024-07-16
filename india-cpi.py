@@ -183,20 +183,21 @@ df['Value'] = df['Value'].astype(float).round(2)
 # Create a column to hold the value information along with weights
 # df['Text'] = df.apply(lambda row: f"<b>{row['Value']:.1f}</b> <span style='font-size:70%'> (w {row['Weight']:.2f})</span>", axis=1)
 
-def format_text(row, metric_type):
-    value = f"<b>{row['Value']:.1f}</b>"
-    if metric_type == "Inflation":
-        value += "%"
-    return f"{value} <span style='font-size:70%'> (w {row['Weight']:.2f})</span>"
-
-df['Text'] = df.apply(lambda row: format_text(row, selected_metric_type), axis=1)
-
-
 
 metric_types = ["Index", "Inflation"]
 sector_types = ["All", "Rural", "Urban", "Combined"]
 
 selected_metric_type = st.sidebar.selectbox("Select Metric Type", metric_types)
+
+
+def format_text(row, metric_type):
+    value = f"<b>{row['Value']:.1f}</b>"
+    if metric_type == "Inflation":
+        value += "%"
+    return f"{value} <span style='font-size:70%'> (w {row['Weight']:.2f})</span>"
+    
+# Create a column to hold the value information along with weights
+df['Text'] = df.apply(lambda row: format_text(row, selected_metric_type), axis=1)
 
 # Filter dataframe based on selected metric type
 df_filtered = df[df['ValueType'] == selected_metric_type].copy()
