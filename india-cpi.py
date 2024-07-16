@@ -238,13 +238,30 @@ elif selected_category_type == "Sub Cat":
 
 selected_sector_type = st.sidebar.selectbox("Select Sector Type", sector_types)
 
+# Initialize session state for selected descriptions (new lines)
+if 'selected_description' not in st.session_state:
+    st.session_state.selected_description = []
+
 # Prepare options for the multiselect based on sector type selection
 if selected_sector_type == "All":
     description_options = df_filtered['Description'].unique().tolist()
-    selected_description = st.sidebar.multiselect("Select Description to Display", description_options)
+    selected_description = st.sidebar.multiselect("Select Description to Display", description_options, default=st.session_state.selected_description)
 else:
     description_options = df_filtered[df_filtered['Description'].str.contains(re.escape(selected_sector_type))]['Description'].unique().tolist()
-    selected_description = st.sidebar.multiselect("Select Description to Display", description_options, default=description_options)
+    selected_description = st.sidebar.multiselect("Select Description to Display", description_options, default=st.session_state.selected_description)
+
+# Update session state with the new selections
+st.session_state.selected_description = selected_description
+
+# # Prepare options for the multiselect based on sector type selection
+# if selected_sector_type == "All":
+#     description_options = df_filtered['Description'].unique().tolist()
+#     selected_description = st.sidebar.multiselect("Select Description to Display", description_options)
+# else:
+#     description_options = df_filtered[df_filtered['Description'].str.contains(re.escape(selected_sector_type))]['Description'].unique().tolist()
+#     selected_description = st.sidebar.multiselect("Select Description to Display", description_options, default=description_options)
+
+
 
 # Filter dataframe based on selected main description
 if selected_description:
