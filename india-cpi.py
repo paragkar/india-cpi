@@ -239,7 +239,6 @@ elif selected_category_type == "Sub Cat":
 selected_sector_type = st.sidebar.selectbox("Select Sector Type", sector_types)
 
 # Initialize session state for selected descriptions (new lines)
-# Initialize session state for selected descriptions
 if 'selected_description' not in st.session_state:
     st.session_state.selected_description = []
 
@@ -261,7 +260,6 @@ selected_description = st.sidebar.multiselect("Select Description to Display", d
 
 # Update session state with the new selections
 st.session_state.selected_description = selected_description
-
 
 # # Prepare options for the multiselect based on sector type selection
 # if selected_sector_type == "All":
