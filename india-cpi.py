@@ -325,9 +325,6 @@ else:
     # Update bar plot colors (new lines)
     try:
         color_map = {desc: trace.marker.color for desc, trace in zip(df_filtered_date['Description'], scatter_fig.data)}
-    except KeyError as e:
-        st.warning(f"Warning: {e}. Some descriptions may not have corresponding colors.")
-
 
     # Map colors from scatter plot to bar plot
     # color_map = {desc: trace.marker.color for desc, trace in zip(df_filtered_date['Description'], scatter_fig.data)}
@@ -338,6 +335,10 @@ else:
     bar_fig.update_traces(marker=dict(line=dict(width=2, color='black')))
     bar_fig.update_traces(marker_color=[color_map[desc] for desc in df_filtered_date['Description']])
     bar_fig.update_layout(showlegend=False, xaxis_title="Weighted Average", yaxis=dict(showticklabels=False))
+
+    except KeyError as e: (new lines)
+        st.warning(f"Warning: {e}. Some descriptions may not have corresponding colors.")
+
 
     # Update the y-axis tick labels to be bold
     fig.update_yaxes(tickfont=dict(size=15, family='Arial', color='black', weight='bold'), row=1, col=1)
