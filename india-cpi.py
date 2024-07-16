@@ -358,7 +358,7 @@ else:
     fig.update_yaxes(row=1, col=1, tickfont=dict(size=15),fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
 
     if selected_metric_type == "Inflation":
-        fig.update_xaxes(row=1, col=2, range=[min_weighted_avg*2.5, max_weighted_avg * 1.4],fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
+        fig.update_xaxes(row=1, col=2, range=[min_weighted_avg*3, max_weighted_avg * 1.4],fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
     else:
          fig.update_xaxes(row=1, col=2, range=[0, max_weighted_avg * 1.4],fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
 
