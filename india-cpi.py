@@ -239,6 +239,7 @@ elif selected_category_type == "Sub Cat":
 selected_sector_type = st.sidebar.selectbox("Select Sector Type", sector_types)
 
 # Initialize session state for selected descriptions (new lines)
+# Initialize session state for selected descriptions
 if 'selected_description' not in st.session_state:
     st.session_state.selected_description = []
 
@@ -248,10 +249,10 @@ if selected_sector_type == "All":
 else:
     description_options = df_filtered[df_filtered['Description'].str.contains(re.escape(selected_sector_type))]['Description'].unique().tolist()
 
-# Check if the current selected descriptions are valid for the new category type
+# Check if the current selected descriptions are valid for the new sector type
 valid_selected_description = [desc for desc in st.session_state.selected_description if desc in description_options]
 
-# If the selected descriptions are not valid for the new category type, reset the multiselect
+# If the selected descriptions are not valid for the new sector type, reset the multiselect
 if len(valid_selected_description) != len(st.session_state.selected_description):
     st.session_state.selected_description = []
 
