@@ -321,8 +321,16 @@ else:
     scatter_fig.update_traces(marker=dict(line=dict(width=1, color='black')), textposition='middle right', textfont=dict(family='Arial', size=15, color='black', weight='bold'))
     scatter_fig.update_layout(showlegend=False, xaxis_title="Value of " + selected_metric_type)
 
+
+    # Update bar plot colors (new lines)
+    try:
+        bar_fig.update_traces(marker_color=[color_map[desc] for desc in df_filtered_date['Description']])
+    except KeyError as e:
+        st.warning(f"Warning: {e}. Some descriptions may not have corresponding colors.")
+
+
     # Map colors from scatter plot to bar plot
-    color_map = {desc: trace.marker.color for desc, trace in zip(df_filtered_date['Description'], scatter_fig.data)}
+    # color_map = {desc: trace.marker.color for desc, trace in zip(df_filtered_date['Description'], scatter_fig.data)}
 
     # Create bar plot
     bar_fig = px.bar(df_filtered_date, x="Weighted Average", y="Description", orientation='h', text_auto='.1f')
