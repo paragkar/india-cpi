@@ -323,7 +323,6 @@ else:
 
     # Ensure no NaN values in 'Description' column (new lines)
     df_filtered['Description'] = df_filtered['Description'].fillna('')
-    df_filtered_date['Description'] = df_filtered_date['Description'].fillna('')
 
     # Map colors from scatter plot to bar plot
     color_map = {desc: trace.marker.color for desc, trace in zip(df_filtered_date['Description'], scatter_fig.data)}
