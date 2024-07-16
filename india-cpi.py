@@ -264,7 +264,7 @@ selected_sector_type = st.sidebar.selectbox("Select Sector Type", sector_types)
 
 #New Lines added to take care of selection in between so that menue does not reset (end)
 
-Incase there is a bug in the above code then replace this block below with the above
+# Incase there is a bug in the above code then replace this block below with the above
 # Prepare options for the multiselect based on sector type selection
 if selected_sector_type == "All":
     description_options = df_filtered['Description'].unique().tolist()
