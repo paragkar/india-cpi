@@ -324,7 +324,7 @@ else:
 
     # Update bar plot colors (new lines)
     try:
-        bar_fig.update_traces(marker_color=[color_map[desc] for desc in df_filtered_date['Description']])
+        color_map = {desc: trace.marker.color for desc, trace in zip(df_filtered_date['Description'], scatter_fig.data)}
     except KeyError as e:
         st.warning(f"Warning: {e}. Some descriptions may not have corresponding colors.")
 
