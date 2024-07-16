@@ -20,10 +20,7 @@ st.set_page_config(
 # Custom CSS to reduce font size in multi-select box
 custom_css = """
 <style>
-.css-1okebmr-indicatorSeparator, .css-1wy0on6, .css-1hb7zxy-IndicatorsContainer, .css-1n7v3ny-option {
-    font-size: 50% !important;
-}
-.stMultiSelect div[role="listbox"] > div {
+.css-1okebmr-indicatorSeparator, .css-1wy0on6, .css-1hb7zxy-IndicatorsContainer, .css-1n7v3ny-option, .css-1pahdxg, .css-1wa3eu0, .css-1v4eu6x {
     font-size: 50% !important;
 }
 </style>
