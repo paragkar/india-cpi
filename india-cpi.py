@@ -321,7 +321,7 @@ else:
     scatter_fig.update_traces(marker=dict(line=dict(width=1, color='black')), textposition='middle right', textfont=dict(family='Arial', size=15, color='black', weight='bold'))
     scatter_fig.update_layout(showlegend=False, xaxis_title="Value of " + selected_metric_type)
 
-    st.write(df_filtered_date)
+    df_filtered_date = df_filtered_date.dropna()
 
     # Map colors from scatter plot to bar plot
     color_map = {desc: trace.marker.color for desc, trace in zip(df_filtered_date['Description'], scatter_fig.data)}
