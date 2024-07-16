@@ -17,15 +17,27 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS to reduce font size in multi-select box
-custom_css = """
-<style>
-.css-1okebmr-indicatorSeparator, .css-1wy0on6, .css-1hb7zxy-IndicatorsContainer, .css-1n7v3ny-option, .css-1pahdxg, .css-1wa3eu0, .css-1v4eu6x {
-    font-size: 50% !important;
-}
-</style>
-"""
-st.markdown(custom_css, unsafe_allow_html=True)
+# # Custom CSS to reduce font size in multi-select box
+# custom_css = """
+# <style>
+# .css-1okebmr-indicatorSeparator, .css-1wy0on6, .css-1hb7zxy-IndicatorsContainer, .css-1n7v3ny-option, .css-1pahdxg, .css-1wa3eu0, .css-1v4eu6x {
+#     font-size: 50% !important;
+# }
+# </style>
+# """
+# st.markdown(custom_css, unsafe_allow_html=True)
+
+st.markdown("""
+    <style>
+        .stMultiSelect [data-baseweb=select] span{
+            max-width: 250px;
+            font-size: 0.6rem;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+st.multiselect("pick a long string", 
+    [i*25 for i in "ABCDEWXYZ"])
 
 # Hide Streamlit style and buttons
 hide_st_style = '''
