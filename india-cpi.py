@@ -280,74 +280,7 @@ else:
     # Placeholder for the plot
     plot_placeholder = st.empty()
 
-    if play_button:
-        for i in range(len(unique_dates)):
-            selected_date = unique_dates[i]
-            df_filtered_date = df_filtered[df_filtered['Date'].dt.date == selected_date]
-
-            fig = make_subplots(rows=1, cols=2, shared_yaxes=True, column_widths=[0.75, 0.2], horizontal_spacing=0.01)
-
-            # Create scatter plot
-            scatter_fig = px.scatter(df_filtered_date, x="Value", y="Description", color="Description", size_max=20, text="Text")
-            scatter_fig.update_traces(marker=dict(size=20))
-            scatter_fig.update_traces(marker=dict(line=dict(width=1, color='black')), textposition='middle right', textfont=dict(family='Arial', size=15, color='black', weight='bold'))
-            scatter_fig.update_layout(showlegend=False, xaxis_title="Value of " + selected_metric_type)
-
-            # Map colors from scatter plot to bar plot
-            color_map = {desc: trace.marker.color for desc, trace in zip(df_filtered_date['Description'], scatter_fig.data)}
-
-            # Create bar plot
-            bar_fig = px.bar(df_filtered_date, x="Weighted Average", y="Description", orientation='h', text_auto='.2f')
-            bar_fig.update_traces(textposition='outside', textfont=dict(size=15, family='Arial', color='black', weight='bold'))
-            bar_fig.update_traces(marker=dict(line=dict(width=2, color='black')))
-            bar_fig.update_traces(marker_color=[color_map[desc] for desc in df_filtered_date['Description']])
-            bar_fig.update_layout(showlegend=False, xaxis_title="Weighted Average", yaxis=dict(showticklabels=False))
-
-            # Update the y-axis tick labels to be bold
-            fig.update_yaxes(tickfont=dict(size=15, family='Arial', color='black', weight='bold'), row=1, col=1)
-
-            for trace in scatter_fig.data:
-                fig.add_trace(trace, row=1, col=1)
-
-            for trace in bar_fig.data:
-                fig.add_trace(trace, row=1, col=2)
-
-            # Create a reversed list of categories (descriptions)
-            categories_reversed = df_filtered_date['Description'].tolist()[::-1]
-
-            # Reverse the order of the y-axis for both the scatter plot and the bar plot
-            fig.update_yaxes(categoryorder='array', categoryarray=categories_reversed, row=1, col=1)
-            fig.update_yaxes(categoryorder='array', categoryarray=categories_reversed, row=1, col=2)
-
-            # Update the layout for the combined figure
-            fig.update_xaxes(row=1, col=1, range=[overall_min_value, overall_max_value * 1.05], fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
-            fig.update_yaxes(row=1, col=1, tickfont=dict(size=15),fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
-
-            if selected_metric_type == "Inflation":
-                fig.update_xaxes(row=1, col=2, range=[min_weighted_avg*3, max_weighted_avg * 1.4],fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
-            else:
-                fig.update_xaxes(row=1, col=2, range=[0, max_weighted_avg * 1.4],fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
-
-            fig.update_yaxes(row=1, col=2, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
-            
-            fig.update_layout(height=700, width=1200, margin=dict(l=5, r=10, t=0, b=0, pad=0), showlegend=False, yaxis=dict(automargin=True))
-
-            # Update the layout for the combined figure with x-axis labels
-            fig.update_xaxes(title_text="CPI " + selected_metric_type, row=1, col=1, title_font=dict(size=15, family='Arial', color='black', weight='bold'))
-            fig.update_xaxes(title_text="Weight Adjusted Values", row=1, col=2, title_font=dict(size=15, family='Arial', color='black', weight='bold'))
-
-            # Create the styled title
-            styled_category_type = f"<span style='color:red; font-weight:bold;'>{selected_category_type}</span>"
-            styled_sector_type = f"<span style='color:blue; font-weight:bold;'>{selected_sector_type}</span>"
-            styled_metric_type = f"<span style='color:brown; font-weight:bold;'>{selected_metric_type}</span>"
-            styled_month = f"<span style='color:green; font-weight:bold;'>{selected_date.strftime('%b %Y')}</span>"
-            title = f"Consumer Price {styled_category_type} {styled_sector_type} {styled_metric_type} Data For Month - {styled_month}"
-
-            # Display the date with month on top along with the title
-            plot_placeholder.markdown(f"<h1 style='font-size:30px; margin-top: -20px;'>{title}</h1>", unsafe_allow_html=True)
-            plot_placeholder.plotly_chart(fig, use_container_width=True)
-            time.sleep(0.5)  # Adjust the sleep time to control the animation speed
-    else:
+    def update_plot(selected_date):
         df_filtered_date = df_filtered[df_filtered['Date'].dt.date == selected_date]
 
         fig = make_subplots(rows=1, cols=2, shared_yaxes=True, column_widths=[0.75, 0.2], horizontal_spacing=0.01)
@@ -409,5 +342,13 @@ else:
         title = f"Consumer Price {styled_category_type} {styled_sector_type} {styled_metric_type} Data For Month - {styled_month}"
 
         # Display the date with month on top along with the title
-        st.markdown(f"<h1 style='font-size:30px; margin-top: -20px;'>{title}</h1>", unsafe_allow_html=True)
-        st.plotly_chart(fig, use_container_width=True)
+        plot_placeholder.markdown(f"<h1 style='font-size:30px; margin-top: -20px;'>{title}</h1>", unsafe_allow_html=True)
+        plot_placeholder.plotly_chart(fig, use_container_width=True)
+    
+    if play_button:
+        for i in range(len(unique_dates)):
+            selected_date = unique_dates[i]
+            update_plot(selected_date)
+            time.sleep(0.5)  # Adjust the sleep time to control the animation speed
+    else:
+        update_plot(selected_date)
