@@ -181,9 +181,8 @@ df['Value'] = df['Value'].astype(float).round(2)
 metric_types = ["Index", "Inflation"]
 sector_types = ["All", "Rural", "Urban", "Combined"]
 
-# Add buttons for Play and Pause
+# Place the "Play" button at the top of the sidebar
 play_button = st.sidebar.button("Play")
-pause_button = st.sidebar.button("Pause")
 
 slider_placeholder = st.sidebar.empty()
 
@@ -356,19 +355,8 @@ else:
     slider = slider_placeholder.slider("Slider for Selecting Date Index", min_value=0, max_value=len(unique_dates) - 1, value=0, key="date_slider")
     update_title(unique_dates[slider])
 
-    if 'is_playing' not in st.session_state:
-        st.session_state.is_playing = False
-
     if play_button:
-        st.session_state.is_playing = True
-
-    if pause_button:
-        st.session_state.is_playing = False
-
-    if st.session_state.is_playing:
-        for i in range(slider, len(unique_dates)):
-            if not st.session_state.is_playing:
-                break
+        for i in range(len(unique_dates)):
             selected_date = unique_dates[i]
             update_plot(selected_date)
             update_title(selected_date)
