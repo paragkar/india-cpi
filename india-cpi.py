@@ -272,9 +272,8 @@ else:
     # Manually set the date range in the sidebar
     unique_dates = df_filtered['Date'].dt.date.unique()
     unique_dates = sorted(unique_dates)  # Ensure dates are sorted
-    date_index = st.slider("Slider for Selecting Date Index", min_value=0, max_value=len(unique_dates) - 1, value=0)
-    selected_date = unique_dates[date_index]
-    
+
+    slider_placeholder = st.empty()
     play_button = st.button("Play")
     
     # Placeholder for the plot
@@ -349,14 +348,18 @@ else:
         # Display the date with month on top along with the title
         title_placeholder.markdown(f"<h1 style='font-size:30px; margin-top: -20px;'>{title}</h1>", unsafe_allow_html=True)
 
-    # Initialize title
-    update_title(selected_date)
-    
+    # Initialize title and slider
+    update_title(unique_dates[0])
+    slider = slider_placeholder.slider("Slider for Selecting Date Index", min_value=0, max_value=len(unique_dates) - 1, value=0, key="date_slider")
+
     if play_button:
         for i in range(len(unique_dates)):
             selected_date = unique_dates[i]
             update_plot(selected_date)
             update_title(selected_date)
+            slider_placeholder.slider("Slider for Selecting Date Index", min_value=0, max_value=len(unique_dates) - 1, value=i, key=f"date_slider_{i}")
             time.sleep(0.5)  # Adjust the sleep time to control the animation speed
     else:
+        selected_date = unique_dates[slider]
         update_plot(selected_date)
+        update_title(selected_date)
