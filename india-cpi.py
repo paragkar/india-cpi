@@ -184,6 +184,8 @@ sector_types = ["All", "Rural", "Urban", "Combined"]
 # Place the "Play" button at the top of the sidebar
 play_button = st.sidebar.button("Play")
 
+slider_placeholder = st.sidebar.empty()
+
 selected_metric_type = st.sidebar.selectbox("Select Metric Type", metric_types)
 
 def format_text(row, metric_type):
@@ -276,7 +278,6 @@ else:
     unique_dates = df_filtered['Date'].dt.date.unique()
     unique_dates = sorted(unique_dates)  # Ensure dates are sorted
 
-    slider_placeholder = st.empty()
     title_placeholder = st.empty()
     
     # Placeholder for the plot
