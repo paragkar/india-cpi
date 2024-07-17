@@ -233,7 +233,7 @@ elif selected_category_type == "Sub Cat":
     df_filtered = df_filtered[df_filtered['Description'].apply(lambda x: not any(main in x for main in main_categories) or "General Index" in x or "Housing" in x
         or "Pan, tobacco and intoxicants" in x or "Fuel and light" in x)]
 
-selected_sector_type = st.sidebar.selectbox("Select Sector Type", sector_types)
+selected_sector_type = st.sidebar.selectbox("Select Sector Type", sector_types, index=3)
 
 # Prepare options for the multiselect based on sector type selection
 if selected_sector_type == "All":
@@ -383,7 +383,7 @@ else:
             update_title(selected_date)
             st.session_state.current_index = i
             slider_placeholder.slider("Slider for Selecting Date Index", min_value=0, max_value=len(unique_dates) - 1, value=i, key=f"date_slider_{i}")
-            time.sleep(0.4)  # Adjust the sleep time to control the animation speed
+            time.sleep(0.3)  # Adjust the sleep time to control the animation speed
     else:
         selected_date = unique_dates[slider]
         update_plot(selected_date)
