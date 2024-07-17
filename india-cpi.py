@@ -183,6 +183,7 @@ sector_types = ["All", "Rural", "Urban", "Combined"]
 
 # Place the "Play" button at the top of the sidebar
 play_button = st.sidebar.button("Play")
+pause_button = st.sidebar.button("Pause")
 
 slider_placeholder = st.sidebar.empty()
 
@@ -352,17 +353,39 @@ else:
         title_placeholder.markdown(f"<h1 style='font-size:30px; margin-top: -20px;'>{title}</h1>", unsafe_allow_html=True)
 
     # Initialize title and slider
-    slider = slider_placeholder.slider("Slider for Selecting Date Index", min_value=0, max_value=len(unique_dates) - 1, value=0, key="date_slider")
+    if 'current_index' not in st.session_state:
+        st.session_state.current_index = 0
+
+    if 'is_playing' not in st.session_state:
+        st.session_state.is_playing = False
+
+    # Validate the current index
+    if st.session_state.current_index >= len(unique_dates):
+        st.session_state.current_index = 0
+
+    slider = slider_placeholder.slider("Slider for Selecting Date Index", min_value=0, max_value=len(unique_dates) - 1, value=st.session_state.current_index, key="date_slider")
     update_title(unique_dates[slider])
 
     if play_button:
-        for i in range(len(unique_dates)):
+        st.session_state.is_playing = True
+        if st.session_state.current_index == len(unique_dates) - 1:
+            st.session_state.current_index = 0
+
+    if pause_button:
+        st.session_state.is_playing = False
+
+    if st.session_state.is_playing:
+        for i in range(st.session_state.current_index, len(unique_dates)):
+            if not st.session_state.is_playing:
+                break
             selected_date = unique_dates[i]
             update_plot(selected_date)
             update_title(selected_date)
+            st.session_state.current_index = i
             slider_placeholder.slider("Slider for Selecting Date Index", min_value=0, max_value=len(unique_dates) - 1, value=i, key=f"date_slider_{i}")
             time.sleep(0.4)  # Adjust the sleep time to control the animation speed
     else:
         selected_date = unique_dates[slider]
         update_plot(selected_date)
         update_title(selected_date)
+        st.session_state.current_index = slider
