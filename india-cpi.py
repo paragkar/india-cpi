@@ -272,8 +272,9 @@ else:
     # Manually set the date range in the sidebar
     unique_dates = df_filtered['Date'].dt.date.unique()
     unique_dates = sorted(unique_dates)  # Ensure dates are sorted
-
-    slider_placeholder = st.empty()
+    date_index = st.slider("Slider for Selecting Date Index", min_value=0, max_value=len(unique_dates) - 1, value=0)
+    selected_date = unique_dates[date_index]
+    
     play_button = st.button("Play")
     
     # Placeholder for the plot
@@ -354,11 +355,8 @@ else:
     if play_button:
         for i in range(len(unique_dates)):
             selected_date = unique_dates[i]
-            date_index = i
-            slider_placeholder.slider("Slider for Selecting Date Index", min_value=0, max_value=len(unique_dates) - 1, value=date_index, key="date_slider")
             update_plot(selected_date)
             update_title(selected_date)
             time.sleep(0.5)  # Adjust the sleep time to control the animation speed
     else:
-        slider_placeholder.slider("Slider for Selecting Date Index", min_value=0, max_value=len(unique_dates) - 1, value=unique_dates.tolist().index(selected_date), key="date_slider")
         update_plot(selected_date)
