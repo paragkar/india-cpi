@@ -274,11 +274,11 @@ else:
     unique_dates = sorted(unique_dates)  # Ensure dates are sorted
 
     slider_placeholder = st.empty()
-    play_button = st.button("Play")
+    title_placeholder = st.empty()
     
     # Placeholder for the plot
     plot_placeholder = st.empty()
-    title_placeholder = st.empty()
+    play_button = st.sidebar.button("Play", key="play_button")
 
     def update_plot(selected_date):
         df_filtered_date = df_filtered[df_filtered['Date'].dt.date == selected_date]
@@ -349,8 +349,8 @@ else:
         title_placeholder.markdown(f"<h1 style='font-size:30px; margin-top: -20px;'>{title}</h1>", unsafe_allow_html=True)
 
     # Initialize title and slider
-    update_title(unique_dates[0])
     slider = slider_placeholder.slider("Slider for Selecting Date Index", min_value=0, max_value=len(unique_dates) - 1, value=0, key="date_slider")
+    update_title(unique_dates[slider])
 
     if play_button:
         for i in range(len(unique_dates)):
