@@ -279,6 +279,7 @@ else:
     
     # Placeholder for the plot
     plot_placeholder = st.empty()
+    title_placeholder = st.empty()
 
     def update_plot(selected_date):
         df_filtered_date = df_filtered[df_filtered['Date'].dt.date == selected_date]
@@ -334,6 +335,10 @@ else:
         fig.update_xaxes(title_text="CPI " + selected_metric_type, row=1, col=1, title_font=dict(size=15, family='Arial', color='black', weight='bold'))
         fig.update_xaxes(title_text="Weight Adjusted Values", row=1, col=2, title_font=dict(size=15, family='Arial', color='black', weight='bold'))
 
+        # Display the plot in the placeholder
+        plot_placeholder.plotly_chart(fig, use_container_width=True)
+
+    def update_title(selected_date):
         # Create the styled title
         styled_category_type = f"<span style='color:red; font-weight:bold;'>{selected_category_type}</span>"
         styled_sector_type = f"<span style='color:blue; font-weight:bold;'>{selected_sector_type}</span>"
@@ -342,13 +347,16 @@ else:
         title = f"Consumer Price {styled_category_type} {styled_sector_type} {styled_metric_type} Data For Month - {styled_month}"
 
         # Display the date with month on top along with the title
-        plot_placeholder.markdown(f"<h1 style='font-size:30px; margin-top: -20px;'>{title}</h1>", unsafe_allow_html=True)
-        plot_placeholder.plotly_chart(fig, use_container_width=True)
+        title_placeholder.markdown(f"<h1 style='font-size:30px; margin-top: -20px;'>{title}</h1>", unsafe_allow_html=True)
+
+    # Initialize title
+    update_title(selected_date)
     
     if play_button:
         for i in range(len(unique_dates)):
             selected_date = unique_dates[i]
             update_plot(selected_date)
+            update_title(selected_date)
             time.sleep(0.5)  # Adjust the sleep time to control the animation speed
     else:
         update_plot(selected_date)
