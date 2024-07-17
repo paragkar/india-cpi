@@ -364,6 +364,7 @@ else:
 
     if play_button:
         st.session_state.is_playing = True
+        st.session_state.current_index = 0 if st.session_state.current_index == len(unique_dates) - 1 else st.session_state.current_index
 
     if pause_button:
         st.session_state.is_playing = False
