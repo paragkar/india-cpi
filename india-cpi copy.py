@@ -8,7 +8,6 @@ import io
 import msoffcrypto
 import numpy as np
 import re
-import time
 
 pd.set_option('future.no_silent_downcasting', True)
 pd.set_option('display.max_columns', None)
@@ -26,6 +25,9 @@ st.markdown("""
         }
     </style>
     """, unsafe_allow_html=True)
+
+# st.multiselect("pick a long string", 
+#     [i*25 for i in "ABCDEWXYZ"])
 
 # Hide Streamlit style and buttons
 hide_st_style = '''
@@ -178,10 +180,17 @@ df["Value"] = df["Value"].replace("-", np.nan, regex=True)
 # Format the Value column to two decimal places and keep it as a float
 df['Value'] = df['Value'].astype(float).round(2)
 
+# Create a column to hold the value information without the year
+# df['Text'] = df.apply(lambda row: f"<b>{row['Value']:.1f}</b>", axis=1)
+# Create a column to hold the value information along with weights
+# df['Text'] = df.apply(lambda row: f"<b>{row['Value']:.1f}</b> <span style='font-size:70%'> (w {row['Weight']:.2f})</span>", axis=1)
+
+
 metric_types = ["Index", "Inflation"]
 sector_types = ["All", "Rural", "Urban", "Combined"]
 
 selected_metric_type = st.sidebar.selectbox("Select Metric Type", metric_types)
+
 
 def format_text(row, metric_type):
     value = f"<b>{row['Value']:.1f}</b>"
@@ -229,6 +238,33 @@ elif selected_category_type == "Sub Cat":
 
 selected_sector_type = st.sidebar.selectbox("Select Sector Type", sector_types)
 
+# Initialize session state for selected descriptions (new lines)
+# if 'selected_description' not in st.session_state:
+#     st.session_state.selected_description = []
+
+# #New Lines added to take care of selection in between so that menue does not reset (begin)
+# # Prepare options for the multiselect based on sector type selection
+# if selected_sector_type == "All":
+#     description_options = df_filtered['Description'].unique().tolist()
+# else:
+#     description_options = df_filtered[df_filtered['Description'].str.contains(re.escape(selected_sector_type))]['Description'].unique().tolist()
+
+# # Check if the current selected descriptions are valid for the new sector type
+# valid_selected_description = [desc for desc in st.session_state.selected_description if desc in description_options]
+
+# # If the selected descriptions are not valid for the new sector type, reset the multiselect
+# if len(valid_selected_description) != len(st.session_state.selected_description):
+#     st.session_state.selected_description = []
+
+# # Update the multiselect box with valid options
+# selected_description = st.sidebar.multiselect("Select Description to Display", description_options, default=st.session_state.selected_description)
+
+# # Update session state with the new selections
+# st.session_state.selected_description = selected_description
+
+#New Lines added to take care of selection in between so that menue does not reset (end)
+
+# Incase there is a bug in the above code then replace this block below with the above
 # Prepare options for the multiselect based on sector type selection
 if selected_sector_type == "All":
     description_options = df_filtered['Description'].unique().tolist()
@@ -236,6 +272,7 @@ if selected_sector_type == "All":
 else:
     description_options = df_filtered[df_filtered['Description'].str.contains(re.escape(selected_sector_type))]['Description'].unique().tolist()
     selected_description = st.sidebar.multiselect("Select Description to Display", description_options, default=description_options)
+
 
 # Filter dataframe based on selected main description
 if selected_description:
@@ -258,6 +295,7 @@ else:
     df_filtered['Description'] = pd.Categorical(df_filtered['Description'], categories=selected_description_order, ordered=True)
     df_filtered = df_filtered.sort_values('Description')  # Sort the dataframe by Description to ensure the order is maintained
 
+
 # Check if there is any data left after filtering
 if selected_sector_type == "All" and not selected_description:
     st.write("Please select at least one description to display the data.")
@@ -268,146 +306,80 @@ else:
     df_filtered['Weighted Average'] = df_filtered['Value'] * df_filtered['Weight'] / 100
     min_weighted_avg = df_filtered['Weighted Average'].min()
     max_weighted_avg = df_filtered['Weighted Average'].max()
-
+    
     # Manually set the date range in the sidebar
     unique_dates = df_filtered['Date'].dt.date.unique()
     unique_dates = sorted(unique_dates)  # Ensure dates are sorted
     date_index = st.slider("Slider for Selecting Date Index", min_value=0, max_value=len(unique_dates) - 1, value=0)
+    # date_index = st.slider("", min_value=0, max_value=len(unique_dates) - 1, value=0)
     selected_date = unique_dates[date_index]
     
-    play_button = st.button("Play")
-    
-    # Placeholder for the plot
-    plot_placeholder = st.empty()
+    df_filtered_date = df_filtered[df_filtered['Date'].dt.date == selected_date]
 
-    if play_button:
-        for i in range(len(unique_dates)):
-            selected_date = unique_dates[i]
-            df_filtered_date = df_filtered[df_filtered['Date'].dt.date == selected_date]
+    fig = make_subplots(rows=1, cols=2, shared_yaxes=True, column_widths=[0.75, 0.2], horizontal_spacing=0.01)  # Minimal horizontal spacing
 
-            fig = make_subplots(rows=1, cols=2, shared_yaxes=True, column_widths=[0.75, 0.2], horizontal_spacing=0.01)
+    # Create scatter plot
+    scatter_fig = px.scatter(df_filtered_date, x="Value", y="Description", color="Description", size_max=20, text="Text")
+    scatter_fig.update_traces(marker=dict(size=20))  # Adjust the size value as needed
+    scatter_fig.update_traces(marker=dict(line=dict(width=1, color='black')), textposition='middle right', textfont=dict(family='Arial', size=15, color='black', weight='bold'))
+    scatter_fig.update_layout(showlegend=False, xaxis_title="Value of " + selected_metric_type)
 
-            # Create scatter plot
-            scatter_fig = px.scatter(df_filtered_date, x="Value", y="Description", color="Description", size_max=20, text="Text")
-            scatter_fig.update_traces(marker=dict(size=20))
-            scatter_fig.update_traces(marker=dict(line=dict(width=1, color='black')), textposition='middle right', textfont=dict(family='Arial', size=15, color='black', weight='bold'))
-            scatter_fig.update_layout(showlegend=False, xaxis_title="Value of " + selected_metric_type)
+    # df_filtered_date = df_filtered_date.dropna() #Debug 16th July 2024
 
-            # Map colors from scatter plot to bar plot
-            color_map = {desc: trace.marker.color for desc, trace in zip(df_filtered_date['Description'], scatter_fig.data)}
+    # Map colors from scatter plot to bar plot
+    color_map = {desc: trace.marker.color for desc, trace in zip(df_filtered_date['Description'], scatter_fig.data)}
 
-            # Create bar plot
-            bar_fig = px.bar(df_filtered_date, x="Weighted Average", y="Description", orientation='h', text_auto='.2f')
-            bar_fig.update_traces(textposition='outside', textfont=dict(size=15, family='Arial', color='black', weight='bold'))
-            bar_fig.update_traces(marker=dict(line=dict(width=2, color='black')))
-            bar_fig.update_traces(marker_color=[color_map[desc] for desc in df_filtered_date['Description']])
-            bar_fig.update_layout(showlegend=False, xaxis_title="Weighted Average", yaxis=dict(showticklabels=False))
+    # Create bar plot
+    bar_fig = px.bar(df_filtered_date, x="Weighted Average", y="Description", orientation='h', text_auto='.2f')
+    bar_fig.update_traces(textposition='outside', textfont=dict(size=15, family='Arial', color='black', weight='bold'))
+    bar_fig.update_traces(marker=dict(line=dict(width=2, color='black')))
+    bar_fig.update_traces(marker_color=[color_map[desc] for desc in df_filtered_date['Description']])
+    bar_fig.update_layout(showlegend=False, xaxis_title="Weighted Average", yaxis=dict(showticklabels=False))
 
-            # Update the y-axis tick labels to be bold
-            fig.update_yaxes(tickfont=dict(size=15, family='Arial', color='black', weight='bold'), row=1, col=1)
 
-            for trace in scatter_fig.data:
-                fig.add_trace(trace, row=1, col=1)
+    # Update the y-axis tick labels to be bold
+    fig.update_yaxes(tickfont=dict(size=15, family='Arial', color='black', weight='bold'), row=1, col=1)
 
-            for trace in bar_fig.data:
-                fig.add_trace(trace, row=1, col=2)
+    for trace in scatter_fig.data:
+        fig.add_trace(trace, row=1, col=1)
 
-            # Create a reversed list of categories (descriptions)
-            categories_reversed = df_filtered_date['Description'].tolist()[::-1]
+    for trace in bar_fig.data:
+        fig.add_trace(trace, row=1, col=2)
 
-            # Reverse the order of the y-axis for both the scatter plot and the bar plot
-            fig.update_yaxes(categoryorder='array', categoryarray=categories_reversed, row=1, col=1)
-            fig.update_yaxes(categoryorder='array', categoryarray=categories_reversed, row=1, col=2)
+    # Create a reversed list of categories (descriptions)
+    categories_reversed = df_filtered_date['Description'].tolist()[::-1]
 
-            # Update the layout for the combined figure
-            fig.update_xaxes(row=1, col=1, range=[overall_min_value, overall_max_value * 1.05], fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
-            fig.update_yaxes(row=1, col=1, tickfont=dict(size=15),fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
+    # Reverse the order of the y-axis for both the scatter plot and the bar plot
+    fig.update_yaxes(categoryorder='array', categoryarray=categories_reversed, row=1, col=1)
+    fig.update_yaxes(categoryorder='array', categoryarray=categories_reversed, row=1, col=2)
 
-            if selected_metric_type == "Inflation":
-                fig.update_xaxes(row=1, col=2, range=[min_weighted_avg*3, max_weighted_avg * 1.4],fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
-            else:
-                fig.update_xaxes(row=1, col=2, range=[0, max_weighted_avg * 1.4],fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
+   # Update the layout for the combined figure
+    fig.update_xaxes(row=1, col=1, range=[overall_min_value, overall_max_value * 1.05], fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
+    fig.update_yaxes(row=1, col=1, tickfont=dict(size=15),fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
 
-            fig.update_yaxes(row=1, col=2, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
-            
-            fig.update_layout(height=700, width=1200, margin=dict(l=5, r=10, t=0, b=0, pad=0), showlegend=False, yaxis=dict(automargin=True))
-
-            # Update the layout for the combined figure with x-axis labels
-            fig.update_xaxes(title_text="CPI " + selected_metric_type, row=1, col=1, title_font=dict(size=15, family='Arial', color='black', weight='bold'))
-            fig.update_xaxes(title_text="Weight Adjusted Values", row=1, col=2, title_font=dict(size=15, family='Arial', color='black', weight='bold'))
-
-            # Create the styled title
-            styled_category_type = f"<span style='color:red; font-weight:bold;'>{selected_category_type}</span>"
-            styled_sector_type = f"<span style='color:blue; font-weight:bold;'>{selected_sector_type}</span>"
-            styled_metric_type = f"<span style='color:brown; font-weight:bold;'>{selected_metric_type}</span>"
-            styled_month = f"<span style='color:green; font-weight:bold;'>{selected_date.strftime('%b %Y')}</span>"
-            title = f"Consumer Price {styled_category_type} {styled_sector_type} {styled_metric_type} Data For Month - {styled_month}"
-
-            # Display the date with month on top along with the title
-            plot_placeholder.markdown(f"<h1 style='font-size:30px; margin-top: -20px;'>{title}</h1>", unsafe_allow_html=True)
-            plot_placeholder.plotly_chart(fig, use_container_width=True)
-            time.sleep(0.5)  # Adjust the sleep time to control the animation speed
+    if selected_metric_type == "Inflation":
+        fig.update_xaxes(row=1, col=2, range=[min_weighted_avg*3, max_weighted_avg * 1.4],fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
     else:
-        df_filtered_date = df_filtered[df_filtered['Date'].dt.date == selected_date]
+         fig.update_xaxes(row=1, col=2, range=[0, max_weighted_avg * 1.4],fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
 
-        fig = make_subplots(rows=1, cols=2, shared_yaxes=True, column_widths=[0.75, 0.2], horizontal_spacing=0.01)
+    fig.update_yaxes(row=1, col=2, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
+    
+    fig.update_layout(height=700, width=1200, margin=dict(l=5, r=10, t=0, b=0, pad=0), showlegend=False, yaxis=dict(automargin=True))
 
-        # Create scatter plot
-        scatter_fig = px.scatter(df_filtered_date, x="Value", y="Description", color="Description", size_max=20, text="Text")
-        scatter_fig.update_traces(marker=dict(size=20))
-        scatter_fig.update_traces(marker=dict(line=dict(width=1, color='black')), textposition='middle right', textfont=dict(family='Arial', size=15, color='black', weight='bold'))
-        scatter_fig.update_layout(showlegend=False, xaxis_title="Value of " + selected_metric_type)
+     # Update the layout for the combined figure with x-axis labels
+    fig.update_xaxes(title_text="CPI " + selected_metric_type, row=1, col=1, title_font=dict(size=15, family='Arial', color='black', weight='bold'))
+    fig.update_xaxes(title_text="Weight Adjusted Values", row=1, col=2, title_font=dict(size=15, family='Arial', color='black', weight='bold'))
 
-        # Map colors from scatter plot to bar plot
-        color_map = {desc: trace.marker.color for desc, trace in zip(df_filtered_date['Description'], scatter_fig.data)}
 
-        # Create bar plot
-        bar_fig = px.bar(df_filtered_date, x="Weighted Average", y="Description", orientation='h', text_auto='.2f')
-        bar_fig.update_traces(textposition='outside', textfont=dict(size=15, family='Arial', color='black', weight='bold'))
-        bar_fig.update_traces(marker=dict(line=dict(width=2, color='black')))
-        bar_fig.update_traces(marker_color=[color_map[desc] for desc in df_filtered_date['Description']])
-        bar_fig.update_layout(showlegend=False, xaxis_title="Weighted Average", yaxis=dict(showticklabels=False))
+    # Display the date with month on top along with the title
+    # Create the styled title
+    styled_category_type = f"<span style='color:red; font-weight:bold;'>{selected_category_type}</span>"
+    styled_sector_type = f"<span style='color:blue; font-weight:bold;'>{selected_sector_type}</span>"
+    styled_metric_type = f"<span style='color:brown; font-weight:bold;'>{selected_metric_type}</span>"
+    styled_month = f"<span style='color:green; font-weight:bold;'>{selected_date.strftime('%b %Y')}</span>"
+    title = f"Consumer Price {styled_category_type} {styled_sector_type} {styled_metric_type} Data For Month - {styled_month}"
 
-        # Update the y-axis tick labels to be bold
-        fig.update_yaxes(tickfont=dict(size=15, family='Arial', color='black', weight='bold'), row=1, col=1)
+    # Display the date with month on top along with the title
+    st.markdown(f"<h1 style='font-size:30px; margin-top: -20px;'>{title}</h1>", unsafe_allow_html=True)
 
-        for trace in scatter_fig.data:
-            fig.add_trace(trace, row=1, col=1)
-
-        for trace in bar_fig.data:
-            fig.add_trace(trace, row=1, col=2)
-
-        # Create a reversed list of categories (descriptions)
-        categories_reversed = df_filtered_date['Description'].tolist()[::-1]
-
-        # Reverse the order of the y-axis for both the scatter plot and the bar plot
-        fig.update_yaxes(categoryorder='array', categoryarray=categories_reversed, row=1, col=1)
-        fig.update_yaxes(categoryorder='array', categoryarray=categories_reversed, row=1, col=2)
-
-        # Update the layout for the combined figure
-        fig.update_xaxes(row=1, col=1, range=[overall_min_value, overall_max_value * 1.05], fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
-        fig.update_yaxes(row=1, col=1, tickfont=dict(size=15),fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
-
-        if selected_metric_type == "Inflation":
-            fig.update_xaxes(row=1, col=2, range=[min_weighted_avg*3, max_weighted_avg * 1.4],fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
-        else:
-            fig.update_xaxes(row=1, col=2, range=[0, max_weighted_avg * 1.4],fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
-
-        fig.update_yaxes(row=1, col=2, fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
-        
-        fig.update_layout(height=700, width=1200, margin=dict(l=5, r=10, t=0, b=0, pad=0), showlegend=False, yaxis=dict(automargin=True))
-
-        # Update the layout for the combined figure with x-axis labels
-        fig.update_xaxes(title_text="CPI " + selected_metric_type, row=1, col=1, title_font=dict(size=15, family='Arial', color='black', weight='bold'))
-        fig.update_xaxes(title_text="Weight Adjusted Values", row=1, col=2, title_font=dict(size=15, family='Arial', color='black', weight='bold'))
-
-        # Create the styled title
-        styled_category_type = f"<span style='color:red; font-weight:bold;'>{selected_category_type}</span>"
-        styled_sector_type = f"<span style='color:blue; font-weight:bold;'>{selected_sector_type}</span>"
-        styled_metric_type = f"<span style='color:brown; font-weight:bold;'>{selected_metric_type}</span>"
-        styled_month = f"<span style='color:green; font-weight:bold;'>{selected_date.strftime('%b %Y')}</span>"
-        title = f"Consumer Price {styled_category_type} {styled_sector_type} {styled_metric_type} Data For Month - {styled_month}"
-
-        # Display the date with month on top along with the title
-        st.markdown(f"<h1 style='font-size:30px; margin-top: -20px;'>{title}</h1>", unsafe_allow_html=True)
-        st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True)
