@@ -356,9 +356,6 @@ else:
     if 'current_index' not in st.session_state:
         st.session_state.current_index = 0
 
-    slider = slider_placeholder.slider("Slider for Selecting Date Index", min_value=0, max_value=len(unique_dates) - 1, value=st.session_state.current_index, key="date_slider")
-    update_title(unique_dates[slider])
-
     if 'is_playing' not in st.session_state:
         st.session_state.is_playing = False
 
@@ -378,9 +375,11 @@ else:
             update_title(selected_date)
             st.session_state.current_index = i
             slider_placeholder.slider("Slider for Selecting Date Index", min_value=0, max_value=len(unique_dates) - 1, value=i, key=f"date_slider_{i}")
-            time.sleep(0.3)  # Adjust the sleep time to control the animation speed
+            time.sleep(0.4)  # Adjust the sleep time to control the animation speed
     else:
-        selected_date = unique_dates[slider]
+        selected_date = unique_dates[st.session_state.current_index]
         update_plot(selected_date)
         update_title(selected_date)
-        st.session_state.current_index = slider
+    
+    # Set the slider value to the current index
+    slider = slider_placeholder.slider("Slider for Selecting Date Index", min_value=0, max_value=len(unique_dates) - 1, value=st.session_state.current_index, key="date_slider")
