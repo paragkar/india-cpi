@@ -24,6 +24,11 @@ st.markdown("""
             max-width: 250px;
             font-size: 0.7rem;
         }
+        .play-button-container {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+        }
     </style>
     """, unsafe_allow_html=True)
 
@@ -181,11 +186,6 @@ df['Value'] = df['Value'].astype(float).round(2)
 metric_types = ["Index", "Inflation"]
 sector_types = ["All", "Rural", "Urban", "Combined"]
 
-# Place the "Play" button at the top of the sidebar
-play_button = st.sidebar.button("Play")
-
-slider_placeholder = st.sidebar.empty()
-
 selected_metric_type = st.sidebar.selectbox("Select Metric Type", metric_types)
 
 def format_text(row, metric_type):
@@ -278,10 +278,14 @@ else:
     unique_dates = df_filtered['Date'].dt.date.unique()
     unique_dates = sorted(unique_dates)  # Ensure dates are sorted
 
+    slider_placeholder = st.empty()
     title_placeholder = st.empty()
     
     # Placeholder for the plot
     plot_placeholder = st.empty()
+    
+    play_button_container = st.sidebar.empty()
+    play_button = play_button_container.button("Play")
 
     def update_plot(selected_date):
         df_filtered_date = df_filtered[df_filtered['Date'].dt.date == selected_date]
