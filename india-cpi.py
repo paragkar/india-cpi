@@ -287,7 +287,7 @@ else:
     def update_plot(selected_date):
         df_filtered_date = df_filtered[df_filtered['Date'].dt.date == selected_date]
 
-        fig = make_subplots(rows=1, cols=2, shared_yaxes=True, column_widths=[0.75, 0.2], horizontal_spacing=0.01)
+        fig = make_subplots(rows=1, cols=2, shared_yaxes=True, column_widths=[0.75, 0.25], horizontal_spacing=0.01)
 
         # Create scatter plot
         scatter_fig = px.scatter(df_filtered_date, x="Value", y="Description", color="Description", size_max=20, text="Text")
