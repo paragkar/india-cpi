@@ -195,10 +195,10 @@ def format_text(row, metric_type):
         value += "%"
     return f"{value} <span style='font-size:70%'> (w {row['Weight']:.2f})</span>"
 
-st.write(df)
-
 # Create a column to hold the value information along with weights
 df['Text'] = df.apply(lambda row: format_text(row, selected_metric_type), axis=1)
+
+st.write(df)
 
 # Filter dataframe based on selected metric type
 df_filtered = df[df['ValueType'] == selected_metric_type].copy()
