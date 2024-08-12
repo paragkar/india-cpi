@@ -198,8 +198,6 @@ def format_text(row, metric_type):
 # Create a column to hold the value information along with weights
 df['Text'] = df.apply(lambda row: format_text(row, selected_metric_type), axis=1)
 
-st.write(df)
-
 # Filter dataframe based on selected metric type
 df_filtered = df[df['ValueType'] == selected_metric_type].copy()
 
