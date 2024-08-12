@@ -369,7 +369,8 @@ else:
     if play_button:
         st.session_state.is_playing = True
         if st.session_state.current_index == len(unique_dates) - 1:
-            st.session_state.current_index = 0
+            # st.session_state.current_index = 0
+            st.session_state.current_index = slider
 
     if pause_button:
         st.session_state.is_playing = False
