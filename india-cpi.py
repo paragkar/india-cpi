@@ -376,6 +376,10 @@ else:
     # if pause_button:
     #     st.session_state.is_playing = False
 
+    #New Code 10th Aug 2024
+    # Placeholder for the Next and Previous buttons at the bottom of the page
+    # button_placeholder = st.empty()
+
 
     if play_button:
         st.session_state.is_playing = True
@@ -404,7 +408,7 @@ else:
 
         #New Code 10th Aug 2024
         # Placeholder for the Next and Previous buttons at the bottom of the page
-        button_placeholder = st.empty()
+        # button_placeholder = st.empty()
 
 
     # if st.session_state.is_playing:
