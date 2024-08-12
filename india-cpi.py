@@ -366,21 +366,24 @@ else:
     slider = slider_placeholder.slider("Slider for Selecting Date Index", min_value=0, max_value=len(unique_dates) - 1, value=st.session_state.current_index, key="date_slider")
     update_title(unique_dates[slider])
 
+    # if play_button:
+    #     st.session_state.is_playing = True
+    #     # if st.session_state.current_index == len(unique_dates) - 1:
+    #     #     st.session_state.current_index = 0
+    #     # This line ensures that the animation starts from where the slider is currently set when the play button is pressed
+    #     st.session_state.current_index = slider
+
+    # if pause_button:
+    #     st.session_state.is_playing = False
+
+
     if play_button:
-        st.session_state.is_playing = True
-        # if st.session_state.current_index == len(unique_dates) - 1:
-        #     st.session_state.current_index = 0
-        # This line ensures that the animation starts from where the slider is currently set when the play button is pressed
-        st.session_state.current_index = slider
+    st.session_state.is_playing = True
+    # Set the current index to the slider's position to ensure continuity
+    st.session_state.current_index = slider
 
     if pause_button:
         st.session_state.is_playing = False
-
-
-    #New Code 10th Aug 2024
-    # Placeholder for the Next and Previous buttons at the bottom of the page
-    button_placeholder = st.empty()
-
 
     if st.session_state.is_playing:
         for i in range(st.session_state.current_index, len(unique_dates)):
@@ -397,6 +400,28 @@ else:
         update_plot(selected_date)
         update_title(selected_date)
         st.session_state.current_index = slider
+
+
+        #New Code 10th Aug 2024
+        # Placeholder for the Next and Previous buttons at the bottom of the page
+        button_placeholder = st.empty()
+
+
+    # if st.session_state.is_playing:
+    #     for i in range(st.session_state.current_index, len(unique_dates)):
+    #         if not st.session_state.is_playing:
+    #             break
+    #         selected_date = unique_dates[i]
+    #         update_plot(selected_date)
+    #         update_title(selected_date)
+    #         st.session_state.current_index = i
+    #         slider_placeholder.slider("Slider for Selecting Date Index", min_value=0, max_value=len(unique_dates) - 1, value=i, key=f"date_slider1_{i}")
+    #         time.sleep(0.3)  # Adjust the sleep time to control the animation speed
+    # else:
+    #     selected_date = unique_dates[slider]
+    #     update_plot(selected_date)
+    #     update_title(selected_date)
+    #     st.session_state.current_index = slider
 
     
     #New Code 10th Aug 2024 (all below)
