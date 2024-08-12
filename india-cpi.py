@@ -370,16 +370,9 @@ else:
         st.session_state.is_playing = True
         if st.session_state.current_index == len(unique_dates) - 1:
             st.session_state.current_index = 0
-            # st.session_state.current_index = slider
 
     if pause_button:
         st.session_state.is_playing = False
-
-
-    #New Code 10th Aug 2024
-    # Placeholder for the Next and Previous buttons at the bottom of the page
-    button_placeholder = st.empty()
-
 
     if st.session_state.is_playing:
         for i in range(st.session_state.current_index, len(unique_dates)):
@@ -389,48 +382,10 @@ else:
             update_plot(selected_date)
             update_title(selected_date)
             st.session_state.current_index = i
-            slider_placeholder.slider("Slider for Selecting Date Index", min_value=0, max_value=len(unique_dates) - 1, value=i, key=f"date_slider1_{i}")
+            slider_placeholder.slider("Slider for Selecting Date Index", min_value=0, max_value=len(unique_dates) - 1, value=i, key=f"date_slider_{i}")
             time.sleep(0.3)  # Adjust the sleep time to control the animation speed
     else:
         selected_date = unique_dates[slider]
         update_plot(selected_date)
         update_title(selected_date)
         st.session_state.current_index = slider
-
-    
-    #New Code 10th Aug 2024 (all below)
-    # Display the Next and Previous buttons
-    col1, col2 = button_placeholder.columns(2)
-
-    with col1:
-        prev_button = st.button("Previous")
-    with col2:
-        next_button = st.button("Next")
-
-    # Handle the button clicks
-    if prev_button and st.session_state.current_index > 0:
-        st.session_state.current_index -= 1
-        selected_date = unique_dates[st.session_state.current_index]
-        update_plot(selected_date)
-        update_title(selected_date)
-        st.session_state.is_playing = False  # Pause the animation when navigating manually
-
-    if next_button and st.session_state.current_index < len(unique_dates) - 1:
-        st.session_state.current_index += 1
-        selected_date = unique_dates[st.session_state.current_index]
-        update_plot(selected_date)
-        update_title(selected_date)
-        st.session_state.is_playing = False  # Pause the animation when navigating manually
-
-    # Animation loop controlled by the play button remains unchanged...
-    if st.session_state.is_playing:
-        for i in range(st.session_state.current_index, len(unique_dates)):
-            if not st.session_state.is_playing:
-                break
-            selected_date = unique_dates[i]
-            update_plot(selected_date)
-            update_title(selected_date)
-            st.session_state.current_index = i
-            slider_placeholder.slider("Slider for Selecting Date Index", min_value=0, max_value=len(unique_dates) - 1, value=i, key=f"date_slider2_{i}")
-            time.sleep(0.3)  # Adjust sleep time to control the animation speed
-
