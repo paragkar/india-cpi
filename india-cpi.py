@@ -388,7 +388,7 @@ else:
             update_plot(selected_date)
             update_title(selected_date)
             st.session_state.current_index = i
-            slider_placeholder.slider("Slider for Selecting Date Index", min_value=0, max_value=len(unique_dates) - 1, value=i, key=f"date_slider_{i}")
+            slider_placeholder.slider("Slider for Selecting Date Index", min_value=0, max_value=len(unique_dates) - 1, value=i, key=f"date_slider1_{i}")
             time.sleep(0.3)  # Adjust the sleep time to control the animation speed
     else:
         selected_date = unique_dates[slider]
@@ -430,6 +430,6 @@ else:
             update_plot(selected_date)
             update_title(selected_date)
             st.session_state.current_index = i
-            slider_placeholder.slider("Slider for Selecting Date Index", min_value=0, max_value=len(unique_dates) - 1, value=i, key=f"date_slider_{i}")
+            slider_placeholder.slider("Slider for Selecting Date Index", min_value=0, max_value=len(unique_dates) - 1, value=i, key=f"date_slider2_{i}")
             time.sleep(0.3)  # Adjust sleep time to control the animation speed
 
