@@ -368,8 +368,10 @@ else:
 
     if play_button:
         st.session_state.is_playing = True
-        if st.session_state.current_index == len(unique_dates) - 1:
-            st.session_state.current_index = 0
+        # if st.session_state.current_index == len(unique_dates) - 1:
+        #     st.session_state.current_index = 0
+        # This line ensures that the animation starts from where the slider is currently set when the play button is pressed
+        st.session_state.current_index = slider
 
     if pause_button:
         st.session_state.is_playing = False
