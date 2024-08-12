@@ -427,7 +427,7 @@ else:
     #     update_title(selected_date)
     #     st.session_state.current_index = slider
 
-    
+    button_placeholder = st.empty()
     #New Code 10th Aug 2024 (all below)
     # Display the Next and Previous buttons
     col1, col2 = button_placeholder.columns(2)
