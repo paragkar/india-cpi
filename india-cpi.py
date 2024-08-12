@@ -378,9 +378,9 @@ else:
 
 
     if play_button:
-    st.session_state.is_playing = True
-    # Set the current index to the slider's position to ensure continuity
-    st.session_state.current_index = slider
+        st.session_state.is_playing = True
+        # Set the current index to the slider's position to ensure continuity
+        st.session_state.current_index = slider
 
     if pause_button:
         st.session_state.is_playing = False
