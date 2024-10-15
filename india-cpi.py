@@ -341,7 +341,8 @@ else:
 
         # Display the plot in the placeholder
         # Display the plot in the placeholder
-        plot_placeholder.plotly_chart(fig, use_container_width=True, key=f"plot_{selected_date}")
+        # plot_placeholder.plotly_chart(fig, use_container_width=True, key=f"plot_{selected_date}")
+        plot_placeholder.plotly_chart(fig, use_container_width=True)
 
 
     def update_title(selected_date):
