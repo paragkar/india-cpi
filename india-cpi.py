@@ -339,7 +339,9 @@ else:
         fig.update_xaxes(title_text="Weight Adjusted Values", row=1, col=2, title_font=dict(size=15, family='Arial', color='black', weight='bold'))
 
         # Display the plot in the placeholder
-        plot_placeholder.plotly_chart(fig, use_container_width=True)
+        # Display the plot in the placeholder
+        plot_placeholder.plotly_chart(fig, use_container_width=True, key=f"plot_{selected_date}")
+
 
     def update_title(selected_date):
         # Create the styled title
