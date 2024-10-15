@@ -289,14 +289,25 @@ else:
 
         fig = make_subplots(rows=1, cols=2, shared_yaxes=True, column_widths=[0.75, 0.25], horizontal_spacing=0.01)
 
+        # # Create scatter plot
+        # scatter_fig = px.scatter(df_filtered_date, x="Value", y="Description", color="Description", size_max=20, text="Text")
+        # scatter_fig.update_traces(marker=dict(size=20))
+        # scatter_fig.update_traces(marker=dict(line=dict(width=1, color='black')), textposition='middle right', textfont=dict(family='Arial', size=15, color='black', weight='bold'))
+        # scatter_fig.update_layout(showlegend=False, xaxis_title="Value of " + selected_metric_type)
+
+        # # Map colors from scatter plot to bar plot
+        # color_map = {desc: trace.marker.color for desc, trace in zip(df_filtered_date['Description'], scatter_fig.data)}
+
         # Create scatter plot
         scatter_fig = px.scatter(df_filtered_date, x="Value", y="Description", color="Description", size_max=20, text="Text")
         scatter_fig.update_traces(marker=dict(size=20))
         scatter_fig.update_traces(marker=dict(line=dict(width=1, color='black')), textposition='middle right', textfont=dict(family='Arial', size=15, color='black', weight='bold'))
         scatter_fig.update_layout(showlegend=False, xaxis_title="Value of " + selected_metric_type)
 
-        # Map colors from scatter plot to bar plot
-        color_map = {desc: trace.marker.color for desc, trace in zip(df_filtered_date['Description'], scatter_fig.data)}
+        # Initialize color_map with default color if not present
+        color_map = {desc: trace.marker.color if trace.marker.color else '#000000' for desc, trace in zip(df_filtered_date['Description'], scatter_fig.data)}
+
+
 
         # Create bar plot
         bar_fig = px.bar(df_filtered_date, x="Weighted Average", y="Description", orientation='h', text_auto='.2f')
@@ -304,6 +315,9 @@ else:
         bar_fig.update_traces(marker=dict(line=dict(width=2, color='black')))
         bar_fig.update_traces(marker_color=[color_map[desc] for desc in df_filtered_date['Description']])
         bar_fig.update_layout(showlegend=False, xaxis_title="Weighted Average", yaxis=dict(showticklabels=False))
+
+        # Use get method with default color when updating bar plot (New)
+        bar_fig.update_traces(marker_color=[color_map.get(desc, '#000000') for desc in df_filtered_date['Description']])
 
         # Update the y-axis tick labels to be bold
         fig.update_yaxes(tickfont=dict(size=15, family='Arial', color='black', weight='bold'), row=1, col=1)
