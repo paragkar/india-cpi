@@ -295,8 +295,11 @@ else:
         scatter_fig.update_traces(marker=dict(line=dict(width=1, color='black')), textposition='middle right', textfont=dict(family='Arial', size=15, color='black', weight='bold'))
         scatter_fig.update_layout(showlegend=False, xaxis_title="Value of " + selected_metric_type)
 
-        # Map colors from scatter plot to bar plot
-        color_map = {desc: trace.marker.color for desc, trace in zip(df_filtered_date['Description'], scatter_fig.data)}
+        # # Map colors from scatter plot to bar plot
+        # color_map = {desc: trace.marker.color for desc, trace in zip(df_filtered_date['Description'], scatter_fig.data)}
+
+        # Build a proper color mapping from the scatter plot traces using the trace names
+        color_map = {trace.name: trace.marker.color for trace in scatter_fig.data} #Debug 12th Feb 2025 (repace above with this)
 
 
         # Create bar plot
