@@ -9,6 +9,7 @@ import msoffcrypto
 import numpy as np
 import re
 import time
+import uuid  # (Place this at the top of your file if it's not already imported)
 
 pd.set_option('future.no_silent_downcasting', True)
 pd.set_option('display.max_columns', None)
@@ -357,7 +358,7 @@ else:
         # Display the plot in the placeholder
         # plot_placeholder.plotly_chart(fig, use_container_width=True, key=f"plot_{selected_date}")
         # plot_placeholder.plotly_chart(fig, use_container_width=True)
-        plot_placeholder.plotly_chart(fig, use_container_width=True, key=f"plot_{selected_date}")
+        plot_placeholder.plotly_chart(fig, use_container_width=True, key=f"plot_{selected_date}_{uuid.uuid4()}")
 
 
 
