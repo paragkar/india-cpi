@@ -290,31 +290,37 @@ else:
         fig = make_subplots(rows=1, cols=2, shared_yaxes=True, column_widths=[0.75, 0.25], horizontal_spacing=0.01)
 
         # Create scatter plot
-        scatter_fig = px.scatter(df_filtered_date, x="Value", y="Description", color="Description", size_max=20, text="Text")
+        scatter_fig = px.scatter(df_filtered_date, x="Value", y="Description", color="Description", 
+                                  size_max=20, text="Text")
         scatter_fig.update_traces(marker=dict(size=20))
-        scatter_fig.update_traces(marker=dict(line=dict(width=1, color='black')), textposition='middle right', textfont=dict(family='Arial', size=15, color='black', weight='bold'))
+        scatter_fig.update_traces(marker=dict(line=dict(width=1, color='black')), 
+                                  textposition='middle right', 
+                                  textfont=dict(family='Arial', size=15, color='black', weight='bold'))
         scatter_fig.update_layout(showlegend=False, xaxis_title="Value of " + selected_metric_type)
 
-        # # Map colors from scatter plot to bar plot
-        # color_map = {desc: trace.marker.color for desc, trace in zip(df_filtered_date['Description'], scatter_fig.data)}
-
         # Build a proper color mapping from the scatter plot traces using the trace names
-        color_map = {trace.name: trace.marker.color for trace in scatter_fig.data} #Debug 12th Feb 2025 (repace above with this)
+        color_map = {trace.name: trace.marker.color for trace in scatter_fig.data}  # (Replaces old zip approach)
 
+        # ---- Aggregation for Bar Plot ----
+        # Aggregate the data so each Description appears only once
+        df_bar = df_filtered_date.groupby('Description', as_index=False)['Weighted Average'].sum()
 
-        # Create bar plot
-        bar_fig = px.bar(df_filtered_date, x="Weighted Average", y="Description", orientation='h', text_auto='.2f')
-        bar_fig.update_traces(textposition='outside', textfont=dict(size=15, family='Arial', color='black', weight='bold'))
+        # Create bar plot using the aggregated data
+        bar_fig = px.bar(df_bar, x="Weighted Average", y="Description", orientation='h', text_auto='.2f')
+        bar_fig.update_traces(textposition='outside', 
+                                textfont=dict(size=15, family='Arial', color='black', weight='bold'))
         bar_fig.update_traces(marker=dict(line=dict(width=2, color='black')))
-        bar_fig.update_traces(marker_color=[color_map[desc] for desc in df_filtered_date['Description']])
+        bar_fig.update_traces(marker_color=[color_map.get(desc, 'gray') for desc in df_bar['Description']])
         bar_fig.update_layout(showlegend=False, xaxis_title="Weighted Average", yaxis=dict(showticklabels=False))
 
-        # Update the y-axis tick labels to be bold
+        # Update the y-axis tick labels to be bold (for scatter subplot)
         fig.update_yaxes(tickfont=dict(size=15, family='Arial', color='black', weight='bold'), row=1, col=1)
 
+        # Add scatter plot traces to subplot (row=1, col=1)
         for trace in scatter_fig.data:
             fig.add_trace(trace, row=1, col=1)
 
+        # Add bar plot traces to subplot (row=1, col=2)
         for trace in bar_fig.data:
             fig.add_trace(trace, row=1, col=2)
 
@@ -326,8 +332,13 @@ else:
         fig.update_yaxes(categoryorder='array', categoryarray=categories_reversed, row=1, col=2)
 
         # Update the layout for the combined figure
-        fig.update_xaxes(row=1, col=1, range=[overall_min_value, overall_max_value * 1.05], fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
-        fig.update_yaxes(row=1, col=1, tickfont=dict(size=15),fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
+        fig.update_xaxes(row=1, col=1, range=[overall_min_value, overall_max_value * 1.05], 
+                         fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', 
+                         mirror=True, showgrid=True, gridcolor='lightgrey')
+        fig.update_yaxes(row=1, col=1, tickfont=dict(size=15), fixedrange=True, 
+                         showline=True, linewidth=1.5, linecolor='grey', mirror=True, 
+                 showgrid=True, gridcolor='lightgrey')
+
 
         if selected_metric_type == "Inflation":
             fig.update_xaxes(row=1, col=2, range=[min_weighted_avg*3, max_weighted_avg * 1.4],fixedrange=True, showline=True, linewidth=1.5, linecolor='grey', mirror=True, showgrid=True, gridcolor='lightgrey')
